@@ -77,7 +77,7 @@ class _CadastroGadoState extends State<CadastroGado> {
             child: Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
                     decoration: InputDecoration(labelText: 'Nome'),
                     validator: (value) {
@@ -90,7 +90,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                   child: TextFormField(
                     decoration: InputDecoration(labelText: 'Numero'),
                     validator: (value) {
