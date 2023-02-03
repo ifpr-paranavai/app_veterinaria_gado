@@ -90,7 +90,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
                     decoration: InputDecoration(labelText: 'Numero'),
                     validator: (value) {
@@ -113,9 +113,8 @@ class _CadastroGadoState extends State<CadastroGado> {
                 //   onSaved: (value) => _dataNascimento = value,
                 // ),
                 fieldDataNascimento(),
-
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
                     decoration: InputDecoration(labelText: 'Data da Baixa'),
                     validator: (value) {
@@ -128,90 +127,116 @@ class _CadastroGadoState extends State<CadastroGado> {
                   ),
                 ),
 
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Motivo da Baixa'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o motivo da baixa';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _motivoBaixa = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Motivo da Baixa'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o motivo da baixa';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _motivoBaixa = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Partos Não Lançados'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o número de partos não lançados';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _partosNaoLancados = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration:
+                        InputDecoration(labelText: 'Partos Não Lançados'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o número de partos não lançados';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _partosNaoLancados = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Partos Totais'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o número total de partos';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _partosTotais = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Partos Totais'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o número total de partos';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _partosTotais = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Lote'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o lote';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _lote = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Lote'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o lote';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _lote = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Nome do Pai'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o nome do pai';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _nomePai = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Nome do Pai'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o nome do pai';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _nomePai = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Numero do Pai'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o número do pai';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _numeroPai = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Numero do Pai'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o número do pai';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _numeroPai = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Numero da Mae'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o número da mãe';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _numeroMae = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Numero da Mae'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o número da mãe';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _numeroMae = value,
+                  ),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Nome da Mae'),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor insira o nome da mãe';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) => _nomeMae = value,
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Nome da Mae'),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Por favor insira o nome da mãe';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => _nomeMae = value,
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
+                      //_formKey.currentState!.save();
+
                       // Enviar dados para o servidor ou salvar localmente
                     }
                   },

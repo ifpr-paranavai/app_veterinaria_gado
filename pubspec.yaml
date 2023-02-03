@@ -39,6 +39,9 @@ dependencies:
   fluentui_system_icons: ^1.1.190
   flutter_calendar_carousel:
   flutter_cupertino_date_picker: 
+  sqflite: ^2.2.4+1
+  intl: ^0.18.0
+  flutter_staggered_grid_view: 
 
 dev_dependencies:
   flutter_test:
