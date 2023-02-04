@@ -1,5 +1,9 @@
+import 'package:app_veterinaria/Model/gado.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../DataBase/notes_database.dart';
+
+final gadoDatabase = NotesDatabase.instance;
 
 class CadastroGado extends StatefulWidget {
   @override
@@ -9,14 +13,38 @@ class CadastroGado extends StatefulWidget {
 class _CadastroGadoState extends State<CadastroGado> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _date = TextEditingController();
+  Future<void> __saveGado() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Gado gado = Gado(
+        nome: _nome,
+        numero: _numero,
+        dataNascimento: DateFormat('dd/MM/yyyy').parse(_dataNascimento.text),
+        dataBaixa: _dataBaixa,
+        motivoBaixa: _motivoBaixa,
+        partosNaoLancados: _partosNaoLancados,
+        partosTotais: _partosTotais,
+        lote: _lote,
+        nomePai: _nomePai,
+        numeroPai: _numeroPai,
+        numeroMae: _numeroMae,
+        nomeMae: _nomeMae,
+      );
+
+      await gadoDatabase.create(gado, 'gado');
+
+      // Adicione aqui a chamada para a função de salvar
+      // passando a nota como parâmetro
+    }
+  }
+
+  TextEditingController _dataNascimento = TextEditingController();
 
   Widget fieldDataNascimento() {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: TextFormField(
-        //onChanged: (newValue) => back.object.raca = newValue,
-        controller: _date,
+        controller: _dataNascimento,
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 61, 10, 201)),
@@ -36,7 +64,7 @@ class _CadastroGadoState extends State<CadastroGado> {
 
           if (pickDate != null) {
             setState(() {
-              _date.text = DateFormat('dd/MM/yyyy').format(pickDate);
+              _dataNascimento.text = DateFormat('dd/MM/yyyy').format(pickDate);
             });
           }
         },
@@ -44,7 +72,6 @@ class _CadastroGadoState extends State<CadastroGado> {
     );
   }
 
-  DateTime? _selectedDate;
   List<DateTime> _markedDates = [
     DateTime(2022, 1, 1),
     DateTime(2022, 2, 14),
@@ -53,7 +80,6 @@ class _CadastroGadoState extends State<CadastroGado> {
 
   String? _nome;
   String? _numero;
-  DateTime? _dataNascimento;
   String? _dataBaixa;
   String? _motivoBaixa;
   String? _partosNaoLancados;
@@ -233,13 +259,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      //_formKey.currentState!.save();
-
-                      // Enviar dados para o servidor ou salvar localmente
-                    }
-                  },
+                  onPressed: __saveGado,
                   child: Text('Cadastrar'),
                 )
               ],

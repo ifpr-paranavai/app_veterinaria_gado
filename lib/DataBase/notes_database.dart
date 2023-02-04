@@ -1,3 +1,4 @@
+import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -22,7 +23,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path, version: 14, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -33,20 +34,47 @@ class NotesDatabase {
     final dateType = 'DATE NOT NULL';
 
     await db.execute('''
-CREATE DATABASE $tableNotes(
+CREATE TABLE $tableNotes(
   ${NoteFields.id} $idType,
   ${NoteFields.isImportant} $boolType,
   ${NoteFields.number} $intType,
   ${NoteFields.title} $textType,
   ${NoteFields.description} $textType,
-  ${NoteFields.time} $textType,
+  ${NoteFields.time} $textType
+)
+''');
+
+    await db.execute('''
+CREATE TABLE $tableGado(
+  ${GadoFields.id} $idType,
+  ${GadoFields.nome} $textType,
+  ${GadoFields.numero} $textType,
+  ${GadoFields.dataNascimento} $textType,
+  ${GadoFields.dataBaixa} $textType,
+  ${GadoFields.motivoBaixa} $textType,
+  ${GadoFields.partosNaoLancados} $textType,
+  ${GadoFields.partosTotais} $textType,
+  ${GadoFields.lote} $textType,
+  ${GadoFields.nomeMae} $textType,
+  ${GadoFields.nomePai} $textType,
+  ${GadoFields.numeroMae} $textType,
+  ${GadoFields.numeroPai} $textType,
 )
 ''');
   }
 
-  Future<Note> create(Note note) async {
+  Future<Object> create(Object object, String tableName) async {
     final db = await instance.database;
 
+    if (tableName == 'gado') {
+      Gado gado = object as Gado;
+      final id = await db.insert(tableGado, gado.toJson());
+      return gado.copy(id: id);
+    } else {
+      Note note = object as Note;
+      final id = await db.insert(tableGado, note.toJson());
+      return note.copy(id: id);
+    }
     // final json = note.toJson();
 
     // final columns =
@@ -57,10 +85,6 @@ CREATE DATABASE $tableNotes(
 
     // final id = await db
     //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
-
-    final id = await db.insert(tableNotes, note.toJson());
-
-    return note.copy(id: id);
   }
 
   Future<Note> readNote(int id) async {

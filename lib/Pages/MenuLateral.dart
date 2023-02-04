@@ -1,5 +1,6 @@
 import 'package:app_veterinaria/Pages/Formularios/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:flutter/material.dart';
 
 class MenuLateral extends StatelessWidget {
@@ -31,9 +32,12 @@ class MenuLateral extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text('Página 2'),
+              title: Text('Cadastro de notas'),
               onTap: () {
-                // Código para navegar para outra tela
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NoteForm()),
+                );
               },
             ),
             ListTile(
