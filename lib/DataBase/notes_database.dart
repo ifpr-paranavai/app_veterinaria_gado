@@ -23,7 +23,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 14, onCreate: _createDB);
+    return await openDatabase(path, version: 20, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -58,8 +58,8 @@ CREATE TABLE $tableGado(
   ${GadoFields.nomeMae} $textType,
   ${GadoFields.nomePai} $textType,
   ${GadoFields.numeroMae} $textType,
-  ${GadoFields.numeroPai} $textType,
-)
+  ${GadoFields.numeroPai} $textType
+  )
 ''');
   }
 
@@ -104,15 +104,24 @@ CREATE TABLE $tableGado(
     }
   }
 
-  Future<List<Note>> readAllNotes() async {
+  Future<List<Object>> readAllNotes(String table) async {
     final db = await instance.database;
 
-    final orderBy = '${NoteFields.time} ASC';
+    if (table == "gado") {
+      final orderBy = '${GadoFields.nome} ASC';
 
-    final result =
-        await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
+      final result =
+          await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy');
 
-    return result.map((json) => Note.fromJson(json)).toList();
+      return result.map((json) => Gado.fromJson(json)).toList();
+    } else {
+      final orderBy = '${NoteFields.time} ASC';
+
+      final result =
+          await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
+
+      return result.map((json) => Note.fromJson(json)).toList();
+    }
   }
 
   Future<int> update(Note note) async {

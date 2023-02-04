@@ -33,6 +33,7 @@ class _CadastroGadoState extends State<CadastroGado> {
 
       await gadoDatabase.create(gado, 'gado');
 
+      Navigator.pop(context);
       // Adicione aqui a chamada para a função de salvar
       // passando a nota como parâmetro
     }
