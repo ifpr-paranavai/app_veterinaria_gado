@@ -150,7 +150,12 @@ class _GadoListState extends State<GadoList> {
                             color: Color.fromARGB(255, 20, 122, 16),
                           ),
                           IconButton(
-                            onPressed: () => {},
+                            onPressed: () => {
+                              gadoDatabase.delete(gado.id, 'gado'),
+                              setState(() {
+                                _readAllNotes();
+                              })
+                            },
                             icon: Icon(Icons.delete),
                             color: Color.fromARGB(255, 189, 18, 18),
                           ),

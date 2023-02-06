@@ -68,7 +68,13 @@ CREATE TABLE $tableGado(
 
     if (tableName == 'gado') {
       Gado gado = object as Gado;
-      final id = await db.insert(tableGado, gado.toJson());
+      var id;
+      if (gado.id != null) {
+        id = await db.update(tableGado, gado.toJson(),
+            where: '${GadoFields.id} = ?', whereArgs: [gado.id]);
+      } else {
+        id = await db.insert(tableGado, gado.toJson());
+      }
       return gado.copy(id: id);
     } else {
       Note note = object as Note;
@@ -135,14 +141,18 @@ CREATE TABLE $tableGado(
     );
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(int id, String tableName) async {
     final db = await instance.database;
 
-    return await db.delete(
-      tableNotes,
-      where: '${NoteFields.id} = ?',
-      whereArgs: [id],
-    );
+    if (tableName == 'gado') {
+      return await db.delete(
+        tableGado,
+        where: '${NoteFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else {
+      return await db.delete(tableNotes);
+    }
   }
 
   Future close() async {
