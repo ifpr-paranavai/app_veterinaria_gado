@@ -101,18 +101,64 @@ class _GadoListState extends State<GadoList> {
     return ListView(
       children: _gados
           .map((gado) => ListTile(
-                leading: Icon(Icons.add_a_photo),
-                title: Text(gado.nome, style: TextStyle(color: Colors.white)),
-                subtitle:
-                    Text(gado.lote, style: TextStyle(color: Colors.white)),
-                trailing: Icon(Icons.arrow_forward_ios,
-                    color: Color.fromARGB(255, 255, 255, 255)),
-                onTap: () => {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CadastroGado()),
-                  )
-                },
+                //leading: Icon(Icons.add_a_photo),
+                title: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            gado.nome == null || gado.nome == ""
+                                ? "XXX-XXX"
+                                : gado.nome,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            gado.numero == null || gado.numero == ""
+                                ? "000-000"
+                                : gado.numero,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CadastroGado(
+                                          gado: gado,
+                                        )),
+                              )
+                            },
+                            icon: Icon(Icons.edit),
+                            color: Color.fromARGB(255, 20, 122, 16),
+                          ),
+                          IconButton(
+                            onPressed: () => {},
+                            icon: Icon(Icons.delete),
+                            color: Color.fromARGB(255, 189, 18, 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ))
           .toList(),
     );

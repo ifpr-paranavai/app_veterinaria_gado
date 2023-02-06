@@ -6,17 +6,48 @@ import '../../DataBase/notes_database.dart';
 final gadoDatabase = NotesDatabase.instance;
 
 class CadastroGado extends StatefulWidget {
+  final Gado? gado;
+
+  CadastroGado({this.gado});
+
   @override
   _CadastroGadoState createState() => _CadastroGadoState();
 }
 
 class _CadastroGadoState extends State<CadastroGado> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.gado != null) {
+      setState(() {
+        _id = widget.gado!.id;
+      });
+      setState(() {
+        _nome = widget.gado!.nome;
+      });
+      _nome = widget.gado!.nome;
+      _numero = widget.gado!.numero;
+      _dataNascimento.text =
+          DateFormat('dd/MM/yyyy').format(widget.gado!.dataNascimento);
+      _dataBaixa = widget.gado!.dataBaixa;
+      _motivoBaixa = widget.gado!.motivoBaixa;
+      _partosNaoLancados = widget.gado!.partosNaoLancados;
+      _partosTotais = widget.gado!.partosTotais;
+      _lote = widget.gado!.lote;
+      _nomePai = widget.gado!.nomePai;
+      _numeroPai = widget.gado!.numeroPai;
+      _numeroMae = widget.gado!.numeroMae;
+      _nomeMae = widget.gado!.nomeMae;
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   Future<void> __saveGado() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       Gado gado = Gado(
+        id: _id,
         nome: _nome,
         numero: _numero,
         dataNascimento: DateFormat('dd/MM/yyyy').parse(_dataNascimento.text),
@@ -79,6 +110,7 @@ class _CadastroGadoState extends State<CadastroGado> {
     DateTime(2022, 3, 15),
   ];
 
+  int? _id;
   String? _nome;
   String? _numero;
   String? _dataBaixa;
@@ -106,6 +138,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _nome,
                     decoration: InputDecoration(labelText: 'Nome'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -119,6 +152,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _numero,
                     decoration: InputDecoration(labelText: 'Numero'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -143,6 +177,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _dataBaixa,
                     decoration: InputDecoration(labelText: 'Data da Baixa'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -157,6 +192,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _motivoBaixa,
                     decoration: InputDecoration(labelText: 'Motivo da Baixa'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -172,6 +208,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     decoration:
                         InputDecoration(labelText: 'Partos Não Lançados'),
+                    initialValue: _partosNaoLancados,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Por favor insira o número de partos não lançados';
@@ -184,6 +221,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _partosTotais,
                     decoration: InputDecoration(labelText: 'Partos Totais'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -197,6 +235,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _lote,
                     decoration: InputDecoration(labelText: 'Lote'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -210,6 +249,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _nomeMae,
                     decoration: InputDecoration(labelText: 'Nome do Pai'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -223,6 +263,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _numeroMae,
                     decoration: InputDecoration(labelText: 'Numero do Pai'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -236,6 +277,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _numeroMae,
                     decoration: InputDecoration(labelText: 'Numero da Mae'),
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -249,6 +291,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
+                    initialValue: _nomeMae,
                     decoration: InputDecoration(labelText: 'Nome da Mae'),
                     validator: (value) {
                       if (value!.isEmpty) {
