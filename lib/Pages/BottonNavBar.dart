@@ -1,4 +1,4 @@
-import 'package:app_veterinaria/Pages/Formularios/CadastroGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/ItemBorderBox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

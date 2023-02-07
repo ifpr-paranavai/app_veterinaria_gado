@@ -1,5 +1,7 @@
 import 'package:app_veterinaria/Model/gado.dart';
+import 'package:app_veterinaria/Model/matrix.dart';
 import 'package:app_veterinaria/Model/note.dart';
+import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -23,7 +25,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 20, onCreate: _createDB);
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -61,6 +63,25 @@ CREATE TABLE $tableGado(
   ${GadoFields.numeroPai} $textType
   )
 ''');
+
+    await db.execute('''
+CREATE TABLE $tableUsuario(
+  ${UsuarioFields.id} $idType,
+  ${UsuarioFields.name} $textType,
+  ${UsuarioFields.email} $textType,
+  ${UsuarioFields.password} $textType
+  )
+''');
+
+    await db.execute('''
+CREATE TABLE $tableMatrix(
+  ${MatrixFields.id} $idType,
+  ${MatrixFields.idUsuario} $intType,
+  ${MatrixFields.name} $textType,
+  ${MatrixFields.number} $textType,
+  ${MatrixFields.observacao} $textType,
+)
+''');
   }
 
   Future<Object> create(Object object, String tableName) async {
@@ -76,6 +97,16 @@ CREATE TABLE $tableGado(
         id = await db.insert(tableGado, gado.toJson());
       }
       return gado.copy(id: id);
+    } else if (tableName == 'usuario') {
+      Usuario usuario = object as Usuario;
+      var id;
+      if (usuario.id != null) {
+        id = await db.update(tableUsuario, usuario.toJson(),
+            where: '${UsuarioFields.id} = ?', whereArgs: [usuario.id]);
+      } else {
+        id = await db.insert(tableUsuario, usuario.toJson());
+      }
+      return usuario.copy(id: id);
     } else {
       Note note = object as Note;
       final id = await db.insert(tableGado, note.toJson());
@@ -93,20 +124,37 @@ CREATE TABLE $tableGado(
     //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
   }
 
-  Future<Note> readNote(int id) async {
+  Future<Object> readNote(String itemString) async {
     final db = await instance.database;
 
-    final maps = await db.query(
-      tableNotes,
-      columns: NoteFields.values,
-      where: '${NoteFields.id} = ?',
-      whereArgs: [id],
-    );
+    if (itemString == "usuario") {
+      final maps = await db.query(
+        tableUsuario,
+        columns: UsuarioFields.values,
+        where: "${UsuarioFields.name} LIKE '%?%'",
+        whereArgs: ['email'],
+      );
 
-    if (maps.isNotEmpty) {
-      return Note.fromJson(maps.first);
+      if (maps.isNotEmpty) {
+        return Usuario.fromJson(maps.first);
+      } else {
+        return Null;
+        //throw Exception('ID $itemString not found');
+      }
     } else {
-      throw Exception('ID $id not found');
+      final maps = await db.query(
+        tableGado,
+        columns: GadoFields.values,
+        where: "${GadoFields.nome} LIKE '%?%'",
+        whereArgs: ['$itemString'],
+      );
+
+      if (maps.isNotEmpty) {
+        return Gado.fromJson(maps.first);
+      } else {
+        //throw Exception('ID $itemString not found');
+        return Null;
+      }
     }
   }
 
@@ -120,6 +168,13 @@ CREATE TABLE $tableGado(
           await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy');
 
       return result.map((json) => Gado.fromJson(json)).toList();
+    } else if (table == "usuario") {
+      final orderBy = '${UsuarioFields.name} ASC';
+
+      final result =
+          await db.rawQuery('SELECT * FROM $tableUsuario ORDER BY $orderBy');
+
+      return result.map((json) => Usuario.fromJson(json)).toList();
     } else {
       final orderBy = '${NoteFields.time} ASC';
 

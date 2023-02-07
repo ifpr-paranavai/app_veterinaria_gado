@@ -1,22 +1,22 @@
-import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
+import 'package:app_veterinaria/Pages/Usuario/cadastroUser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class GadoList extends StatefulWidget {
-  const GadoList({super.key});
+class UserList extends StatefulWidget {
+  const UserList({super.key});
 
   @override
-  State<GadoList> createState() => _GadoListState();
+  State<UserList> createState() => _UserListState();
 }
 
-class _GadoListState extends State<GadoList> {
-  List _gados = [];
+class _UserListState extends State<UserList> {
+  List _users = [];
 
   _readAllNotes() async {
-    final notes = await gadoDatabase.readAllNotes('gado');
+    final users = await usuarioDatabase.readAllNotes('usuario');
     setState(() {
-      _gados = notes;
+      _users = users;
     });
   }
 
@@ -34,7 +34,7 @@ class _GadoListState extends State<GadoList> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: Text('Listagem de Gado'),
+            title: Text('Listagem de Usuarios'),
             backgroundColor: Colors.grey[800],
           ),
           body: Container(
@@ -71,9 +71,10 @@ class _GadoListState extends State<GadoList> {
                             primary: Colors.amberAccent, //<-- SEE HERE
                           ),
                           onPressed: () async {
-                            final itens = await gadoDatabase.readNote('gado');
+                            final itens =
+                                await usuarioDatabase.readNote('usuario');
                             setState(() {
-                              _gados = itens as List;
+                              _users = itens as List;
                             });
                             // adicione o código de filtragem aqui
                           },
@@ -81,7 +82,7 @@ class _GadoListState extends State<GadoList> {
                       ],
                     )),
                 Expanded(
-                  child: buildGadoList(),
+                  child: buildUserList(),
                 ),
               ],
             ),
@@ -91,7 +92,7 @@ class _GadoListState extends State<GadoList> {
               // adicione o código para abrir a página de cadastro aqui
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CadastroGado()),
+                MaterialPageRoute(builder: (context) => CadastroUsuario()),
               );
             },
             child: Icon(Icons.add),
@@ -101,10 +102,10 @@ class _GadoListState extends State<GadoList> {
     );
   }
 
-  buildGadoList() {
+  buildUserList() {
     return ListView(
-      children: _gados
-          .map((gado) => ListTile(
+      children: _users
+          .map((user) => ListTile(
                 //leading: Icon(Icons.add_a_photo),
                 title: Row(
                   children: [
@@ -114,9 +115,9 @@ class _GadoListState extends State<GadoList> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            gado.nome == null || gado.nome == ""
+                            user.name == null || user.name == ""
                                 ? "XXX-XXX"
-                                : gado.nome,
+                                : user.name,
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -128,9 +129,9 @@ class _GadoListState extends State<GadoList> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            gado.numero == null || gado.numero == ""
+                            user.email == null || user.email == ""
                                 ? "000-000"
-                                : gado.numero,
+                                : user.email,
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -145,8 +146,8 @@ class _GadoListState extends State<GadoList> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CadastroGado(
-                                          gado: gado,
+                                    builder: (context) => CadastroUsuario(
+                                          usuario: user,
                                         )),
                               )
                             },
@@ -155,7 +156,7 @@ class _GadoListState extends State<GadoList> {
                           ),
                           IconButton(
                             onPressed: () => {
-                              gadoDatabase.delete(gado.id, 'gado'),
+                              usuarioDatabase.delete(user.id, 'gado'),
                               setState(() {
                                 _readAllNotes();
                               })

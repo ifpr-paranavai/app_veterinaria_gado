@@ -1,4 +1,4 @@
-final String tableusuario = "usuario";
+final String tableUsuario = "usuario";
 
 class UsuarioFields {
   static final List<String> values = [

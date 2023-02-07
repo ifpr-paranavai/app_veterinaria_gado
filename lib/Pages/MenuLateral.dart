@@ -1,6 +1,7 @@
-import 'package:app_veterinaria/Pages/Formularios/CadastroGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
+import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:flutter/material.dart';
 
 class MenuLateral extends StatelessWidget {
@@ -21,6 +22,15 @@ class MenuLateral extends StatelessWidget {
                     //NetworkImage('https://photos.google.com/photo/AF1QipOl2kKKfj_F_C2rmRRbePcTc5mj3eFf3lp3ioD8'),
                     NetworkImage('https://via.placeholder.com/150x150'),
               ),
+            ),
+            ListTile(
+              title: Text('Informações dos Usuarios'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserList()),
+                ); // Código para navegar para outra tela
+              },
             ),
             ListTile(
               title: Text('Informações do Gado'),

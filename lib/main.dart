@@ -1,5 +1,5 @@
 import 'package:app_veterinaria/Pages/BottonNavBar.dart';
-import 'package:app_veterinaria/Pages/Formularios/CadastroGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/MenuLateral.dart';
 import 'package:flutter/material.dart';
 
