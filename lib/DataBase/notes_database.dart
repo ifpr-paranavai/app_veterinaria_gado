@@ -11,6 +11,8 @@ class NotesDatabase {
 
   static Database? _database;
 
+  String? user;
+
   //private constructor
   NotesDatabase._init();
 
@@ -79,7 +81,7 @@ CREATE TABLE $tableMatrix(
   ${MatrixFields.idUsuario} $intType,
   ${MatrixFields.name} $textType,
   ${MatrixFields.number} $textType,
-  ${MatrixFields.observacao} $textType,
+  ${MatrixFields.observacao} $textType
 )
 ''');
   }
@@ -139,6 +141,42 @@ CREATE TABLE $tableMatrix(
         return Usuario.fromJson(maps.first);
       } else {
         return Null;
+        //throw Exception('ID $itemString not found');
+      }
+    } else {
+      final maps = await db.query(
+        tableGado,
+        columns: GadoFields.values,
+        where: "${GadoFields.nome} LIKE '%?%'",
+        whereArgs: ['$itemString'],
+      );
+
+      if (maps.isNotEmpty) {
+        return Gado.fromJson(maps.first);
+      } else {
+        //throw Exception('ID $itemString not found');
+        return Null;
+      }
+    }
+  }
+
+  Future<Object> validadeLogin(
+      String itemString, String email, String password) async {
+    final db = await instance.database;
+
+    if (itemString == "usuario") {
+      final maps = await db.query(
+        tableUsuario,
+        columns: UsuarioFields.values,
+        where: "${UsuarioFields.email} = ? AND ${UsuarioFields.password} = ?",
+        whereArgs: ['email', 'password'],
+      );
+
+      if (maps.isNotEmpty) {
+        // return Usuario.fromJson(maps.first);
+        return true;
+      } else {
+        return false;
         //throw Exception('ID $itemString not found');
       }
     } else {

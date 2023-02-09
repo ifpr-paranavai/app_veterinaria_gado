@@ -1,8 +1,10 @@
+import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/BottonNavBar.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/MenuLateral.dart';
 import 'package:flutter/material.dart';
 
+final gadoDatabase = NotesDatabase.instance;
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -26,6 +28,24 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   late String _email, _password;
+
+  void _validadeLogin() async {
+    var logado = await gadoDatabase.validadeLogin('usuario', _email, _password);
+
+    if (logado == true) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MenuLateral(),
+        ),
+      );
+    } else {
+      final snackBar = SnackBar(
+        content: Text('Usuário ou senha inválidos'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      _validadeLogin();
       print(_email);
       print(_password);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MenuLateral(),
-        ),
-      );
     }
   }
 }
