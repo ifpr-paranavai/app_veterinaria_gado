@@ -1,3 +1,4 @@
+import 'package:app_veterinaria/Pages/Breed/BreedList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
@@ -30,6 +31,15 @@ class MenuLateral extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => UserList()),
                 ); // Código para navegar para outra tela
+              },
+            ),
+            ListTile(
+              title: Text('Informações das Raças'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => BreedList()),
+                );
               },
             ),
             ListTile(
