@@ -1,7 +1,9 @@
+import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/matrix.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
+import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -76,6 +78,13 @@ CREATE TABLE $tableUsuario(
 ''');
 
     await db.execute('''
+CREATE TABLE $tableBreed(
+  ${BreedFields.id} $idType,
+  ${BreedFields.name} $textType,
+  ${BreedFields.farmId} $intType
+)''');
+
+    await db.execute('''
 CREATE TABLE $tableMatrix(
   ${MatrixFields.id} $idType,
   ${MatrixFields.idUsuario} $intType,
@@ -109,6 +118,16 @@ CREATE TABLE $tableMatrix(
         id = await db.insert(tableUsuario, usuario.toJson());
       }
       return usuario.copy(id: id);
+    } else if (tableName == "breed") {
+      var id;
+      Breed breed = object as Breed;
+      if (breed.id != null) {
+        id = await db.update(tableBreed, breed.toJson(),
+            where: '${BreedFields.id} = ?', whereArgs: [breed.id]);
+      } else {
+        id = await db.insert(tableBreed, breed.toJson());
+      }
+      return breed.copy(id: id);
     } else {
       Note note = object as Note;
       final id = await db.insert(tableGado, note.toJson());
@@ -169,7 +188,7 @@ CREATE TABLE $tableMatrix(
         tableUsuario,
         columns: UsuarioFields.values,
         where: "${UsuarioFields.email} = ? AND ${UsuarioFields.password} = ?",
-        whereArgs: ['email', 'password'],
+        whereArgs: [email, password],
       );
 
       if (maps.isNotEmpty) {
