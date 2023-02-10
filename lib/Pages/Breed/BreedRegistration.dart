@@ -17,8 +17,6 @@ class BreedRegistration extends StatefulWidget {
 
 class _BreedRegistrationState extends State<BreedRegistration> {
   String? _name;
-  String? _email;
-  String? _password;
   int? _id;
   @override
   void initState() {
@@ -28,8 +26,6 @@ class _BreedRegistrationState extends State<BreedRegistration> {
         _id = widget.usuario!.id;
       });
       _name = widget.usuario!.name;
-      _email = widget.usuario!.email;
-      _password = widget.usuario!.password;
     }
   }
 
@@ -41,8 +37,6 @@ class _BreedRegistrationState extends State<BreedRegistration> {
       Usuario usuario = Usuario(
         id: _id,
         name: _name,
-        email: _email,
-        password: _password,
       );
 
       await usuarioDatabase.create(usuario, 'usuario');
@@ -79,34 +73,6 @@ class _BreedRegistrationState extends State<BreedRegistration> {
                       return null;
                     },
                     onSaved: (value) => _name = value,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _email,
-                    decoration: InputDecoration(labelText: 'Email:'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor digite seu email: ';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _email = value,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _password,
-                    decoration: InputDecoration(labelText: 'Senha:'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor digite uma senha: ';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _password = value,
                   ),
                 ),
                 ElevatedButton(
