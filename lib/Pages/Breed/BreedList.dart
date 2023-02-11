@@ -37,7 +37,11 @@ class _BreedListState extends State<BreedList> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            title: Text('Listagem de Usuarios'),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false),
+            ),
+            title: Text('Listagem de Raças'),
             backgroundColor: Colors.grey[800],
           ),
           body: Container(
@@ -133,7 +137,7 @@ class _BreedListState extends State<BreedList> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => BreedRegistration(
-                                          usuario: breed,
+                                          breed: breed,
                                         )),
                               )
                             },
@@ -142,7 +146,7 @@ class _BreedListState extends State<BreedList> {
                           ),
                           IconButton(
                             onPressed: () => {
-                              usuarioDatabase.delete(breed.id, 'breed'),
+                              breedDatabase.delete(breed.id, 'breed'),
                               setState(() {
                                 _fetchDataBreed();
                               })

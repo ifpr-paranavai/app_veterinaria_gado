@@ -34,6 +34,10 @@ class _GadoListState extends State<GadoList> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false),
+            ),
             title: Text('Listagem de Gado'),
             backgroundColor: Colors.grey[800],
           ),

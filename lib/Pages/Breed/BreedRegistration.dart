@@ -1,15 +1,14 @@
-import 'package:app_veterinaria/Model/gado.dart';
-import 'package:app_veterinaria/Model/usuario.dart';
+import 'package:app_veterinaria/Model/breed.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../DataBase/notes_database.dart';
 
-final usuarioDatabase = NotesDatabase.instance;
+final breedDatabase = NotesDatabase.instance;
 
 class BreedRegistration extends StatefulWidget {
-  final Usuario? usuario;
+  final Breed? breed;
 
-  BreedRegistration({this.usuario});
+  BreedRegistration({this.breed});
 
   @override
   _BreedRegistrationState createState() => _BreedRegistrationState();
@@ -21,25 +20,25 @@ class _BreedRegistrationState extends State<BreedRegistration> {
   @override
   void initState() {
     super.initState();
-    if (widget.usuario != null) {
+    if (widget.breed != null) {
       setState(() {
-        _id = widget.usuario!.id;
+        _id = widget.breed!.id;
       });
-      _name = widget.usuario!.name;
+      _name = widget.breed!.name;
     }
   }
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _saveUser() async {
+  Future<void> _saveBreed() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Usuario usuario = Usuario(
+      Breed breed = Breed(
         id: _id,
         name: _name,
       );
 
-      await usuarioDatabase.create(usuario, 'usuario');
+      await breedDatabase.create(breed, 'breed');
 
       Navigator.pop(context);
       // Adicione aqui a chamada para a função de salvar
@@ -53,7 +52,7 @@ class _BreedRegistrationState extends State<BreedRegistration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro de Usuario'),
+        title: Text('Cadastro de Raças'),
       ),
       body: Container(
         child: Form(
@@ -76,7 +75,7 @@ class _BreedRegistrationState extends State<BreedRegistration> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: _saveUser,
+                  onPressed: _saveBreed,
                   child: Text('Cadastrar'),
                 )
               ],

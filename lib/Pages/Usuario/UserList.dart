@@ -34,6 +34,10 @@ class _UserListState extends State<UserList> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false),
+            ),
             title: Text('Listagem de Usuarios'),
             backgroundColor: Colors.grey[800],
           ),

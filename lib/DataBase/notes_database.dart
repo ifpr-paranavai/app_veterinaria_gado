@@ -29,7 +29,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(path, version: 7, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -38,6 +38,11 @@ class NotesDatabase {
     final intType = 'INTEGER NOT NULL';
     final textType = 'TEXT NOT NULL';
     final dateType = 'DATE NOT NULL';
+    final nullIntType = 'INTEGER';
+    final nulltextType = 'TEXT';
+    final nulldateType = 'DATE';
+    final nullboolType = 'BOOLEAN';
+    final nullfloatType = 'FLOAT';
 
     await db.execute('''
 CREATE TABLE $tableNotes(
@@ -81,7 +86,7 @@ CREATE TABLE $tableUsuario(
 CREATE TABLE $tableBreed(
   ${BreedFields.id} $idType,
   ${BreedFields.name} $textType,
-  ${BreedFields.farmId} $intType
+  ${BreedFields.farmId} $nullIntType
 )''');
 
     await db.execute('''
@@ -92,6 +97,10 @@ CREATE TABLE $tableMatrix(
   ${MatrixFields.number} $textType,
   ${MatrixFields.observacao} $textType
 )
+''');
+
+    await db.execute('''
+INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.com', 'admin123')
 ''');
   }
 
@@ -232,6 +241,20 @@ CREATE TABLE $tableMatrix(
           await db.rawQuery('SELECT * FROM $tableUsuario ORDER BY $orderBy');
 
       return result.map((json) => Usuario.fromJson(json)).toList();
+    } else if (table == "breed") {
+      final orderBy = '${BreedFields.name} ASC';
+
+      final result =
+          await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
+
+      return result.map((json) => Breed.fromJson(json)).toList();
+    } else if (table == "matrix") {
+      final orderBy = '${MatrixFields.name} ASC';
+
+      final result =
+          await db.rawQuery('SELECT * FROM $tableMatrix ORDER BY $orderBy');
+
+      return result.map((json) => Matrix.fromJson(json)).toList();
     } else {
       final orderBy = '${NoteFields.time} ASC';
 

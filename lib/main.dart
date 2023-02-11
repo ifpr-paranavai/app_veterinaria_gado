@@ -294,8 +294,6 @@ class _LoginScreenState extends State<LoginScreen> {
     //if (_formKey.currentState!.validate()) {
     //  _formKey.currentState!.save();
     _validadeLogin();
-    print(_email);
-    print(_password);
     //}
   }
 }
