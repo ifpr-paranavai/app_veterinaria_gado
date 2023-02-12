@@ -1,4 +1,4 @@
-package com.example.app_veterinaria
+package com.veterinaria.app_veterinaria
 
 import io.flutter.embedding.android.FlutterActivity
 

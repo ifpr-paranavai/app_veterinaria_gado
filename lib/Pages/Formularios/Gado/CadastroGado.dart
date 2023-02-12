@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../DataBase/notes_database.dart';
 
@@ -18,6 +21,7 @@ class _CadastroGadoState extends State<CadastroGado> {
   @override
   void initState() {
     super.initState();
+    fetchAutoCompleteData();
     if (widget.gado != null) {
       setState(() {
         _id = widget.gado!.id;
@@ -122,6 +126,8 @@ class _CadastroGadoState extends State<CadastroGado> {
   String? _numeroPai;
   String? _numeroMae;
   String? _nomeMae;
+  late List<String> autocompleteData;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -163,16 +169,28 @@ class _CadastroGadoState extends State<CadastroGado> {
                     onSaved: (value) => _numero = value,
                   ),
                 ),
-                // TextFormField(
-                //   decoration: InputDecoration(labelText: 'Data de Nascimento'),
-                //   validator: (value) {
-                //     if (value!.isEmpty) {
-                //       return 'Por favor insira a data de nascimento';
-                //     }
-                //     return null;
-                //   },
-                //   onSaved: (value) => _dataNascimento = value,
-                // ),
+                isLoading
+                    ? CircularProgressIndicator()
+                    : Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Column(
+                          children: [
+                            Autocomplete(
+                              optionsBuilder:
+                                  (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text.isEmpty) {
+                                  return const Iterable<String>.empty();
+                                } else {
+                                  return autocompleteData.where((word) => word
+                                      .toLowerCase()
+                                      .contains(
+                                          textEditingValue.text.toLowerCase()));
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                 fieldDataNascimento(),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -188,7 +206,6 @@ class _CadastroGadoState extends State<CadastroGado> {
                     onSaved: (value) => _dataBaixa = value,
                   ),
                 ),
-
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
@@ -312,5 +329,25 @@ class _CadastroGadoState extends State<CadastroGado> {
         ),
       ),
     );
+  }
+
+  Future fetchAutoCompleteData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    // const gadoListReturn =
+    //     gadoDatabase.searchDataWithParamiter();
+
+    final String stringData = await rootBundle.loadString("assets/data.json");
+
+    final List<dynamic> json = jsonDecode(stringData);
+
+    final List<String> jsonStringData = json.cast<String>();
+
+    setState(() {
+      isLoading = false;
+      autocompleteData = jsonStringData;
+    });
   }
 }

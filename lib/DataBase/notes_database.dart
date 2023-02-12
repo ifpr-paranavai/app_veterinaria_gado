@@ -154,6 +154,25 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
   }
 
+  //FILTRO COM PARTE DA STRING DE BUSCA
+  Future<Object> searchDataWithParamiter(String table, String paramsn) async {
+    final db = await instance.database;
+    if (table == 'gado') {
+      if (paramsn != '') {
+        final orderBy = '${GadoFields.nome} ASC';
+
+        final result =
+            await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy');
+
+        return result;
+      } else
+        final maps = await db.query(table, where: "${paramsn} LIKE '%?%'");
+      return Null;
+    } else {
+      return Null;
+    }
+  }
+
   Future<Object> readNote(String itemString) async {
     final db = await instance.database;
 
