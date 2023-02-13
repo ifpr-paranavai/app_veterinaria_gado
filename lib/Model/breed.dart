@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 final String tableBreed = 'breed';
 
 class BreedFields {
@@ -34,6 +36,12 @@ class Breed {
         name: json[BreedFields.name] as String?,
         farmId: json[BreedFields.farmId] as int?,
       );
+
+  //Retorna uma json de lista com o nome da raça
+  static String fromJsonListName(List<dynamic> json) {
+    final names = json.map((item) => item[BreedFields.name] as String).toList();
+    return jsonEncode(names);
+  }
 
   Breed copy({
     int? id,

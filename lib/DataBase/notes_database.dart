@@ -157,14 +157,14 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
   //FILTRO COM PARTE DA STRING DE BUSCA
   Future<Object> searchDataWithParamiter(String table, String paramsn) async {
     final db = await instance.database;
-    if (table == 'gado') {
-      if (paramsn != '') {
-        final orderBy = '${GadoFields.nome} ASC';
+    if (table == 'breed') {
+      if (paramsn == '') {
+        final orderBy = '${BreedFields.name} ASC';
 
         final result =
-            await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy');
+            await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
 
-        return result;
+        return Breed.fromJsonListName(result);
       } else
         final maps = await db.query(table, where: "${paramsn} LIKE '%?%'");
       return Null;

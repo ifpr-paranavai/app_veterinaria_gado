@@ -336,12 +336,11 @@ class _CadastroGadoState extends State<CadastroGado> {
       isLoading = true;
     });
 
-    // const gadoListReturn =
-    //     gadoDatabase.searchDataWithParamiter();
+    var search = await gadoDatabase.searchDataWithParamiter('breed', '');
 
-    final String stringData = await rootBundle.loadString("assets/data.json");
+    search as String;
 
-    final List<dynamic> json = jsonDecode(stringData);
+    final List<dynamic> json = jsonDecode(search);
 
     final List<String> jsonStringData = json.cast<String>();
 
