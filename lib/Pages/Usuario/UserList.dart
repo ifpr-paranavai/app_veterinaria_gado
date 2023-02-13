@@ -32,6 +32,7 @@ class _UserListState extends State<UserList> {
       _readAllNotes(); // Método para atualizar os dados da tela
     });
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -39,12 +40,12 @@ class _UserListState extends State<UserList> {
               onPressed: () => Navigator.pop(context, false),
             ),
             title: Text('Listagem de Usuarios'),
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Colors.green,
           ),
           body: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[850],
-            ),
+//              color: Colors.grey[850],
+                ),
             child: Column(
               children: [
                 Padding(
@@ -55,7 +56,7 @@ class _UserListState extends State<UserList> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 209, 203, 203),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6.0)),
                             ),
@@ -119,11 +120,11 @@ class _UserListState extends State<UserList> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            user.name == null || user.name == ""
-                                ? "XXX-XXX"
-                                : user.name,
-                            style: TextStyle(color: Colors.white),
-                          ),
+                              user.name == null || user.name == ""
+                                  ? "XXX-XXX"
+                                  : user.name,
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0))),
                         ],
                       ),
                     ),

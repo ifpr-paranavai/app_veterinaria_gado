@@ -35,6 +35,7 @@ class _BreedListState extends State<BreedList> {
       _fetchDataBreed();
     });
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -42,12 +43,12 @@ class _BreedListState extends State<BreedList> {
               onPressed: () => Navigator.pop(context, false),
             ),
             title: Text('Listagem de Raças'),
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Colors.green,
           ),
           body: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[850],
-            ),
+                //color: Colors.grey[850],
+                ),
             child: Column(
               children: [
                 Padding(
@@ -58,7 +59,7 @@ class _BreedListState extends State<BreedList> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 209, 203, 203),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6.0)),
                             ),
@@ -122,7 +123,8 @@ class _BreedListState extends State<BreedList> {
                         children: [
                           Text(
                             breed.name,
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                           ),
                         ],
                       ),

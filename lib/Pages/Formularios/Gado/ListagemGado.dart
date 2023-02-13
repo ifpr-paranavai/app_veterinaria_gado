@@ -32,6 +32,7 @@ class _GadoListState extends State<GadoList> {
       _readAllNotes(); // Método para atualizar os dados da tela
     });
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -39,12 +40,12 @@ class _GadoListState extends State<GadoList> {
               onPressed: () => Navigator.pop(context, false),
             ),
             title: Text('Listagem de Gado'),
-            backgroundColor: Colors.grey[800],
+            backgroundColor: Colors.green,
           ),
           body: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[850],
-            ),
+                //color: Colors.grey[850],
+                ),
             child: Column(
               children: [
                 Padding(
@@ -55,7 +56,7 @@ class _GadoListState extends State<GadoList> {
                           child: Container(
                             height: 35,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Color.fromARGB(255, 209, 203, 203),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(6.0)),
                             ),
@@ -121,7 +122,7 @@ class _GadoListState extends State<GadoList> {
                             gado.nome == null || gado.nome == ""
                                 ? "XXX-XXX"
                                 : gado.nome,
-                            style: TextStyle(color: Colors.white),
+                            //style: TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -135,7 +136,7 @@ class _GadoListState extends State<GadoList> {
                             gado.numero == null || gado.numero == ""
                                 ? "000-000"
                                 : gado.numero,
-                            style: TextStyle(color: Colors.white),
+                            //style: TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
