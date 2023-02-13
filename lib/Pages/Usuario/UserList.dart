@@ -137,7 +137,7 @@ class _UserListState extends State<UserList> {
                             user.email == null || user.email == ""
                                 ? "000-000"
                                 : user.email,
-                            style: TextStyle(color: Colors.white),
+                            //style: TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
