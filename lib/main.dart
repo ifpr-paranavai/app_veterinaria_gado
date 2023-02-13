@@ -180,8 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   end: Alignment.bottomRight,
                   stops: [0.3, 1],
                   colors: [
-                    Color.fromARGB(215, 64, 43, 255),
-                    Color.fromARGB(255, 28, 2, 90),
+                    Color.fromARGB(214, 43, 255, 71),
+                    Color.fromARGB(255, 2, 90, 36),
                   ],
                 ),
                 borderRadius: BorderRadius.all(
