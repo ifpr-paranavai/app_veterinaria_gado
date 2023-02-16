@@ -40,9 +40,11 @@ dependencies:
   flutter_calendar_carousel:
   flutter_cupertino_date_picker: 
   sqflite: ^2.2.4+1
-  intl: ^0.18.0
+  intl: 
   flutter_staggered_grid_view: 
   shared_preferences: 
+  firebase_core: 
+  firebase_auth: 
 
 dev_dependencies:
   flutter_test:
