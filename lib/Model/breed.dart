@@ -37,11 +37,9 @@ class Breed {
         farmId: json[BreedFields.farmId] as int?,
       );
 
-  //Retorna uma json de lista com o nome da raça
-  static String fromJsonListName(List<dynamic> json) {
-    final names = json.map((item) => item[BreedFields.name] as String).toList();
-    return jsonEncode(names);
-  }
+  static Breed stringFromJson(Map<String, Object?> json) => Breed(
+        name: json[BreedFields.name] as String?,
+      );
 
   Breed copy({
     int? id,

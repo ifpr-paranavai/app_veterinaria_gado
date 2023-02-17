@@ -29,7 +29,9 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(path, version: 7, onCreate: _createDB);
+    await deleteDatabase(path);
+
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
@@ -69,7 +71,8 @@ CREATE TABLE $tableGado(
   ${GadoFields.nomeMae} $textType,
   ${GadoFields.nomePai} $textType,
   ${GadoFields.numeroMae} $textType,
-  ${GadoFields.numeroPai} $textType
+  ${GadoFields.numeroPai} $textType,
+  ${GadoFields.breedId} $nullIntType
   )
 ''');
 
@@ -161,13 +164,33 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       if (paramsn == '') {
         final orderBy = '${BreedFields.name} ASC';
 
-        final result =
-            await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
+        List<Breed> breeds =
+            (await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy'))
+                .map((row) => Breed.fromJson(row))
+                .toList();
 
-        return Breed.fromJsonListName(result);
+        List<Breed> options = breeds
+            .map((breed) => Breed(name: breed.name, id: breed.id))
+            .toList();
+
+        return options;
       } else
         final maps = await db.query(table, where: "${paramsn} LIKE '%?%'");
       return Null;
+    } else {
+      return Null;
+    }
+  }
+
+  Future<Object> searchNameById(int? id) async {
+    final db = await instance.database;
+    final maps = await db.query(tableBreed,
+        columns: BreedFields.values,
+        where: '${BreedFields.id} = ?',
+        whereArgs: [id]);
+
+    if (maps.isNotEmpty) {
+      return Breed.stringFromJson(maps.first);
     } else {
       return Null;
     }

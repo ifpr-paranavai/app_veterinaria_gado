@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ class _CadastroGadoState extends State<CadastroGado> {
     super.initState();
     fetchAutoCompleteData();
     if (widget.gado != null) {
+      _getBreedName(widget.gado!.breedId);
       setState(() {
         _id = widget.gado!.id;
       });
@@ -42,6 +44,7 @@ class _CadastroGadoState extends State<CadastroGado> {
       _numeroPai = widget.gado!.numeroPai;
       _numeroMae = widget.gado!.numeroMae;
       _nomeMae = widget.gado!.nomeMae;
+      _selectedBreedId = widget.gado!.breedId;
     }
   }
 
@@ -64,6 +67,7 @@ class _CadastroGadoState extends State<CadastroGado> {
         numeroPai: _numeroPai,
         numeroMae: _numeroMae,
         nomeMae: _nomeMae,
+        breedId: _selectedBreedId,
       );
 
       await gadoDatabase.create(gado, 'gado');
@@ -126,8 +130,10 @@ class _CadastroGadoState extends State<CadastroGado> {
   String? _numeroPai;
   String? _numeroMae;
   String? _nomeMae;
-  late List<String> autocompleteData;
+  late List<Breed> autocompleteData;
   bool isLoading = false;
+  int? _selectedBreedId;
+  String? _selectedBreedName;
 
   @override
   Widget build(BuildContext context) {
@@ -175,18 +181,38 @@ class _CadastroGadoState extends State<CadastroGado> {
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Column(
                           children: [
-                            Autocomplete(
+                            Autocomplete<Breed>(
+                              initialValue: _selectedBreedName != null
+                                  ? TextEditingValue(
+                                      text: _selectedBreedName!,
+                                    )
+                                  : null,
+                              fieldViewBuilder: (context, textEditingController,
+                                  focusNode, onFieldSubmitted) {
+                                return TextFormField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  onFieldSubmitted: (value) {
+                                    onFieldSubmitted();
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Raça',
+                                  ),
+                                );
+                              },
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
-                                if (textEditingValue.text.isEmpty) {
-                                  return const Iterable<String>.empty();
-                                } else {
-                                  return autocompleteData.where((word) => word
-                                      .toLowerCase()
-                                      .contains(
-                                          textEditingValue.text.toLowerCase()));
-                                }
+                                print(autocompleteData);
+                                return autocompleteData.where((option) =>
+                                    option.name!.toLowerCase().contains(
+                                        textEditingValue.text.toLowerCase()));
                               },
+                              onSelected: (option) {
+                                this.setState(() {
+                                  _selectedBreedId = option.id;
+                                });
+                              },
+                              displayStringForOption: (option) => option.name!,
                             ),
                           ],
                         ),
@@ -338,15 +364,24 @@ class _CadastroGadoState extends State<CadastroGado> {
 
     var search = await gadoDatabase.searchDataWithParamiter('breed', '');
 
-    search as String;
+    search as List<Breed>;
 
-    final List<dynamic> json = jsonDecode(search);
+    // final List<dynamic> json = jsonDecode(search);
 
-    final List<String> jsonStringData = json.cast<String>();
+    // final List<String> jsonStringData = json.cast<String>();
 
     setState(() {
       isLoading = false;
-      autocompleteData = jsonStringData;
+      autocompleteData = search;
     });
+  }
+
+  _getBreedName([int? selectedBreedId]) async {
+    var search = await gadoDatabase.searchNameById(selectedBreedId);
+    if (search != null) {
+      var breed = search as Breed; // cast para a classe Breed
+      _selectedBreedName = breed.name;
+      //if (search != null) _selectedBreedName = search;
+    }
   }
 }
