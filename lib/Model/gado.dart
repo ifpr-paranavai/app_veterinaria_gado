@@ -39,7 +39,7 @@ class Gado {
   final String? nome;
   final String? numero;
   final DateTime dataNascimento;
-  final String? dataBaixa;
+  final DateTime? dataBaixa;
   final String? motivoBaixa;
   final String? partosNaoLancados;
   final String? partosTotais;
@@ -72,7 +72,8 @@ class Gado {
         GadoFields.nome: nome,
         GadoFields.numero: numero,
         GadoFields.dataNascimento: dataNascimento.toIso8601String(),
-        GadoFields.dataBaixa: dataBaixa,
+        GadoFields.dataBaixa:
+            dataBaixa != null ? dataBaixa!.toIso8601String() : '',
         GadoFields.motivoBaixa: motivoBaixa,
         GadoFields.partosNaoLancados: partosNaoLancados,
         GadoFields.partosTotais: partosTotais,
@@ -90,7 +91,10 @@ class Gado {
         numero: json[GadoFields.numero] as String?,
         dataNascimento:
             DateTime.parse(json[GadoFields.dataNascimento] as String),
-        dataBaixa: json[GadoFields.dataBaixa] as String?,
+        dataBaixa: json[GadoFields.dataBaixa] == null ||
+                json[GadoFields.dataBaixa] == ''
+            ? null
+            : DateTime.parse(json[GadoFields.dataBaixa] as String),
         motivoBaixa: json[GadoFields.motivoBaixa] as String?,
         partosNaoLancados: json[GadoFields.partosNaoLancados] as String?,
         partosTotais: json[GadoFields.partosTotais] as String?,
@@ -107,7 +111,7 @@ class Gado {
     String? nome,
     String? numero,
     DateTime? dataNascimento,
-    String? dataBaixa,
+    DateTime? dataBaixa,
     String? motivoBaixa,
     String? partosNaoLancados,
     String? partosTotais,

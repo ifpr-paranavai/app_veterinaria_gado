@@ -24,7 +24,11 @@ class _CadastroGadoState extends State<CadastroGado> {
     super.initState();
     fetchAutoCompleteData();
     if (widget.gado != null) {
-      _getBreedName(widget.gado!.breedId);
+      _getBreedName(widget.gado!.breedId).then((value) {
+        setState(() {
+          _selectedBreedName = value;
+        });
+      });
       setState(() {
         _id = widget.gado!.id;
       });
@@ -35,7 +39,10 @@ class _CadastroGadoState extends State<CadastroGado> {
       _numero = widget.gado!.numero;
       _dataNascimento.text =
           DateFormat('dd/MM/yyyy').format(widget.gado!.dataNascimento);
-      _dataBaixa = widget.gado!.dataBaixa;
+      _dataBaixa.text = widget.gado?.dataBaixa != null
+          ? DateFormat('dd/MM/yyyy').format(widget.gado!.dataBaixa!)
+          : '';
+      ;
       _motivoBaixa = widget.gado!.motivoBaixa;
       _partosNaoLancados = widget.gado!.partosNaoLancados;
       _partosTotais = widget.gado!.partosTotais;
@@ -58,7 +65,9 @@ class _CadastroGadoState extends State<CadastroGado> {
         nome: _nome,
         numero: _numero,
         dataNascimento: DateFormat('dd/MM/yyyy').parse(_dataNascimento.text),
-        dataBaixa: _dataBaixa,
+        dataBaixa: _dataBaixa.text != ""
+            ? DateFormat('dd/MM/yyyy').parse(_dataBaixa.text)
+            : null,
         motivoBaixa: _motivoBaixa,
         partosNaoLancados: _partosNaoLancados,
         partosTotais: _partosTotais,
@@ -79,6 +88,7 @@ class _CadastroGadoState extends State<CadastroGado> {
   }
 
   TextEditingController _dataNascimento = TextEditingController();
+  TextEditingController _dataBaixa = TextEditingController();
 
   Widget fieldDataNascimento() {
     return Padding(
@@ -112,6 +122,38 @@ class _CadastroGadoState extends State<CadastroGado> {
     );
   }
 
+  Widget fieldDataBaixa() {
+    return Padding(
+      padding: const EdgeInsets.all(0),
+      child: TextFormField(
+        controller: _dataBaixa,
+        decoration: const InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Color.fromARGB(255, 61, 10, 201)),
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
+          icon: Icon(Icons.calendar_today_rounded,
+              color: Color.fromARGB(255, 61, 10, 201)),
+          hintText: 'Data da Baixa',
+        ),
+        onTap: () async {
+          DateTime? pickDatebaixa = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          );
+
+          if (pickDatebaixa != null) {
+            setState(() {
+              _dataBaixa.text = DateFormat('dd/MM/yyyy').format(pickDatebaixa);
+            });
+          }
+        },
+      ),
+    );
+  }
+
   List<DateTime> _markedDates = [
     DateTime(2022, 1, 1),
     DateTime(2022, 2, 14),
@@ -121,7 +163,6 @@ class _CadastroGadoState extends State<CadastroGado> {
   int? _id;
   String? _nome;
   String? _numero;
-  String? _dataBaixa;
   String? _motivoBaixa;
   String? _partosNaoLancados;
   String? _partosTotais;
@@ -166,6 +207,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _numero,
                     decoration: InputDecoration(labelText: 'Numero'),
+                    keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Por favor insira o numero';
@@ -218,20 +260,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                         ),
                       ),
                 fieldDataNascimento(),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _dataBaixa,
-                    decoration: InputDecoration(labelText: 'Data da Baixa'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira a data da baixa';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _dataBaixa = value,
-                  ),
-                ),
+                fieldDataBaixa(),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
@@ -381,9 +410,7 @@ class _CadastroGadoState extends State<CadastroGado> {
     if (search != null) {
       var breed = search as Breed;
 
-      this.setState(() {
-        _selectedBreedName = breed.name;
-      });
+      return breed.name;
     }
   }
 }

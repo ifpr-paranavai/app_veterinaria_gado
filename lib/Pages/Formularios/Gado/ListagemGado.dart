@@ -30,81 +30,86 @@ class _GadoListState extends State<GadoList> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context, false),
-            ),
-            title: Text('Listagem de Gado'),
-            backgroundColor: Colors.green,
-          ),
-          body: Container(
-            decoration: BoxDecoration(
-                //color: Colors.grey[850],
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        title: Text('Listagem de Gado'),
+        backgroundColor: Colors.green,
+      ),
+      body: ListView(
+        children: [
+          Container(
+            decoration: BoxDecoration(),
             child: Column(
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 35,
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 209, 203, 203),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(6.0)),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 209, 203, 203),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(6.0)),
+                          ),
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: "Procurar...",
+                              border: InputBorder.none,
+                              contentPadding:
+                                  EdgeInsets.only(left: 15, top: -10),
                             ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  hintText: "Procurar...",
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                      EdgeInsets.only(left: 15, top: -10)),
-                              controller: _filterInput,
-                            ),
+                            controller: _filterInput,
                           ),
                         ),
-                        ElevatedButton(
-                          child: Text("Filtrar!"),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            primary: Colors.amberAccent, //<-- SEE HERE
-                          ),
-                          onPressed: () async {
-                            final itens = await gadoDatabase.readNote(
-                                'gado', _filterInput.text);
-                            if (itens is List) {
-                              setState(() {
-                                _gados = itens;
-                              });
-                            }
-                          },
+                      ),
+                      ElevatedButton(
+                        child: Text("Filtrar!"),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          primary: Colors.amberAccent, //<-- SEE HERE
                         ),
-                      ],
-                    )),
-                Expanded(
-                  child: buildGadoList(),
+                        onPressed: () async {
+                          final itens = await gadoDatabase.readNote(
+                            'usuario',
+                            _filterInput.text,
+                          );
+                          if (itens is List) {
+                            setState(() {
+                              _gados = itens as List;
+                            });
+                          }
+                          // adicione o código de filtragem aqui
+                        },
+                      ),
+                    ],
+                  ),
                 ),
+                buildGadoList(),
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              // adicione o código para abrir a página de cadastro aqui
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CadastroGado()),
-              );
-            },
-            child: Icon(Icons.add),
-            backgroundColor: Color.fromARGB(255, 187, 174, 0),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // adicione o código para abrir a página de cadastro aqui
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CadastroGado()),
+          ).then((value) {
+            if (value == null) _readAllNotes();
+          });
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Color.fromARGB(255, 187, 174, 0),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -123,7 +128,7 @@ class _GadoListState extends State<GadoList> {
                 style: TextStyle(
                   color: Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ),

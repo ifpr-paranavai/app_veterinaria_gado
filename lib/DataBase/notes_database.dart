@@ -29,7 +29,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    //await deleteDatabase(path);
+    await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
@@ -63,7 +63,7 @@ CREATE TABLE $tableGado(
   ${GadoFields.nome} $textType,
   ${GadoFields.numero} $textType,
   ${GadoFields.dataNascimento} $textType,
-  ${GadoFields.dataBaixa} $textType,
+  ${GadoFields.dataBaixa} $nulldateType,
   ${GadoFields.motivoBaixa} $textType,
   ${GadoFields.partosNaoLancados} $textType,
   ${GadoFields.partosTotais} $textType,
