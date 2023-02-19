@@ -13,7 +13,7 @@ class UserList extends StatefulWidget {
 class _UserListState extends State<UserList> {
   List _users = [];
 
-  _readAllNotes() async {
+  _fetchDataUser() async {
     final users = await usuarioDatabase.readAllNotes('usuario');
     setState(() {
       _users = users;
@@ -23,7 +23,7 @@ class _UserListState extends State<UserList> {
   @override
   void initState() {
     super.initState();
-    _readAllNotes();
+    _fetchDataUser();
   }
 
   TextEditingController _filterImput = TextEditingController();
@@ -105,10 +105,7 @@ class _UserListState extends State<UserList> {
                 context,
                 MaterialPageRoute(builder: (context) => CadastroUsuario()),
               ).then((value) {
-                if (value == null)
-                  setState(() {
-                    _readAllNotes();
-                  });
+                if (value == null) _fetchDataUser();
               });
             },
             child: Icon(Icons.add),
@@ -166,10 +163,7 @@ class _UserListState extends State<UserList> {
                                           usuario: user,
                                         )),
                               ).then((value) {
-                                if (value == null)
-                                  setState(() {
-                                    _readAllNotes();
-                                  });
+                                if (value == null) _fetchDataUser();
                               })
                             },
                             icon: Icon(Icons.edit),
@@ -178,9 +172,7 @@ class _UserListState extends State<UserList> {
                           IconButton(
                             onPressed: () => {
                               usuarioDatabase.delete(user.id, 'usuario'),
-                              setState(() {
-                                _readAllNotes();
-                              })
+                              _fetchDataUser()
                             },
                             icon: Icon(Icons.delete),
                             color: Color.fromARGB(255, 189, 18, 18),

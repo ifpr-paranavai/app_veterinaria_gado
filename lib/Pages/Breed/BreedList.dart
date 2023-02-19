@@ -16,6 +16,8 @@ class BreedList extends StatefulWidget {
 class _BreedListState extends State<BreedList> {
   List _breeds = [];
 
+  TextEditingController _filterInput = TextEditingController();
+
   _fetchDataBreed() async {
     final breeds = await breedDatabase.readAllNotes('breed');
     setState(() {
@@ -31,9 +33,6 @@ class _BreedListState extends State<BreedList> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      _fetchDataBreed();
-    });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -69,6 +68,7 @@ class _BreedListState extends State<BreedList> {
                                   border: InputBorder.none,
                                   contentPadding:
                                       EdgeInsets.only(left: 15, top: -10)),
+                              controller: _filterInput,
                             ),
                           ),
                         ),
@@ -79,10 +79,15 @@ class _BreedListState extends State<BreedList> {
                             primary: Colors.amberAccent, //<-- SEE HERE
                           ),
                           onPressed: () async {
-                            // final itens = await breedDatabase.readNote('breed');
-                            // setState(() {
-                            //   _breeds = itens as List;
-                            // });
+                            final itens = await breedDatabase.readNote(
+                                'breed', _filterInput.text);
+                            if (itens is List) {
+                              setState(
+                                () {
+                                  _breeds = itens;
+                                },
+                              );
+                            }
                           },
                         ),
                       ],
@@ -95,11 +100,12 @@ class _BreedListState extends State<BreedList> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              // adicione o código para abrir a página de cadastro aqui
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => BreedRegistration()),
-              );
+              ).then((value) => {
+                    if (value == null) {_fetchDataBreed()}
+                  });
             },
             child: Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 187, 174, 0),
@@ -111,56 +117,68 @@ class _BreedListState extends State<BreedList> {
   buildUserList() {
     return ListView(
       children: _breeds
-          .map((breed) => ListTile(
-                //leading: Icon(Icons.add_a_photo),
-                title: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            breed.name,
-                            style:
-                                TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                          ),
-                        ],
+          .asMap()
+          .map(
+            (index, breed) => MapEntry(
+              index,
+              Container(
+                color: index % 2 == 0 ? Colors.white : Colors.grey[200],
+                child: ListTile(
+                  //leading: Icon(Icons.add_a_photo),
+                  title: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              breed.name,
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0)),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BreedRegistration(
-                                          breed: breed,
-                                        )),
-                              )
-                            },
-                            icon: Icon(Icons.edit),
-                            color: Color.fromARGB(255, 20, 122, 16),
-                          ),
-                          IconButton(
-                            onPressed: () => {
-                              breedDatabase.delete(breed.id, 'breed'),
-                              setState(() {
-                                _fetchDataBreed();
-                              })
-                            },
-                            icon: Icon(Icons.delete),
-                            color: Color.fromARGB(255, 189, 18, 18),
-                          ),
-                        ],
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BreedRegistration(
+                                            breed: breed,
+                                          )),
+                                ).then((value) => {
+                                      if (value == null) {_fetchDataBreed()}
+                                    })
+                              },
+                              icon: Icon(Icons.edit),
+                              color: Color.fromARGB(255, 20, 122, 16),
+                            ),
+                            IconButton(
+                              onPressed: () => {
+                                breedDatabase.delete(breed.id, 'breed'),
+                                setState(() {
+                                  _fetchDataBreed();
+                                })
+                              },
+                              icon: Icon(Icons.delete),
+                              color: Color.fromARGB(255, 189, 18, 18),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ))
+              ),
+            ),
+          )
+          .values
           .toList(),
     );
   }

@@ -215,6 +215,20 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
         return Null;
         //throw Exception('ID $itemString not found');
       }
+    } else if (itemString == "breed") {
+      final searchQuery = '%$argment%';
+      final maps = await db.query(
+        tableBreed,
+        columns: BreedFields.values,
+        where: "${BreedFields.name} LIKE ?",
+        whereArgs: [searchQuery],
+      );
+      final breeds = maps.map((breedMap) => Breed.fromJson(breedMap)).toList();
+      if (maps.isNotEmpty) {
+        return breeds;
+      } else {
+        return Null;
+      }
     } else {
       final maps = await db.query(
         tableGado,
@@ -333,6 +347,18 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       return await db.delete(
         tableGado,
         where: '${NoteFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else if (tableName == 'breed') {
+      return await db.delete(
+        tableBreed,
+        where: '${BreedFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else if (tableName == 'matrix') {
+      return await db.delete(
+        tableMatrix,
+        where: '${MatrixFields.id} = ?',
         whereArgs: [id],
       );
     } else {
