@@ -379,9 +379,11 @@ class _CadastroGadoState extends State<CadastroGado> {
   _getBreedName([int? selectedBreedId]) async {
     var search = await gadoDatabase.searchNameById(selectedBreedId);
     if (search != null) {
-      var breed = search as Breed; // cast para a classe Breed
-      _selectedBreedName = breed.name;
-      //if (search != null) _selectedBreedName = search;
+      var breed = search as Breed;
+
+      this.setState(() {
+        _selectedBreedName = breed.name;
+      });
     }
   }
 }

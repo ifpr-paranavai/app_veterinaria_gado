@@ -26,11 +26,11 @@ class _UserListState extends State<UserList> {
     _readAllNotes();
   }
 
+  TextEditingController _filterImput = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      _readAllNotes(); // Método para atualizar os dados da tela
-    });
+    // Método para atualizar os dados da tela
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -62,10 +62,12 @@ class _UserListState extends State<UserList> {
                             ),
                             child: TextField(
                               decoration: InputDecoration(
-                                  hintText: "Procurar...",
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                      EdgeInsets.only(left: 15, top: -10)),
+                                hintText: "Procurar...",
+                                border: InputBorder.none,
+                                contentPadding:
+                                    EdgeInsets.only(left: 15, top: -10),
+                              ),
+                              controller: _filterImput,
                             ),
                           ),
                         ),
@@ -76,11 +78,15 @@ class _UserListState extends State<UserList> {
                             primary: Colors.amberAccent, //<-- SEE HERE
                           ),
                           onPressed: () async {
-                            final itens =
-                                await usuarioDatabase.readNote('usuario');
-                            setState(() {
-                              _users = itens as List;
-                            });
+                            final itens = await usuarioDatabase.readNote(
+                              'usuario',
+                              _filterImput.text,
+                            );
+                            if (itens is List) {
+                              setState(() {
+                                _users = itens as List;
+                              });
+                            }
                             // adicione o código de filtragem aqui
                           },
                         ),
@@ -98,7 +104,12 @@ class _UserListState extends State<UserList> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CadastroUsuario()),
-              );
+              ).then((value) {
+                if (value == null)
+                  setState(() {
+                    _readAllNotes();
+                  });
+              });
             },
             child: Icon(Icons.add),
             backgroundColor: Color.fromARGB(255, 187, 174, 0),
@@ -154,14 +165,19 @@ class _UserListState extends State<UserList> {
                                     builder: (context) => CadastroUsuario(
                                           usuario: user,
                                         )),
-                              )
+                              ).then((value) {
+                                if (value == null)
+                                  setState(() {
+                                    _readAllNotes();
+                                  });
+                              })
                             },
                             icon: Icon(Icons.edit),
                             color: Color.fromARGB(255, 20, 122, 16),
                           ),
                           IconButton(
                             onPressed: () => {
-                              usuarioDatabase.delete(user.id, 'gado'),
+                              usuarioDatabase.delete(user.id, 'usuario'),
                               setState(() {
                                 _readAllNotes();
                               })

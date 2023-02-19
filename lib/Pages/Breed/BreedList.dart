@@ -79,11 +79,10 @@ class _BreedListState extends State<BreedList> {
                             primary: Colors.amberAccent, //<-- SEE HERE
                           ),
                           onPressed: () async {
-                            final itens = await breedDatabase.readNote('breed');
-                            setState(() {
-                              _breeds = itens as List;
-                            });
-                            // adicione o código de filtragem aqui
+                            // final itens = await breedDatabase.readNote('breed');
+                            // setState(() {
+                            //   _breeds = itens as List;
+                            // });
                           },
                         ),
                       ],

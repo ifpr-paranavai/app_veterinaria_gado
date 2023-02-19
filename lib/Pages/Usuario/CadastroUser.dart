@@ -1,5 +1,6 @@
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
+import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../DataBase/notes_database.dart';
@@ -48,8 +49,6 @@ class _CadastroUsuarioState extends State<CadastroUsuario> {
       await usuarioDatabase.create(usuario, 'usuario');
 
       Navigator.pop(context);
-      // Adicione aqui a chamada para a função de salvar
-      // passando a nota como parâmetro
     }
   }
 

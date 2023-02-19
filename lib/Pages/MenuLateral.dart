@@ -51,15 +51,15 @@ class MenuLateral extends StatelessWidget {
                 ); // Código para navegar para outra tela
               },
             ),
-            ListTile(
-              title: Text('Cadastro de notas'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NoteForm()),
-                );
-              },
-            ),
+            // ListTile(
+            //   title: Text('Cadastro de notas'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => NoteForm()),
+            //     );
+            //   },
+            // ),
             ListTile(
               title: Text('Página 3'),
               onTap: () {

@@ -76,11 +76,10 @@ class _GadoListState extends State<GadoList> {
                             primary: Colors.amberAccent, //<-- SEE HERE
                           ),
                           onPressed: () async {
-                            final itens = await gadoDatabase.readNote('gado');
-                            setState(() {
-                              _gados = itens as List;
-                            });
-                            // adicione o código de filtragem aqui
+                            // final itens = await gadoDatabase.readNote('gado');
+                            // setState(() {
+                            //   _gados = itens as List;
+                            // });
                           },
                         ),
                       ],

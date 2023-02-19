@@ -29,7 +29,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    await deleteDatabase(path);
+    //await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
@@ -196,19 +196,21 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     }
   }
 
-  Future<Object> readNote(String itemString) async {
+  Future<Object> readNote(String itemString, String argment) async {
     final db = await instance.database;
 
     if (itemString == "usuario") {
+      final searchQuery = '%$argment%';
       final maps = await db.query(
         tableUsuario,
         columns: UsuarioFields.values,
-        where: "${UsuarioFields.name} LIKE '%?%'",
-        whereArgs: ['email'],
+        where: "${UsuarioFields.name} LIKE ?",
+        whereArgs: [searchQuery],
       );
+      final users = maps.map((userMap) => Usuario.fromJson(userMap)).toList();
 
       if (maps.isNotEmpty) {
-        return Usuario.fromJson(maps.first);
+        return users;
       } else {
         return Null;
         //throw Exception('ID $itemString not found');
@@ -321,7 +323,13 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
   Future<int> delete(int id, String tableName) async {
     final db = await instance.database;
 
-    if (tableName == 'gado') {
+    if (tableName == "usuario") {
+      return await db.delete(
+        tableUsuario,
+        where: '${UsuarioFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else if (tableName == 'gado') {
       return await db.delete(
         tableGado,
         where: '${NoteFields.id} = ?',
