@@ -119,12 +119,18 @@ class _BreedListState extends State<BreedList> {
       child: Column(
         children: [
           ListTile(
-            leading: SizedBox(width: 55),
-            title: Text(
-              'Nome',
-              style: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontWeight: FontWeight.bold,
+            visualDensity: VisualDensity.compact,
+            tileColor: Colors.grey[300],
+            title: Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.18),
+              child: Text(
+                'Nome',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ),
             trailing: Row(
@@ -155,7 +161,9 @@ class _BreedListState extends State<BreedList> {
                 (index, breed) => MapEntry(
                   index,
                   Container(
-                    color: index % 2 == 0 ? Colors.white : Colors.grey[200],
+                    color: index % 2 == 0
+                        ? Color.fromARGB(167, 32, 121, 66)
+                        : Color.fromARGB(255, 202, 231, 190),
                     child: ListTile(
                       //leading: Icon(Icons.add_a_photo),
                       title: Row(

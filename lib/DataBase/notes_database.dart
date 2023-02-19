@@ -229,6 +229,21 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       } else {
         return Null;
       }
+    } else if (itemString == 'gado') {
+      final searchQuery = '%$argment%';
+      final maps = await db.query(
+        tableGado,
+        columns: GadoFields.values,
+        where: "${GadoFields.nome} LIKE ? OR ${GadoFields.numero} LIKE ?",
+        whereArgs: [searchQuery, searchQuery],
+      );
+
+      final gados = maps.map((gadoMap) => Gado.fromJson(gadoMap)).toList();
+      if (maps.isNotEmpty) {
+        return gados;
+      } else {
+        return Null;
+      }
     } else {
       final maps = await db.query(
         tableGado,
