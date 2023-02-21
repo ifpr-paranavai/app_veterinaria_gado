@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../DataBase/notes_database.dart';
 
-final breedDatabase = NotesDatabase.instance;
+final database = NotesDatabase.instance;
 
 class HeadQuartersRegistration extends StatefulWidget {
   final Headquarters? headquarters;
@@ -54,7 +54,7 @@ class _HeadQuartersRegistrationState extends State<HeadQuartersRegistration> {
         idUsuario: _idUsuario,
       );
 
-      await breedDatabase.create(object, 'headquarters');
+      await database.create(object, 'headquarters');
 
       Navigator.pop(context);
     }

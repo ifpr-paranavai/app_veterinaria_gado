@@ -1,6 +1,7 @@
 import 'package:app_veterinaria/Pages/Breed/BreedList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:flutter/material.dart';
@@ -58,8 +59,7 @@ class MenuLateral extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => HeadQuartersRegistration()),
+                  MaterialPageRoute(builder: (context) => HeadquartersList()),
                 ); // Código para navegar para outra tela
               },
             ),
