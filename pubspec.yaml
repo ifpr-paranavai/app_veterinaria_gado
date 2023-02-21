@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.18.0
   flutter_staggered_grid_view: 
   shared_preferences: 
+  brasil_fields: ^1.10.0
   # firebase_core: 
   # firebase_auth: 
 

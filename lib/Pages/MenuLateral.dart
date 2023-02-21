@@ -5,6 +5,8 @@ import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:flutter/material.dart';
 
+import 'Formularios/Matriz/headquartersRegistration.dart';
+
 class MenuLateral extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,16 @@ class MenuLateral extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => GadoList()),
+                ); // Código para navegar para outra tela
+              },
+            ),
+            ListTile(
+              title: Text('Informações da Matriz'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HeadQuartersRegistration()),
                 ); // Código para navegar para outra tela
               },
             ),

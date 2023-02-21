@@ -193,12 +193,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _nome,
                     decoration: InputDecoration(labelText: 'Nome'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o nome';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o nome';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _nome = value,
                   ),
                 ),
@@ -208,12 +208,8 @@ class _CadastroGadoState extends State<CadastroGado> {
                     initialValue: _numero,
                     decoration: InputDecoration(labelText: 'Numero'),
                     keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o numero';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    // },
                     onSaved: (value) => _numero = value,
                   ),
                 ),
@@ -266,12 +262,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _motivoBaixa,
                     decoration: InputDecoration(labelText: 'Motivo da Baixa'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o motivo da baixa';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o motivo da baixa';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _motivoBaixa = value,
                   ),
                 ),
@@ -281,12 +277,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                     decoration:
                         InputDecoration(labelText: 'Partos Não Lançados'),
                     initialValue: _partosNaoLancados,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o número de partos não lançados';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o número de partos não lançados';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _partosNaoLancados = value,
                   ),
                 ),
@@ -295,12 +291,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _partosTotais,
                     decoration: InputDecoration(labelText: 'Partos Totais'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o número total de partos';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o número total de partos';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _partosTotais = value,
                   ),
                 ),
@@ -323,26 +319,27 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _nomeMae,
                     decoration: InputDecoration(labelText: 'Nome do Pai'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o nome do pai';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o nome do pai';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _nomePai = value,
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
-                    initialValue: _numeroMae,
+                    initialValue: _numeroPai,
                     decoration: InputDecoration(labelText: 'Numero do Pai'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o número do pai';
-                      }
-                      return null;
-                    },
+                    keyboardType: TextInputType.number,
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o número do pai';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _numeroPai = value,
                   ),
                 ),
@@ -351,12 +348,13 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _numeroMae,
                     decoration: InputDecoration(labelText: 'Numero da Mae'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o número da mãe';
-                      }
-                      return null;
-                    },
+                    keyboardType: TextInputType.number,
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o número da mãe';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _numeroMae = value,
                   ),
                 ),
@@ -365,12 +363,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _nomeMae,
                     decoration: InputDecoration(labelText: 'Nome da Mae'),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o nome da mãe';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return 'Por favor insira o nome da mãe';
+                    //   }
+                    //   return null;
+                    // },
                     onSaved: (value) => _nomeMae = value,
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
-import 'package:app_veterinaria/Model/matrix.dart';
+import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import '../Model/breed.dart';
@@ -60,18 +60,18 @@ CREATE TABLE $tableNotes(
     await db.execute('''
 CREATE TABLE $tableGado(
   ${GadoFields.id} $idType,
-  ${GadoFields.nome} $textType,
-  ${GadoFields.numero} $textType,
+  ${GadoFields.nome} $nulltextType,
+  ${GadoFields.numero} $nulltextType,
   ${GadoFields.dataNascimento} $textType,
   ${GadoFields.dataBaixa} $nulldateType,
   ${GadoFields.motivoBaixa} $textType,
-  ${GadoFields.partosNaoLancados} $textType,
-  ${GadoFields.partosTotais} $textType,
-  ${GadoFields.lote} $textType,
-  ${GadoFields.nomeMae} $textType,
-  ${GadoFields.nomePai} $textType,
-  ${GadoFields.numeroMae} $textType,
-  ${GadoFields.numeroPai} $textType,
+  ${GadoFields.partosNaoLancados} $nulltextType,
+  ${GadoFields.partosTotais} $nulltextType,
+  ${GadoFields.lote} $nulltextType,
+  ${GadoFields.nomeMae} $nulltextType,
+  ${GadoFields.nomePai} $nulltextType,
+  ${GadoFields.numeroMae} $nulltextType,
+  ${GadoFields.numeroPai} $nulltextType,
   ${GadoFields.breedId} $nullIntType
   )
 ''');
@@ -94,11 +94,12 @@ CREATE TABLE $tableBreed(
 
     await db.execute('''
 CREATE TABLE $tableMatrix(
-  ${MatrixFields.id} $idType,
-  ${MatrixFields.idUsuario} $intType,
-  ${MatrixFields.name} $textType,
-  ${MatrixFields.number} $textType,
-  ${MatrixFields.observacao} $textType
+  ${HeadquartersFields.id} $idType,
+  ${HeadquartersFields.idUsuario} $nullIntType,
+  ${HeadquartersFields.name} $textType,
+  ${HeadquartersFields.number} $textType,
+  ${HeadquartersFields.observacao} $nulltextType,
+  ${HeadquartersFields.cpfCnpj} $nulltextType
 )
 ''');
 
@@ -140,6 +141,17 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
         id = await db.insert(tableBreed, breed.toJson());
       }
       return breed.copy(id: id);
+    } else if (tableName == "headquarters") {
+      var id;
+      Headquarters headquarters = object as Headquarters;
+      if (headquarters.id != null) {
+        id = await db.update(tableMatrix, headquarters.toJson(),
+            where: '${HeadquartersFields.id} = ?',
+            whereArgs: [headquarters.id]);
+      } else {
+        id = await db.insert(tableMatrix, headquarters.toJson());
+      }
+      return headquarters.copy(id: id);
     } else {
       Note note = object as Note;
       final id = await db.insert(tableGado, note.toJson());
@@ -321,13 +333,13 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
           await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
 
       return result.map((json) => Breed.fromJson(json)).toList();
-    } else if (table == "matrix") {
-      final orderBy = '${MatrixFields.name} ASC';
+    } else if (table == "headquarters") {
+      final orderBy = '${HeadquartersFields.name} ASC';
 
       final result =
           await db.rawQuery('SELECT * FROM $tableMatrix ORDER BY $orderBy');
 
-      return result.map((json) => Matrix.fromJson(json)).toList();
+      return result.map((json) => Headquarters.fromJson(json)).toList();
     } else {
       final orderBy = '${NoteFields.time} ASC';
 
@@ -370,10 +382,10 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
         where: '${BreedFields.id} = ?',
         whereArgs: [id],
       );
-    } else if (tableName == 'matrix') {
+    } else if (tableName == 'headquarters') {
       return await db.delete(
         tableMatrix,
-        where: '${MatrixFields.id} = ?',
+        where: '${HeadquartersFields.id} = ?',
         whereArgs: [id],
       );
     } else {
