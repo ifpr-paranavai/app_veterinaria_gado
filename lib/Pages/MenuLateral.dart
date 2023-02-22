@@ -4,13 +4,27 @@ import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
+import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
 
 import 'Formularios/Matriz/headquartersRegistration.dart';
 
-class MenuLateral extends StatelessWidget {
+class MenuLateral extends StatefulWidget {
+  @override
+  State<MenuLateral> createState() => _MenuLateralState();
+}
+
+class _MenuLateralState extends State<MenuLateral> {
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return BranchSelectionDialog();
+        },
+      );
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Gere Vete'),
@@ -23,7 +37,6 @@ class MenuLateral extends StatelessWidget {
               accountEmail: Text('seu@email.com'),
               currentAccountPicture: CircleAvatar(
                 backgroundImage:
-                    //NetworkImage('https://photos.google.com/photo/AF1QipOl2kKKfj_F_C2rmRRbePcTc5mj3eFf3lp3ioD8'),
                     NetworkImage('https://via.placeholder.com/150x150'),
               ),
             ),
