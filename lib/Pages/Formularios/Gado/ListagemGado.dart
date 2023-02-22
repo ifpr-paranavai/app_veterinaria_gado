@@ -76,7 +76,7 @@ class _GadoListState extends State<GadoList> {
                         ),
                         onPressed: () async {
                           final itens = await gadoDatabase.readNote(
-                            'usuario',
+                            'gado',
                             _filterInput.text,
                           );
                           if (itens is List) {

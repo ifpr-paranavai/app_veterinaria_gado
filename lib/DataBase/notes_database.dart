@@ -29,7 +29,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    await deleteDatabase(path);
+    //await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
@@ -93,7 +93,7 @@ CREATE TABLE $tableBreed(
 )''');
 
     await db.execute('''
-CREATE TABLE $tableMatrix(
+CREATE TABLE $tableheadquarters(
   ${HeadquartersFields.id} $idType,
   ${HeadquartersFields.idUsuario} $nullIntType,
   ${HeadquartersFields.name} $textType,
@@ -145,11 +145,11 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       var id;
       Headquarters headquarters = object as Headquarters;
       if (headquarters.id != null) {
-        id = await db.update(tableMatrix, headquarters.toJson(),
+        id = await db.update(tableheadquarters, headquarters.toJson(),
             where: '${HeadquartersFields.id} = ?',
             whereArgs: [headquarters.id]);
       } else {
-        id = await db.insert(tableMatrix, headquarters.toJson());
+        id = await db.insert(tableheadquarters, headquarters.toJson());
       }
       return headquarters.copy(id: id);
     } else {
@@ -204,7 +204,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     if (maps.isNotEmpty) {
       return Breed.stringFromJson(maps.first);
     } else {
-      return Null;
+      return [];
     }
   }
 
@@ -224,7 +224,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       if (maps.isNotEmpty) {
         return users;
       } else {
-        return Null;
+        return [];
         //throw Exception('ID $itemString not found');
       }
     } else if (itemString == "breed") {
@@ -239,7 +239,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       if (maps.isNotEmpty) {
         return breeds;
       } else {
-        return Null;
+        return [];
       }
     } else if (itemString == 'gado') {
       final searchQuery = '%$argment%';
@@ -254,7 +254,25 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       if (maps.isNotEmpty) {
         return gados;
       } else {
-        return Null;
+        return [];
+      }
+    } else if (itemString == "headquarters") {
+      final searchQuery = '%$argment%';
+      final maps = await db.query(
+        tableheadquarters,
+        columns: HeadquartersFields.values,
+        where: "${HeadquartersFields.name} LIKE ?",
+        whereArgs: [searchQuery],
+      );
+
+      final headquarters = maps
+          .map((headquartersMap) => Headquarters.fromJson(headquartersMap))
+          .toList();
+
+      if (maps.isNotEmpty) {
+        return headquarters;
+      } else {
+        return [];
       }
     } else {
       final maps = await db.query(
@@ -268,7 +286,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
         return Gado.fromJson(maps.first);
       } else {
         //throw Exception('ID $itemString not found');
-        return Null;
+        return [];
       }
     }
   }
@@ -336,8 +354,8 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     } else if (table == "headquarters") {
       final orderBy = '${HeadquartersFields.name} ASC';
 
-      final result =
-          await db.rawQuery('SELECT * FROM $tableMatrix ORDER BY $orderBy');
+      final result = await db
+          .rawQuery('SELECT * FROM $tableheadquarters ORDER BY $orderBy');
 
       return result.map((json) => Headquarters.fromJson(json)).toList();
     } else {
@@ -384,7 +402,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       );
     } else if (tableName == 'headquarters') {
       return await db.delete(
-        tableMatrix,
+        tableheadquarters,
         where: '${HeadquartersFields.id} = ?',
         whereArgs: [id],
       );

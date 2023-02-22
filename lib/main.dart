@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SizedBox.expand(
                 child: TextButton(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         "Login",
@@ -202,13 +202,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         textAlign: TextAlign.left,
                       ),
-                      // Container(
-                      //   child: SizedBox(
-                      //     child: Image.asset("assets/bone.png"),
-                      //     height: 28,
-                      //     width: 28,
-                      //   ),
-                      // )
                     ],
                   ),
                   onPressed: () {
@@ -220,42 +213,6 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 10,
             ),
-            // Container(
-            //   height: 60,
-            //   alignment: Alignment.centerLeft,
-            //   decoration: BoxDecoration(
-            //     color: Color(0xFF3C5A99),
-            //     borderRadius: BorderRadius.all(
-            //       Radius.circular(5),
-            //     ),
-            //   ),
-            //   child: SizedBox.expand(
-            //     child: TextButton(
-            //       child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: <Widget>[
-            //           Text(
-            //             "Login com Facebook",
-            //             style: TextStyle(
-            //               fontWeight: FontWeight.bold,
-            //               color: Colors.white,
-            //               fontSize: 20,
-            //             ),
-            //             textAlign: TextAlign.left,
-            //           ),
-            //           // Container(
-            //           //   child: SizedBox(
-            //           //     child: Image.asset("assets/fb-icon.png"),
-            //           //     height: 28,
-            //           //     width: 28,
-            //           //   ),
-            //           // )
-            //         ],
-            //       ),
-            //       onPressed: () {},
-            //     ),
-            //   ),
-            // ),
             SizedBox(
               height: 10,
             ),

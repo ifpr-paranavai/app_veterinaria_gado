@@ -1,4 +1,4 @@
-final String tableMatrix = 'headquarters';
+final String tableheadquarters = 'headquarters';
 
 class HeadquartersFields {
   static final List<String> values = [
