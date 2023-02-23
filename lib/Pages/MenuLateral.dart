@@ -1,4 +1,4 @@
-import 'package:app_veterinaria/Pages/Breed/BreedList.dart';
+import 'package:app_veterinaria/Pages/Formularios/Breed/BreedList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
@@ -17,14 +17,6 @@ class MenuLateral extends StatefulWidget {
 class _MenuLateralState extends State<MenuLateral> {
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return BranchSelectionDialog();
-        },
-      );
-    });
     return Scaffold(
       appBar: AppBar(
         title: Text('Gere Vete'),

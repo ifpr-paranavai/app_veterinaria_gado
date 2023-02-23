@@ -42,7 +42,6 @@ class _CadastroGadoState extends State<CadastroGado> {
       _dataBaixa.text = widget.gado?.dataBaixa != null
           ? DateFormat('dd/MM/yyyy').format(widget.gado!.dataBaixa!)
           : '';
-      ;
       _motivoBaixa = widget.gado!.motivoBaixa;
       _partosNaoLancados = widget.gado!.partosNaoLancados;
       _partosTotais = widget.gado!.partosTotais;

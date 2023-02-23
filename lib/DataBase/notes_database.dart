@@ -296,6 +296,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     final db = await instance.database;
 
     if (itemString == "usuario") {
+      var returnRequest;
       final maps = await db.query(
         tableUsuario,
         columns: UsuarioFields.values,
@@ -304,11 +305,19 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
       );
 
       if (maps.isNotEmpty) {
-        // return Usuario.fromJson(maps.first);
-        return true;
+        Usuario user = Usuario.fromJson(maps.first);
+        returnRequest = (await db.query(tableheadquarters,
+            columns: HeadquartersFields.values,
+            where: "${HeadquartersFields.idUsuario} = ?",
+            whereArgs: [user.id]));
+
+        returnRequest = returnRequest
+            .map((objectMap) => Headquarters.fromJson(objectMap))
+            .toList();
+
+        return returnRequest;
       } else {
         return false;
-        //throw Exception('ID $itemString not found');
       }
     } else {
       final maps = await db.query(

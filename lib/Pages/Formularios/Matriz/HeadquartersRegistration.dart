@@ -51,7 +51,7 @@ class _HeadQuartersRegistrationState extends State<HeadQuartersRegistration> {
         cpfCnpj: _cpfCnpj,
         number: _number,
         observacao: _observacao,
-        idUsuario: _idUsuario,
+        idUsuario: 1,
       );
 
       await database.create(object, 'headquarters');
