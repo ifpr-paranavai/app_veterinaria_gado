@@ -1,3 +1,4 @@
+import 'package:app_veterinaria/Pages/MenuLateral.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -15,15 +16,6 @@ class _IntemediateScreenState extends State<IntemediateScreen> {
   @override
   void initState() {
     super.initState();
-    //Open dialog after build
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   showDialog(
-    //     context: context,
-    //     builder: (context) {
-    //       return BranchSelectionDialog(logado: widget.logado);
-    //     },
-    //   );
-    // });
   }
 
   @override
@@ -43,7 +35,7 @@ class _IntemediateScreenState extends State<IntemediateScreen> {
             ...widget.logado
                 .asMap()
                 .map(
-                  (index, gado) => MapEntry(
+                  (index, farm) => MapEntry(
                     index,
                     Container(
                       color: index % 2 == 0
@@ -58,11 +50,25 @@ class _IntemediateScreenState extends State<IntemediateScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    gado.name == null || gado.name == ""
-                                        ? "XXX-XXX"
-                                        : gado.name,
-                                    //style: TextStyle(color: Colors.white),
+                                  ListTile(
+                                    onTap: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MenuLateral(
+                                            farm: farm,
+                                          ),
+                                        ),
+                                      )
+                                    },
+                                    title: Text(
+                                      farm.name,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

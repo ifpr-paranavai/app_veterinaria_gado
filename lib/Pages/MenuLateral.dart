@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'Formularios/Matriz/headquartersRegistration.dart';
 
 class MenuLateral extends StatefulWidget {
+  final farm;
+  const MenuLateral({Key? key, required this.farm}) : super(key: key);
   @override
   State<MenuLateral> createState() => _MenuLateralState();
 }
@@ -34,7 +36,7 @@ class _MenuLateralState extends State<MenuLateral> {
             ),
             ListTile(
               title: Text('Informações dos Usuarios'),
-              onTap: () {
+              onLongPress: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserList()),
