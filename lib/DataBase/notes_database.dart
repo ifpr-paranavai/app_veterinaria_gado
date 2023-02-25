@@ -3,6 +3,7 @@ import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
+import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
 import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -29,7 +30,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    //await deleteDatabase(path);
+    await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
@@ -62,7 +63,7 @@ CREATE TABLE $tableGado(
   ${GadoFields.id} $idType,
   ${GadoFields.nome} $nulltextType,
   ${GadoFields.numero} $nulltextType,
-  ${GadoFields.dataNascimento} $textType,
+  ${GadoFields.dataNascimento} $nulltextType,
   ${GadoFields.dataBaixa} $nulldateType,
   ${GadoFields.motivoBaixa} $textType,
   ${GadoFields.partosNaoLancados} $nulltextType,
@@ -101,6 +102,14 @@ CREATE TABLE $tableheadquarters(
   ${HeadquartersFields.number} $textType,
   ${HeadquartersFields.observacao} $nulltextType,
   ${HeadquartersFields.cpfCnpj} $nulltextType
+)
+''');
+
+    await db.execute('''
+CREATE TABLE $tableUsuarioHeadquarters(
+  id $idType,
+  userId $intType,
+  headquarterId $intType
 )
 ''');
 
@@ -371,6 +380,15 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
           .rawQuery('SELECT * FROM $tableheadquarters ORDER BY $orderBy');
 
       return result.map((json) => Headquarters.fromJson(json)).toList();
+    } else if (table == "usuarioHeadquarters") {
+      final orderBy = '${UsuarioFields.name} ASC';
+
+      final result = await db.rawQuery('''SELECT usuario.*
+              FROM $tableUsuario usuario
+              INNER JOIN $tableheadquarters headquarters ON usuario.id = headquarters.idUsuario
+              WHERE headquarters.id = ?''');
+
+      return result.map((json) => Usuario.fromJson(json)).toList();
     } else {
       final orderBy = '${NoteFields.time} ASC';
 

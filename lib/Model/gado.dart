@@ -40,7 +40,7 @@ class Gado {
   final int? id;
   final String? nome;
   final String? numero;
-  final DateTime dataNascimento;
+  final DateTime? dataNascimento;
   final DateTime? dataBaixa;
   final String? motivoBaixa;
   final String? partosNaoLancados;
@@ -57,7 +57,8 @@ class Gado {
     this.id,
     this.nome,
     this.numero,
-    required this.dataNascimento,
+    // required this.dataNascimento,
+    this.dataNascimento,
     this.dataBaixa,
     this.motivoBaixa,
     this.partosNaoLancados,
@@ -75,7 +76,8 @@ class Gado {
         GadoFields.id: id,
         GadoFields.nome: nome,
         GadoFields.numero: numero,
-        GadoFields.dataNascimento: dataNascimento.toIso8601String(),
+        GadoFields.dataNascimento:
+            dataNascimento != null ? dataNascimento!.toIso8601String() : '',
         GadoFields.dataBaixa:
             dataBaixa != null ? dataBaixa!.toIso8601String() : '',
         GadoFields.motivoBaixa: motivoBaixa,
@@ -94,8 +96,10 @@ class Gado {
         id: json[GadoFields.id] as int?,
         nome: json[GadoFields.nome] as String?,
         numero: json[GadoFields.numero] as String?,
-        dataNascimento:
-            DateTime.parse(json[GadoFields.dataNascimento] as String),
+        dataNascimento: json[GadoFields.dataNascimento] == null ||
+                json[GadoFields.dataNascimento] == ''
+            ? null
+            : DateTime.parse(json[GadoFields.dataNascimento] as String),
         dataBaixa: json[GadoFields.dataBaixa] == null ||
                 json[GadoFields.dataBaixa] == ''
             ? null

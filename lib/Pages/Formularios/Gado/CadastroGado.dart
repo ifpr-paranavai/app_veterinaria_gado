@@ -42,8 +42,9 @@ class _CadastroGadoState extends State<CadastroGado> {
       });
       _nome = widget.gado!.nome;
       _numero = widget.gado!.numero;
-      _dataNascimento.text =
-          DateFormat('dd/MM/yyyy').format(widget.gado!.dataNascimento);
+      _dataNascimento.text = widget.gado?.dataNascimento != null
+          ? DateFormat('dd/MM/yyyy').format(widget.gado!.dataNascimento!)
+          : '';
       _dataBaixa.text = widget.gado?.dataBaixa != null
           ? DateFormat('dd/MM/yyyy').format(widget.gado!.dataBaixa!)
           : '';
@@ -68,7 +69,9 @@ class _CadastroGadoState extends State<CadastroGado> {
         id: _id,
         nome: _nome,
         numero: _numero,
-        dataNascimento: DateFormat('dd/MM/yyyy').parse(_dataNascimento.text),
+        dataNascimento: _dataNascimento.text != ""
+            ? DateFormat('dd/MM/yyyy').parse(_dataNascimento.text)
+            : null,
         dataBaixa: _dataBaixa.text != ""
             ? DateFormat('dd/MM/yyyy').parse(_dataBaixa.text)
             : null,
@@ -199,11 +202,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                     initialValue: _nome,
                     decoration: InputDecoration(labelText: 'Nome'),
                     validator: (value) {
-                      if (value!.isEmpty && _numero!.isEmpty) {
+                      if (value!.isEmpty && _numero == null) {
                         return 'Por favor insira o nome ou o número do animal';
                       }
                       return null;
                     },
+                    onChanged: (value) => _nome = value,
                     onSaved: (value) => _nome = value,
                   ),
                 ),
@@ -214,7 +218,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                     decoration: InputDecoration(labelText: 'Numero'),
                     keyboardType: TextInputType.number,
                     validator: (e) {
-                      if (e!.isEmpty && _nome!.isEmpty) {
+                      if (e!.isEmpty && _nome == null) {
                         return 'Por favor insira o número ou nome do animal';
                       }
                       return null;
@@ -358,12 +362,6 @@ class _CadastroGadoState extends State<CadastroGado> {
                     initialValue: _numeroMae,
                     decoration: InputDecoration(labelText: 'Numero da Mae'),
                     keyboardType: TextInputType.number,
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o número da mãe';
-                    //   }
-                    //   return null;
-                    // },
                     onSaved: (value) => _numeroMae = value,
                   ),
                 ),
@@ -372,12 +370,6 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _nomeMae,
                     decoration: InputDecoration(labelText: 'Nome da Mae'),
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o nome da mãe';
-                    //   }
-                    //   return null;
-                    // },
                     onSaved: (value) => _nomeMae = value,
                   ),
                 ),
