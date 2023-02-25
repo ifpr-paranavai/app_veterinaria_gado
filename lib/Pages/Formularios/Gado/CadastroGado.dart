@@ -11,17 +11,22 @@ final gadoDatabase = NotesDatabase.instance;
 
 class CadastroGado extends StatefulWidget {
   final Gado? gado;
+  final int headquarters;
 
-  CadastroGado({this.gado});
+  CadastroGado({this.gado, required this.headquarters});
 
   @override
   _CadastroGadoState createState() => _CadastroGadoState();
 }
 
 class _CadastroGadoState extends State<CadastroGado> {
+  var _headquarters;
+
   @override
   void initState() {
     super.initState();
+
+    _headquarters = widget.headquarters;
     fetchAutoCompleteData();
     if (widget.gado != null) {
       _getBreedName(widget.gado!.breedId).then((value) {
@@ -76,6 +81,7 @@ class _CadastroGadoState extends State<CadastroGado> {
         numeroMae: _numeroMae,
         nomeMae: _nomeMae,
         breedId: _selectedBreedId,
+        farmId: _headquarters,
       );
 
       await gadoDatabase.create(gado, 'gado');
@@ -192,12 +198,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                   child: TextFormField(
                     initialValue: _nome,
                     decoration: InputDecoration(labelText: 'Nome'),
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o nome';
-                    //   }
-                    //   return null;
-                    // },
+                    validator: (value) {
+                      if (value!.isEmpty && _numero!.isEmpty) {
+                        return 'Por favor insira o nome ou o número do animal';
+                      }
+                      return null;
+                    },
                     onSaved: (value) => _nome = value,
                   ),
                 ),
@@ -207,8 +213,12 @@ class _CadastroGadoState extends State<CadastroGado> {
                     initialValue: _numero,
                     decoration: InputDecoration(labelText: 'Numero'),
                     keyboardType: TextInputType.number,
-                    // validator: (value) {
-                    // },
+                    validator: (e) {
+                      if (e!.isEmpty && _nome!.isEmpty) {
+                        return 'Por favor insira o número ou nome do animal';
+                      }
+                      return null;
+                    },
                     onSaved: (value) => _numero = value,
                   ),
                 ),
@@ -391,10 +401,6 @@ class _CadastroGadoState extends State<CadastroGado> {
     var search = await gadoDatabase.searchDataWithParamiter('breed', '');
 
     search as List<Breed>;
-
-    // final List<dynamic> json = jsonDecode(search);
-
-    // final List<String> jsonStringData = json.cast<String>();
 
     setState(() {
       isLoading = false;

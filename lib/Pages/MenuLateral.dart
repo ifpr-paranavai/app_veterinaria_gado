@@ -17,6 +17,14 @@ class MenuLateral extends StatefulWidget {
 }
 
 class _MenuLateralState extends State<MenuLateral> {
+  var _farm;
+
+  @override
+  void initState() {
+    super.initState();
+    _farm = widget.farm;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +44,7 @@ class _MenuLateralState extends State<MenuLateral> {
             ),
             ListTile(
               title: Text('Informações dos Usuarios'),
-              onLongPress: () {
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserList()),
@@ -57,7 +65,8 @@ class _MenuLateralState extends State<MenuLateral> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GadoList()),
+                  MaterialPageRoute(
+                      builder: (context) => GadoList(farm: _farm)),
                 ); // Código para navegar para outra tela
               },
             ),
@@ -70,15 +79,6 @@ class _MenuLateralState extends State<MenuLateral> {
                 ); // Código para navegar para outra tela
               },
             ),
-            // ListTile(
-            //   title: Text('Cadastro de notas'),
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => NoteForm()),
-            //     );
-            //   },
-            // ),
             ListTile(
               title: Text('Página 3'),
               onTap: () {

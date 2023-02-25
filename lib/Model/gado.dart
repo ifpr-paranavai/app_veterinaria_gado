@@ -16,6 +16,7 @@ class GadoFields {
     numeroMae,
     nomeMae,
     breedId,
+    farmId,
   ];
 
   static final String id = '_id';
@@ -32,6 +33,7 @@ class GadoFields {
   static final String numeroMae = 'numeroMae';
   static final String nomeMae = 'nomeMae';
   static final String breedId = 'breedId';
+  static final String farmId = 'farmId';
 }
 
 class Gado {
@@ -49,6 +51,7 @@ class Gado {
   final String? numeroMae;
   final String? nomeMae;
   final int? breedId;
+  final int? farmId;
 
   const Gado({
     this.id,
@@ -65,6 +68,7 @@ class Gado {
     this.numeroMae,
     this.nomeMae,
     this.breedId,
+    this.farmId,
   });
 
   Map<String, Object?> toJson() => {
@@ -83,6 +87,7 @@ class Gado {
         GadoFields.numeroMae: numeroMae,
         GadoFields.nomeMae: nomeMae,
         GadoFields.breedId: breedId,
+        GadoFields.farmId: farmId,
       };
 
   static Gado fromJson(Map<String, Object?> json) => Gado(
@@ -104,6 +109,7 @@ class Gado {
         numeroMae: json[GadoFields.numeroMae] as String?,
         nomeMae: json[GadoFields.nomeMae] as String?,
         breedId: json[GadoFields.breedId] as int?,
+        farmId: json[GadoFields.farmId] as int?,
       );
 
   Gado copy({
@@ -121,6 +127,7 @@ class Gado {
     String? numeroMae,
     String? nomeMae,
     int? breedId,
+    int? farmId,
   }) =>
       Gado(
         id: id ?? this.id,
@@ -137,5 +144,6 @@ class Gado {
         numeroMae: numeroMae ?? this.numeroMae,
         nomeMae: nomeMae ?? this.nomeMae,
         breedId: breedId ?? this.breedId,
+        farmId: farmId ?? this.farmId,
       );
 }

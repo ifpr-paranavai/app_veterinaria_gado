@@ -18,12 +18,12 @@ class _ItemBorderBoxState extends State<ItemBorderBox> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CadastroGado(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => CadastroGado(),
+              //   ),
+              // );
               // Código da ação
             },
             child: Container(

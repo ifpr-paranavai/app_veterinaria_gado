@@ -58,136 +58,139 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.only(top: 60, left: 40, right: 40),
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            SizedBox(
-              width: 128,
-              height: 128,
-              child: Image.asset("assets/logo.png"),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              autofocus: true,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: "E-mail",
-                labelStyle: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20,
+        child: Form(
+          key: _formKey,
+          child: Container(
+            padding: EdgeInsets.only(top: 60, left: 40, right: 40),
+            color: Color.fromARGB(255, 176, 238, 172),
+            child: ListView(
+              children: <Widget>[
+                SizedBox(
+                  width: 128,
+                  height: 128,
+                  child: Image.asset("assets/logo.png"),
                 ),
-              ),
-              style:
-                  TextStyle(fontSize: 20, color: Color.fromARGB(255, 8, 8, 8)),
-              onChanged: _updateEmail,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-              // autofocus: true,
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Senha",
-                labelStyle: TextStyle(
-                  color: Colors.black38,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20,
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              style:
-                  TextStyle(fontSize: 20, color: Color.fromARGB(255, 8, 8, 8)),
-              onChanged: _updatePassword,
-            ),
-            Container(
-              height: 40,
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                child: Text(
-                  "Recuperar Senha",
-                  textAlign: TextAlign.right,
+                TextFormField(
+                  validator: (e) {
+                    if (e!.isEmpty) {
+                      return "Digite seu e-mail";
+                    } else
+                      return null;
+                  },
+                  autofocus: true,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: "E-mail",
+                    labelStyle: TextStyle(
+                      color: Colors.black38,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromARGB(255, 8, 8, 8)),
+                  onChanged: _updateEmail,
                 ),
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ResetPasswordPage(),
-                  //   ),
-                  // );
-                },
-              ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            Container(
-              height: 60,
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0.3, 1],
-                  colors: [
-                    Color.fromARGB(214, 43, 255, 71),
-                    Color.fromARGB(255, 2, 90, 36),
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
+                TextFormField(
+                  validator: (e) {
+                    if (e!.isEmpty) {
+                      return "Digite sua senha";
+                    } else
+                      return null;
+                  },
+                  keyboardType: TextInputType.text,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Senha",
+                    labelStyle: TextStyle(
+                      color: Colors.black38,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                    ),
+                  ),
+                  style: TextStyle(
+                      fontSize: 20, color: Color.fromARGB(255, 8, 8, 8)),
+                  onChanged: _updatePassword,
                 ),
-              ),
-              child: SizedBox.expand(
-                child: TextButton(
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
+                Container(
+                  height: 40,
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    child: Text(
+                      "Recuperar Senha",
+                      textAlign: TextAlign.right,
+                    ),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => ResetPasswordPage(),
+                      //   ),
+                      // );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                Container(
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 58, 182, 1),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(50),
+                    ),
+                  ),
+                  child: SizedBox.expand(
+                    child: TextButton(
+                      child: Text(
                         "Login",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           fontSize: 20,
                         ),
-                        textAlign: TextAlign.left,
+                        textAlign: TextAlign.center,
                       ),
-                    ],
+                      onPressed: () {
+                        _submit();
+                      },
+                    ),
                   ),
-                  onPressed: () {
-                    _submit();
-                  },
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 40,
-              child: TextButton(
-                child: Text(
-                  "Cadastre-se",
-                  textAlign: TextAlign.center,
+                SizedBox(
+                  height: 10,
                 ),
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => SignupPage(),
-                  //   ),
-                  // );
-                },
-              ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  height: 40,
+                  child: TextButton(
+                    child: Text(
+                      "Cadastre-se",
+                      textAlign: TextAlign.center,
+                    ),
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SignupPage(),
+                      //   ),
+                      // );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -206,9 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _submit() {
-    //if (_formKey.currentState!.validate()) {
-    //  _formKey.currentState!.save();
-    _validadeLogin();
-    //}
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      _validadeLogin();
+    }
   }
 }

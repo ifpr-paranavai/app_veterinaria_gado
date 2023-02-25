@@ -4,7 +4,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class GadoList extends StatefulWidget {
-  const GadoList({super.key});
+  final farm;
+  const GadoList({super.key, required this.farm});
 
   @override
   State<GadoList> createState() => _GadoListState();
@@ -13,10 +14,12 @@ class GadoList extends StatefulWidget {
 class _GadoListState extends State<GadoList> {
   List _gados = [];
 
+  var _farm;
+
   TextEditingController _filterInput = TextEditingController();
 
   _readAllNotes() async {
-    final notes = await gadoDatabase.readAllNotes('gado');
+    final notes = await gadoDatabase.readAllNotes('gado', farmId: _farm.id);
     setState(() {
       _gados = notes;
     });
@@ -25,6 +28,7 @@ class _GadoListState extends State<GadoList> {
   @override
   void initState() {
     super.initState();
+    _farm = widget.farm;
     _readAllNotes();
   }
 
@@ -101,7 +105,8 @@ class _GadoListState extends State<GadoList> {
           // adicione o código para abrir a página de cadastro aqui
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CadastroGado()),
+            MaterialPageRoute(
+                builder: (context) => CadastroGado(headquarters: _farm.id)),
           ).then((value) {
             if (value == null) _readAllNotes();
           });
@@ -214,6 +219,7 @@ class _GadoListState extends State<GadoList> {
                                       MaterialPageRoute(
                                           builder: (context) => CadastroGado(
                                                 gado: gado,
+                                                headquarters: _farm.id,
                                               )),
                                     ).then((value) => {
                                           if (value == null)

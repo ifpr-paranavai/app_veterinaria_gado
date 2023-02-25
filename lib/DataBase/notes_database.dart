@@ -72,7 +72,8 @@ CREATE TABLE $tableGado(
   ${GadoFields.nomePai} $nulltextType,
   ${GadoFields.numeroMae} $nulltextType,
   ${GadoFields.numeroPai} $nulltextType,
-  ${GadoFields.breedId} $nullIntType
+  ${GadoFields.breedId} $nullIntType,
+  ${GadoFields.farmId} $nullIntType
   )
 ''');
 
@@ -105,6 +106,9 @@ CREATE TABLE $tableheadquarters(
 
     await db.execute('''
 INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.com', 'admin123')
+''');
+    await db.execute(
+        '''INSERT INTO $tableheadquarters (name, number, observacao, cpfCnpj, idUsuario) VALUES ('Fazenda 1', '123456789', 'Observação', '123456789', '1')
 ''');
   }
 
@@ -317,7 +321,7 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
 
         return returnRequest;
       } else {
-        return false;
+        return [];
       }
     } else {
       final maps = await db.query(
@@ -336,14 +340,14 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
     }
   }
 
-  Future<List<Object>> readAllNotes(String table) async {
+  Future<List<Object>> readAllNotes(String table, {int? farmId}) async {
     final db = await instance.database;
 
     if (table == "gado") {
       final orderBy = '${GadoFields.nome} ASC';
 
-      final result =
-          await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy');
+      final result = await db.rawQuery(
+          'SELECT * FROM $tableGado WHERE farmId = $farmId ORDER BY $orderBy');
 
       return result.map((json) => Gado.fromJson(json)).toList();
     } else if (table == "usuario") {
