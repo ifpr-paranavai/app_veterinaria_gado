@@ -29,13 +29,21 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
                     labelText: 'Escolha o animal:',
                   ),
                 ),
+                SizedBox(height: 40),
+                Container(
+                  child: Text(
+                    'Descrição',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 2),
                   child: TextField(
+                    maxLines: 6,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Descrição',
                     ),
+                    textInputAction: TextInputAction.newline,
                   ),
                 ),
                 ElevatedButton(
