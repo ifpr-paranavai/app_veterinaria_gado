@@ -57,6 +57,7 @@ class _IntemediateScreenState extends State<IntemediateScreen> {
                                         MaterialPageRoute(
                                           builder: (context) => MenuLateral(
                                             farm: farm,
+                                            user: widget.loginResult.user,
                                           ),
                                         ),
                                       )

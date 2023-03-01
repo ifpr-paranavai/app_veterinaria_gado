@@ -1,6 +1,7 @@
 import 'package:app_veterinaria/Pages/Formularios/Breed/BreedList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
 import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
@@ -11,7 +12,9 @@ import 'Formularios/Matriz/headquartersRegistration.dart';
 
 class MenuLateral extends StatefulWidget {
   final farm;
-  const MenuLateral({Key? key, required this.farm}) : super(key: key);
+  final user;
+  const MenuLateral({Key? key, required this.farm, required this.user})
+      : super(key: key);
   @override
   State<MenuLateral> createState() => _MenuLateralState();
 }
@@ -76,6 +79,16 @@ class _MenuLateralState extends State<MenuLateral> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HeadquartersList()),
+                ); // Código para navegar para outra tela
+              },
+            ),
+            ListTile(
+              title: Text('Historico dos Animais'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HistoricRegistration()),
                 ); // Código para navegar para outra tela
               },
             ),
