@@ -3,6 +3,7 @@ import 'package:app_veterinaria/Pages/BottonNavBar.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/IntermedieteScreen.dart';
 import 'package:app_veterinaria/Pages/MenuLateral.dart';
+import 'package:app_veterinaria/Services/LoginResult.dart';
 import 'package:flutter/material.dart';
 
 final gadoDatabase = NotesDatabase.instance;
@@ -37,13 +38,14 @@ class _LoginScreenState extends State<LoginScreen> {
   late String _email;
 
   void _validadeLogin() async {
-    var logado = await gadoDatabase.validadeLogin('usuario', _email, _password);
-    logado as List<dynamic>;
-    if (logado.isNotEmpty) {
+    var logado = await gadoDatabase.validadeLogin('usuario', _email, _password)
+        as LoginResult;
+    //logado is an object that have user and a list of headquaters
+    if (logado.headquartersList.length > 0) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => IntemediateScreen(logado: logado),
+          builder: (context) => IntemediateScreen(loginResult: logado),
         ),
       );
     } else {

@@ -5,8 +5,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class IntemediateScreen extends StatefulWidget {
-  final logado;
-  const IntemediateScreen({super.key, required this.logado});
+  final loginResult;
+  const IntemediateScreen({super.key, required this.loginResult});
 
   @override
   State<IntemediateScreen> createState() => _IntemediateScreenState();
@@ -32,7 +32,7 @@ class _IntemediateScreenState extends State<IntemediateScreen> {
               tileColor: Colors.grey[300],
               contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
             ),
-            ...widget.logado
+            ...widget.loginResult.headquartersList
                 .asMap()
                 .map(
                   (index, farm) => MapEntry(

@@ -1,9 +1,11 @@
+import 'package:app_veterinaria/DTO/HeadQuartersDTO.dart';
 import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
+import 'package:app_veterinaria/Services/LoginResult.dart';
 import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -118,6 +120,9 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
 ''');
     await db.execute(
         '''INSERT INTO $tableheadquarters (name, number, observacao, cpfCnpj, idUsuario) VALUES ('Fazenda 1', '123456789', 'Observação', '123456789', '1')
+''');
+    await db.execute('''
+INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 ''');
   }
 
@@ -319,16 +324,19 @@ INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.
 
       if (maps.isNotEmpty) {
         Usuario user = Usuario.fromJson(maps.first);
-        returnRequest = (await db.query(tableheadquarters,
-            columns: HeadquartersFields.values,
-            where: "${HeadquartersFields.idUsuario} = ?",
-            whereArgs: [user.id]));
+        List<Map<String, Object?>> mapsHead = await db.rawQuery('''
+          SELECT th.${HeadquartersFields.id} AS h_id, th.${HeadquartersFields.name} AS h_name, th.${HeadquartersFields.number} AS h_number, th.${HeadquartersFields.observacao} AS h_observacao, th.${HeadquartersFields.cpfCnpj} AS h_cpfCnpj
+          FROM $tableheadquarters AS th
+          INNER JOIN $tableUsuarioHeadquarters AS tuh ON th.${HeadquartersFields.id} = tuh.headquarterId
+          INNER JOIN $tableUsuario AS u ON u.${UsuarioFields.id} = tuh.userId
+          WHERE u.${UsuarioFields.id} = ?
+          ''', [user.id]) as List<Map<String, Object?>>;
 
-        returnRequest = returnRequest
-            .map((objectMap) => Headquarters.fromJson(objectMap))
+        var headquartersList = mapsHead
+            .map((objectMap) => HeadQuartersDTO.fromJson(objectMap))
             .toList();
 
-        return returnRequest;
+        return LoginResult(user: user, headquartersList: headquartersList);
       } else {
         return [];
       }
