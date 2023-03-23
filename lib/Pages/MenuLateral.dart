@@ -74,6 +74,13 @@ class _MenuLateralState extends State<MenuLateral> {
               },
             ),
             ListTile(
+              title: Text('Qualidade do leite'),
+              onTap: () {
+                // Navigator.push(
+                //     context, MaterialPageRoute(builder: (context) => {}));
+              },
+            ),
+            ListTile(
               title: Text('Informações da Matriz'),
               onTap: () {
                 Navigator.push(
