@@ -74,12 +74,21 @@ class _MenuLateralState extends State<MenuLateral> {
               },
             ),
             ListTile(
-              title: Text('Qualidade do leite'),
+              title: Text('Pesagem do animal'),
               onTap: () {
-                // Navigator.push(
-                //     context, MaterialPageRoute(builder: (context) => {}));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HeadquartersList()),
+                ); // Código para navegar para outra tela
               },
             ),
+            // ListTile(
+            //   title: Text('Qualidade do leite'),
+            //   onTap: () {
+            //     // Navigator.push(
+            //     //     context, MaterialPageRoute(builder: (context) => {}));
+            //   },
+            // ),
             ListTile(
               title: Text('Informações da Matriz'),
               onTap: () {
