@@ -1,4 +1,6 @@
-final String tableNotes = 'pesagem';
+import 'dart:convert';
+
+final String tablePesagem = 'pesagem';
 
 class PesagemFields {
   static final List<String> values = [

@@ -4,6 +4,8 @@ import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
 import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListagemPesagemAnimal.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +80,8 @@ class _MenuLateralState extends State<MenuLateral> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HeadquartersList()),
+                  MaterialPageRoute(
+                      builder: (context) => ListagemPesagemAnimal(farm: _farm)),
                 ); // Código para navegar para outra tela
               },
             ),

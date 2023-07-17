@@ -3,6 +3,7 @@ import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/note.dart';
+import 'package:app_veterinaria/Model/pesagem.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
@@ -108,6 +109,16 @@ CREATE TABLE $tableheadquarters(
 ''');
 
     await db.execute('''
+  CREATE TABLE $tablePesagem(
+    ${PesagemFields.id} $idType,
+    ${PesagemFields.anotacao} $nulltextType,
+    ${PesagemFields.dataPesagem} $nulldateType,
+    ${PesagemFields.gadoId} $intType,
+    ${PesagemFields.peso} $nullfloatType
+  )
+''');
+
+    await db.execute('''
 CREATE TABLE $tableUsuarioHeadquarters(
   id $idType,
   userId $intType,
@@ -189,25 +200,49 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
   //FILTRO COM PARTE DA STRING DE BUSCA
   Future<Object> searchDataWithParamiter(String table, String paramsn) async {
-    final db = await instance.database;
-    if (table == 'breed') {
-      if (paramsn == '') {
-        final orderBy = '${BreedFields.name} ASC';
+    try {
+      final db = await instance.database;
+      if (table == 'breed') {
+        if (paramsn == '') {
+          final orderBy = '${BreedFields.name} ASC';
 
-        List<Breed> breeds =
-            (await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy'))
-                .map((row) => Breed.fromJson(row))
-                .toList();
+          List<Breed> breeds =
+              (await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy'))
+                  .map((row) => Breed.fromJson(row))
+                  .toList();
 
-        List<Breed> options = breeds
-            .map((breed) => Breed(name: breed.name, id: breed.id))
-            .toList();
+          List<Breed> options = breeds
+              .map((breed) => Breed(name: breed.name, id: breed.id))
+              .toList();
 
-        return options;
-      } else
-        final maps = await db.query(table, where: "${paramsn} LIKE '%?%'");
-      return Null;
-    } else {
+          return options;
+        } else {
+          final maps = await db.query(table, where: "${paramsn} LIKE '%?%'");
+          return maps;
+        }
+      } else if (table == 'gado') {
+        if (paramsn == '') {
+          final orderBy = '${GadoFields.nome} ASC';
+
+          List<Gado> animais =
+              (await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy'))
+                  .map((row) => Gado.fromJson(row))
+                  .toList();
+
+          List<Gado> options = animais
+              .map((animal) => Gado(nome: animal.nome, id: animal.id))
+              .toList();
+
+          return options;
+        } else {
+          final maps = await db.query(table, where: "${paramsn} LIKE '%?%' ");
+          return maps;
+        }
+      } else {
+        return Null;
+      }
+    } catch (e) {
+      print(e);
       return Null;
     }
   }
@@ -397,6 +432,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               WHERE headquarters.id = ?''');
 
       return result.map((json) => Usuario.fromJson(json)).toList();
+    } else if (table == "pesagem") {
+      final orderBy = '${PesagemFields.dataPesagem} ASC';
+      final result = await db.rawQuery('''
+              SELECT * FROM $tablePesagem ORDER BY $orderBy
+            ''');
+      return result.map((json) => Pesagem.fromJson(json)).toList();
     } else {
       final orderBy = '${NoteFields.time} ASC';
 

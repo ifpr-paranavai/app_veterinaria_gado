@@ -2,72 +2,66 @@ import 'dart:convert';
 
 import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
+import 'package:app_veterinaria/Model/pesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../DataBase/notes_database.dart';
 
-final gadoDatabase = NotesDatabase.instance;
+final pesagemDatabase = NotesDatabase.instance;
 
-class CadastroGado extends StatefulWidget {
-  final Gado? gado;
-  final int headquarters;
+class CadastroPesagem extends StatefulWidget {
+  final Pesagem? pesagem;
+  // final int headquarters;
 
-  CadastroGado({this.gado, required this.headquarters});
-
+  CadastroPesagem({this.pesagem});
+  // , required this.headquarters
   @override
-  _CadastroGadoState createState() => _CadastroGadoState();
+  _CadastroPesagemState createState() => _CadastroPesagemState();
 }
 
-class _CadastroGadoState extends State<CadastroGado> {
+class _CadastroPesagemState extends State<CadastroPesagem> {
   var _headquarters;
 
   @override
   void initState() {
     super.initState();
 
-    _headquarters = widget.headquarters;
+    // _headquarters = widget.headquarters;
     fetchAutoCompleteData();
-    if (widget.gado != null) {
-      _getBreedName(widget.gado!.breedId).then((value) {
+    if (widget.pesagem != null) {
+      _getGadoName(widget.pesagem!.gadoId).then((value) {
         setState(() {
-          _selectedBreedName = value;
+          _selectedAnimalName = value;
         });
       });
       setState(() {
-        _id = widget.gado!.id;
+        _id = widget.pesagem!.id;
       });
       setState(() {
-        _nome = widget.gado!.nome;
+        _anotacao = widget.pesagem!.anotacao;
       });
-      _nome = widget.gado!.nome;
-      _numero = widget.gado!.numero;
-      _dataNascimento.text = widget.gado?.dataNascimento != null
-          ? DateFormat('dd/MM/yyyy').format(widget.gado!.dataNascimento!)
+      _dataPesagem.text = widget.pesagem?.dataPesagem != null
+          ? DateFormat('dd/MM/yyyy').format(widget.pesagem!.dataPesagem!)
           : '';
-      _selectedBreedId = widget.gado!.breedId;
+      _selectedAnimalId = widget.pesagem!.gadoId;
     }
   }
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> __saveGado() async {
+  Future<void> __savePesagem() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Gado gado = Gado(
+      Pesagem pesagem = Pesagem(
         id: _id,
-        nome: _nome,
-        numero: _numero,
-        dataNascimento: _dataNascimento.text != ""
-            ? DateFormat('dd/MM/yyyy').parse(_dataNascimento.text)
+        anotacao: _anotacao,
+        dataPesagem: _dataPesagem.text != ""
+            ? DateFormat('dd/MM/yyyy').parse(_dataPesagem.text)
             : null,
-        partosNaoLancados: _partosNaoLancados,
-        partosTotais: _partosTotais,
-        breedId: _selectedBreedId,
-        farmId: _headquarters,
       );
 
-      await gadoDatabase.create(gado, 'gado');
+      await pesagemDatabase.create(pesagem, 'pesagem');
 
       Navigator.pop(context);
       // Adicione aqui a chamada para a função de salvar
@@ -75,13 +69,13 @@ class _CadastroGadoState extends State<CadastroGado> {
     }
   }
 
-  TextEditingController _dataNascimento = TextEditingController();
+  TextEditingController _dataPesagem = TextEditingController();
 
-  Widget fieldDataNascimento() {
+  Widget fieldDataPesagem() {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: TextFormField(
-        controller: _dataNascimento,
+        controller: _dataPesagem,
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 61, 10, 201)),
@@ -89,7 +83,7 @@ class _CadastroGadoState extends State<CadastroGado> {
           ),
           icon: Icon(Icons.calendar_today_rounded,
               color: Color.fromARGB(255, 61, 10, 201)),
-          hintText: 'Data de Nascimento',
+          hintText: 'Data da pesagem',
         ),
         onTap: () async {
           DateTime? pickDate = await showDatePicker(
@@ -101,7 +95,7 @@ class _CadastroGadoState extends State<CadastroGado> {
 
           if (pickDate != null) {
             setState(() {
-              _dataNascimento.text = DateFormat('dd/MM/yyyy').format(pickDate);
+              _dataPesagem.text = DateFormat('dd/MM/yyyy').format(pickDate);
             });
           }
         },
@@ -116,26 +110,18 @@ class _CadastroGadoState extends State<CadastroGado> {
   ];
 
   int? _id;
-  String? _nome;
-  String? _numero;
-  String? _motivoBaixa;
-  String? _partosNaoLancados;
-  String? _partosTotais;
-  String? _lote;
-  String? _nomePai;
-  String? _numeroPai;
-  String? _numeroMae;
-  String? _nomeMae;
-  late List<Breed> autocompleteData;
+  String? _anotacao;
+  String? _peso;
+  late List<Gado> autocompleteData;
   bool isLoading = false;
-  int? _selectedBreedId;
-  String? _selectedBreedName;
+  int? _selectedAnimalId;
+  String? _selectedAnimalName;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cadastro de Gado'),
+        title: Text('Cadastro de Pesagem'),
       ),
       body: Container(
         child: Form(
@@ -143,46 +129,16 @@ class _CadastroGadoState extends State<CadastroGado> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _nome,
-                    decoration: InputDecoration(labelText: 'Nome'),
-                    validator: (value) {
-                      if (value!.isEmpty && _numero == null) {
-                        return 'Por favor insira o nome ou o número do animal';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) => _nome = value,
-                    onSaved: (value) => _nome = value,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _numero,
-                    decoration: InputDecoration(labelText: 'Numero'),
-                    keyboardType: TextInputType.number,
-                    validator: (e) {
-                      if (e!.isEmpty && _nome == null) {
-                        return 'Por favor insira o número ou nome do animal';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) => _numero = value,
-                  ),
-                ),
                 isLoading
                     ? CircularProgressIndicator()
                     : Padding(
                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Column(
                           children: [
-                            Autocomplete<Breed>(
-                              initialValue: _selectedBreedName != null
+                            Autocomplete<Gado>(
+                              initialValue: _selectedAnimalName != null
                                   ? TextEditingValue(
-                                      text: _selectedBreedName!,
+                                      text: _selectedAnimalName!,
                                     )
                                   : null,
                               fieldViewBuilder: (context, textEditingController,
@@ -194,7 +150,7 @@ class _CadastroGadoState extends State<CadastroGado> {
                                     onFieldSubmitted();
                                   },
                                   decoration: InputDecoration(
-                                    labelText: 'Raça',
+                                    labelText: 'Animal',
                                   ),
                                 );
                               },
@@ -202,79 +158,61 @@ class _CadastroGadoState extends State<CadastroGado> {
                                   (TextEditingValue textEditingValue) {
                                 print(autocompleteData);
                                 return autocompleteData.where((option) =>
-                                    option.name!.toLowerCase().contains(
+                                    option.nome!.toLowerCase().contains(
                                         textEditingValue.text.toLowerCase()));
                               },
                               onSelected: (option) {
                                 this.setState(() {
-                                  _selectedBreedId = option.id;
+                                  _selectedAnimalId = option.id;
                                 });
                               },
-                              displayStringForOption: (option) => option.name!,
+                              displayStringForOption: (option) => option.nome!,
                             ),
                           ],
                         ),
                       ),
-                fieldDataNascimento(),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
-                    initialValue: _motivoBaixa,
-                    decoration: InputDecoration(labelText: 'Motivo da Baixa'),
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o motivo da baixa';
-                    //   }
-                    //   return null;
-                    // },
-                    onSaved: (value) => _motivoBaixa = value,
+                    initialValue: _anotacao,
+                    decoration: InputDecoration(labelText: 'Anotação'),
+                    onChanged: (value) => _anotacao = value,
+                    onSaved: (value) => _anotacao = value,
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
-                    decoration:
-                        InputDecoration(labelText: 'Partos Não Lançados'),
-                    initialValue: _partosNaoLancados,
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o número de partos não lançados';
-                    //   }
-                    //   return null;
-                    // },
-                    onSaved: (value) => _partosNaoLancados = value,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _partosTotais,
-                    decoration: InputDecoration(labelText: 'Partos Totais'),
-                    // validator: (value) {
-                    //   if (value!.isEmpty) {
-                    //     return 'Por favor insira o número total de partos';
-                    //   }
-                    //   return null;
-                    // },
-                    onSaved: (value) => _partosTotais = value,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: TextFormField(
-                    initialValue: _lote,
-                    decoration: InputDecoration(labelText: 'Lote'),
+                    initialValue: _peso,
+                    decoration: InputDecoration(labelText: 'Peso'),
+                    keyboardType: TextInputType.number,
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Por favor insira o lote';
+                      if (value!.isEmpty && _peso == null) {
+                        return 'Insira o peso do animal';
                       }
                       return null;
                     },
-                    onSaved: (value) => _lote = value,
+                    onSaved: (value) => _peso = value,
                   ),
                 ),
+
+                fieldDataPesagem(),
+                // Container(
+                //   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                //   child: TextFormField(
+                //     initialValue: _motivoBaixa,
+                //     decoration: InputDecoration(labelText: 'Motivo da Baixa'),
+                //     // validator: (value) {
+                //     //   if (value!.isEmpty) {
+                //     //     return 'Por favor insira o motivo da baixa';
+                //     //   }
+                //     //   return null;
+                //     // },
+                //     onSaved: (value) => _motivoBaixa = value,
+                //   ),
+                // ),
                 ElevatedButton(
-                  onPressed: __saveGado,
+                  onPressed: __savePesagem,
                   child: Text('Cadastrar'),
                 )
               ],
@@ -290,9 +228,11 @@ class _CadastroGadoState extends State<CadastroGado> {
       isLoading = true;
     });
 
-    var search = await gadoDatabase.searchDataWithParamiter('breed', '');
+    var search = await pesagemDatabase.searchDataWithParamiter('gado', '');
 
-    search as List<Breed>;
+    search as List<Gado>;
+
+    print("Olha aqui ");
 
     setState(() {
       isLoading = false;
@@ -300,12 +240,12 @@ class _CadastroGadoState extends State<CadastroGado> {
     });
   }
 
-  _getBreedName([int? selectedBreedId]) async {
-    var search = await gadoDatabase.searchNameById(selectedBreedId);
+  _getGadoName([int? selectedGadoId]) async {
+    var search = await pesagemDatabase.searchNameById(selectedGadoId);
     if (search != null) {
-      var breed = search as Breed;
+      var breed = search as Gado;
 
-      return breed.name;
+      return breed.nome;
     }
   }
 }
