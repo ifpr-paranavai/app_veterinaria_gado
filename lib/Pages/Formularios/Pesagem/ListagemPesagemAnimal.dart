@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 final database = NotesDatabase.instance;
 
 class ListagemPesagemAnimal extends StatefulWidget {
+  
   final farm;
   const ListagemPesagemAnimal({super.key, required this.farm});
 
@@ -15,16 +16,18 @@ class ListagemPesagemAnimal extends StatefulWidget {
 }
 
 class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
-  List _breeds = [];
+  List _animais = [];
 
   var _farm;
 
   TextEditingController _filterInput = TextEditingController();
 
   _fetchDataBreed() async {
-    final breeds = await database.readAllNotes('gado', farmId: _farm.id);
+    String queryValue = "SELECT nome, id FROM gado where farmId = ${_farm.id}";
+
+    final animais = await database.receveSqlQuery(queryValue);
     setState(() {
-      _breeds = breeds;
+      _animais = animais;
     });
   }
 
@@ -86,7 +89,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                           if (itens is List) {
                             setState(
                               () {
-                                _breeds = itens;
+                                _animais = itens;
                               },
                             );
                           }
@@ -158,7 +161,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._breeds
+          ..._animais
               .asMap()
               .map(
                 (index, breed) => MapEntry(

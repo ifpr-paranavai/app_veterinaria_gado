@@ -392,6 +392,14 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
     }
   }
 
+  Future<List<Object>> receveSqlQuery(String sqlValeus) async {
+    final db = await instance.database;
+
+    final result = await db.rawQuery(sqlValeus);
+
+    return result;
+  }
+
   Future<List<Object>> readAllNotes(String table, {int? farmId}) async {
     final db = await instance.database;
 
