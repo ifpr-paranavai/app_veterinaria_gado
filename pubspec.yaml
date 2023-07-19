@@ -44,12 +44,14 @@ dependencies:
   flutter_staggered_grid_view: 
   shared_preferences: 
   brasil_fields: ^1.10.0
+  table_calendar: ^2.3.3
   # firebase_core: 
   # firebase_auth: 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  table_calendar: ^2.3.3
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
