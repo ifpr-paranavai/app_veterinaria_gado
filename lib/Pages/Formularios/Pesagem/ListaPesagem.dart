@@ -187,7 +187,7 @@ class _ListaPesagemState extends State<ListaPesagem> {
                             ),
                           ),
                           Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -206,16 +206,10 @@ class _ListaPesagemState extends State<ListaPesagem> {
                               children: [
                                 IconButton(
                                   onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CadastroPesagem(
-                                                pesagem: object,
-                                              )),
-                                    ).then((value) => {
-                                          if (value == null)
-                                            {_fetchDataPesagem()}
-                                        })
+                                    database.delete(object.id, 'pesagem'),
+                                    setState(() {
+                                      _fetchDataPesagem();
+                                    })
                                   },
                                   icon: Icon(Icons.delete),
                                   color: Color.fromARGB(255, 255, 0, 0),

@@ -512,7 +512,13 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         where: '${HeadquartersFields.id} = ?',
         whereArgs: [id],
       );
-    } else {
+    }else if(tableName == 'pesagem') {
+      return await db.delete(
+        tablePesagem,
+        where: '${PesagemFields.id} = ?',
+        whereArgs: [id],
+      );
+    }else {
       return await db.delete(tableNotes);
     }
   }
