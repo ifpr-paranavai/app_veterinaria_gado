@@ -11,7 +11,6 @@ class BottonNavBar extends StatefulWidget {
 class _MyHomePageState extends State<BottonNavBar> {
   int _selectedIndex = 0;
   final _pageOptions = [
-    //CadastroGado(),
     SearchPage(),
     SettingsPage(),
   ];

@@ -1,5 +1,6 @@
 import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
+import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -107,7 +108,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BreedRegistration()),
+            MaterialPageRoute(builder: (context) => CadastroGado(headquarters: _farm.id)),
           ).then((value) => {
                 if (value == null) {_fetchDataBreed()}
               });
@@ -180,35 +181,31 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                           ),
                           Expanded(
                             flex: 1,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 40.0), // Define a margem esquerda desejada aqui
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
                                           builder: (context) => ListaPesagem(
-                                                animalId: animal.id,
-                                              )),
-                                    ).then((value) => {
-                                          if (value == null) {_fetchDataBreed()}
-                                        })
-                                  },
-                                  icon: Icon(Icons.scale),
-                                  color: Color.fromARGB(255, 41, 16, 122),
-                                ),
-
-                                // IconButton(
-                                //   onPressed: () => {
-                                //     database.delete(breed._id, 'gado'),
-                                //     setState(() {
-                                //       _fetchDataBreed();
-                                //     })
-                                //   },
-                                //   icon: Icon(Icons.delete),
-                                //   color: Color.fromARGB(255, 189, 18, 18),
-                                // ),
-                              ],
+                                            animalId: animal.id,
+                                          ),
+                                        ),
+                                      ).then((value) => {
+                                            if (value == null)
+                                              {_fetchDataBreed()}
+                                          })
+                                    },
+                                    icon: Icon(Icons.scale),
+                                    color: Color.fromARGB(255, 41, 16, 122),
+                                  ),
+                                  // Restante do código...
+                                ],
+                              ),
                             ),
                           ),
                         ],
