@@ -1,5 +1,6 @@
 import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/src/widgets/framework.dart';
 final database = NotesDatabase.instance;
 
 class ListagemPesagemAnimal extends StatefulWidget {
-  
   final farm;
   const ListagemPesagemAnimal({super.key, required this.farm});
 
@@ -23,9 +23,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
   TextEditingController _filterInput = TextEditingController();
 
   _fetchDataBreed() async {
-    String queryValue = "SELECT nome, id FROM gado where farmId = ${_farm.id}";
-
-    final animais = await database.receveSqlQuery(queryValue);
+    final animais = await database.readAllNotes('gado', farmId: _farm.id);
     setState(() {
       _animais = animais;
     });
@@ -34,6 +32,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
   @override
   void initState() {
     super.initState();
+    _farm = widget.farm;
     _fetchDataBreed();
   }
 
@@ -85,7 +84,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                         ),
                         onPressed: () async {
                           final itens = await database.readNote(
-                              'breed', _filterInput.text);
+                              'gado', _filterInput.text);
                           if (itens is List) {
                             setState(
                               () {
@@ -143,15 +142,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'excluir',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 16),
-                Text(
-                  'editar',
+                  'Selecionar',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
@@ -164,7 +155,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
           ..._animais
               .asMap()
               .map(
-                (index, breed) => MapEntry(
+                (index, animal) => MapEntry(
                   index,
                   Container(
                     color: index % 2 == 0
@@ -180,7 +171,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  breed.name,
+                                  animal.nome,
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
@@ -196,27 +187,27 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              BreedRegistration(
-                                                breed: breed,
+                                          builder: (context) => ListaPesagem(
+                                                animalId: animal.id,
                                               )),
                                     ).then((value) => {
                                           if (value == null) {_fetchDataBreed()}
                                         })
                                   },
-                                  icon: Icon(Icons.edit),
-                                  color: Color.fromARGB(255, 20, 122, 16),
+                                  icon: Icon(Icons.scale),
+                                  color: Color.fromARGB(255, 41, 16, 122),
                                 ),
-                                IconButton(
-                                  onPressed: () => {
-                                    database.delete(breed.id, 'breed'),
-                                    setState(() {
-                                      _fetchDataBreed();
-                                    })
-                                  },
-                                  icon: Icon(Icons.delete),
-                                  color: Color.fromARGB(255, 189, 18, 18),
-                                ),
+
+                                // IconButton(
+                                //   onPressed: () => {
+                                //     database.delete(breed._id, 'gado'),
+                                //     setState(() {
+                                //       _fetchDataBreed();
+                                //     })
+                                //   },
+                                //   icon: Icon(Icons.delete),
+                                //   color: Color.fromARGB(255, 189, 18, 18),
+                                // ),
                               ],
                             ),
                           ),

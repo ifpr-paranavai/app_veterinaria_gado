@@ -30,7 +30,7 @@ class Pesagem {
 
   Map<String, Object?> toJson() => {
         PesagemFields.id: id,
-        PesagemFields.dataPesagem: dataPesagem,
+        PesagemFields.dataPesagem: dataPesagem != null ? dataPesagem!.toIso8601String(): '',
         PesagemFields.gadoId: gadoId,
         PesagemFields.peso: peso,
         PesagemFields.anotacao: anotacao,

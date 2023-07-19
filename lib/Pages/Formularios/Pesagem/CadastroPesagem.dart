@@ -59,6 +59,8 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
         dataPesagem: _dataPesagem.text != ""
             ? DateFormat('dd/MM/yyyy').parse(_dataPesagem.text)
             : null,
+        peso: double.parse(_peso!),
+        gadoId: _selectedAnimalId,
       );
 
       await pesagemDatabase.create(pesagem, 'pesagem');
@@ -175,7 +177,7 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: TextFormField(
                     initialValue: _anotacao,
-                    decoration: InputDecoration(labelText: 'Anotação'),
+                    decoration: InputDecoration(labelText: 'Observação'),
                     onChanged: (value) => _anotacao = value,
                     onSaved: (value) => _anotacao = value,
                   ),
@@ -197,20 +199,6 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
                 ),
 
                 fieldDataPesagem(),
-                // Container(
-                //   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                //   child: TextFormField(
-                //     initialValue: _motivoBaixa,
-                //     decoration: InputDecoration(labelText: 'Motivo da Baixa'),
-                //     // validator: (value) {
-                //     //   if (value!.isEmpty) {
-                //     //     return 'Por favor insira o motivo da baixa';
-                //     //   }
-                //     //   return null;
-                //     // },
-                //     onSaved: (value) => _motivoBaixa = value,
-                //   ),
-                // ),
                 ElevatedButton(
                   onPressed: __savePesagem,
                   child: Text('Cadastrar'),

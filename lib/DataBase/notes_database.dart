@@ -33,6 +33,7 @@ class NotesDatabase {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
+    // apaga os dados quando o app é iniciado
     await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
@@ -138,64 +139,69 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
   }
 
   Future<Object> create(Object object, String tableName) async {
-    final db = await instance.database;
+    try {
+      final db = await instance.database;
 
-    if (tableName == 'gado') {
-      Gado gado = object as Gado;
-      var id;
-      if (gado.id != null) {
-        id = await db.update(tableGado, gado.toJson(),
-            where: '${GadoFields.id} = ?', whereArgs: [gado.id]);
+      if (tableName == 'gado') {
+        Gado gado = object as Gado;
+        var id;
+        if (gado.id != null) {
+          id = await db.update(tableGado, gado.toJson(),
+              where: '${GadoFields.id} = ?', whereArgs: [gado.id]);
+        } else {
+          id = await db.insert(tableGado, gado.toJson());
+        }
+        return gado.copy(id: id);
+      } else if (tableName == 'usuario') {
+        Usuario usuario = object as Usuario;
+        var id;
+        if (usuario.id != null) {
+          id = await db.update(tableUsuario, usuario.toJson(),
+              where: '${UsuarioFields.id} = ?', whereArgs: [usuario.id]);
+        } else {
+          id = await db.insert(tableUsuario, usuario.toJson());
+        }
+        return usuario.copy(id: id);
+      } else if (tableName == "breed") {
+        var id;
+        Breed breed = object as Breed;
+        if (breed.id != null) {
+          id = await db.update(tableBreed, breed.toJson(),
+              where: '${BreedFields.id} = ?', whereArgs: [breed.id]);
+        } else {
+          id = await db.insert(tableBreed, breed.toJson());
+        }
+        return breed.copy(id: id);
+      } else if (tableName == "headquarters") {
+        var id;
+        Headquarters headquarters = object as Headquarters;
+        if (headquarters.id != null) {
+          id = await db.update(tableheadquarters, headquarters.toJson(),
+              where: '${HeadquartersFields.id} = ?',
+              whereArgs: [headquarters.id]);
+        } else {
+          id = await db.insert(tableheadquarters, headquarters.toJson());
+        }
+        return headquarters.copy(id: id);
+      } else if (tableName == "pesagem") {
+        var id;
+        Pesagem pesagem = object as Pesagem;
+        if (pesagem.id != null) {
+          id = await db.update(tablePesagem, pesagem.toJson(),
+              where: '${PesagemFields.id} = ?', whereArgs: [pesagem.id]);
+        } else {
+          id = await db.insert(tablePesagem, pesagem.toJson());
+        }
+        return pesagem.copy(id: id);
       } else {
-        id = await db.insert(tableGado, gado.toJson());
+        Note note = object as Note;
+        final id = await db.insert(tableGado, note.toJson());
+        return note.copy(id: id);
       }
-      return gado.copy(id: id);
-    } else if (tableName == 'usuario') {
-      Usuario usuario = object as Usuario;
-      var id;
-      if (usuario.id != null) {
-        id = await db.update(tableUsuario, usuario.toJson(),
-            where: '${UsuarioFields.id} = ?', whereArgs: [usuario.id]);
-      } else {
-        id = await db.insert(tableUsuario, usuario.toJson());
-      }
-      return usuario.copy(id: id);
-    } else if (tableName == "breed") {
-      var id;
-      Breed breed = object as Breed;
-      if (breed.id != null) {
-        id = await db.update(tableBreed, breed.toJson(),
-            where: '${BreedFields.id} = ?', whereArgs: [breed.id]);
-      } else {
-        id = await db.insert(tableBreed, breed.toJson());
-      }
-      return breed.copy(id: id);
-    } else if (tableName == "headquarters") {
-      var id;
-      Headquarters headquarters = object as Headquarters;
-      if (headquarters.id != null) {
-        id = await db.update(tableheadquarters, headquarters.toJson(),
-            where: '${HeadquartersFields.id} = ?',
-            whereArgs: [headquarters.id]);
-      } else {
-        id = await db.insert(tableheadquarters, headquarters.toJson());
-      }
-      return headquarters.copy(id: id);
-    } else {
-      Note note = object as Note;
-      final id = await db.insert(tableGado, note.toJson());
-      return note.copy(id: id);
+    } catch (e) {
+      print(e);
+      return Exception("Algo deu errado");
     }
-    // final json = note.toJson();
-
-    // final columns =
-    //     '${NoteFields.title}, ${NoteFields.description}, ${NoteFields.time}';
-
-    // final values =
-    //     '${json[NoteFields.title]}, ${json[NoteFields.description]}, ${json[NoteFields.time]}';
-
-    // final id = await db
-    //     .rawInsert('INSERT INTO table_name ($columns) VALUES ($values)');
   }
 
   //FILTRO COM PARTE DA STRING DE BUSCA
@@ -393,66 +399,78 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
   }
 
   Future<List<Object>> receveSqlQuery(String sqlValeus) async {
-    final db = await instance.database;
+    try {
+      final db = await instance.database;
 
-    final result = await db.rawQuery(sqlValeus);
+      final result = await db.rawQuery(sqlValeus);
+      List<Map<String, dynamic>> resultList = result.toList();
 
-    return result;
+      return resultList;
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
-  Future<List<Object>> readAllNotes(String table, {int? farmId}) async {
-    final db = await instance.database;
+  Future<List<Object>> readAllNotes(String table,
+      {int? farmId, int? animalId}) async {
+    try {
+      final db = await instance.database;
 
-    if (table == "gado") {
-      final orderBy = '${GadoFields.nome} ASC';
+      if (table == "gado") {
+        final orderBy = '${GadoFields.nome} ASC';
 
-      final result = await db.rawQuery(
-          'SELECT * FROM $tableGado WHERE farmId = $farmId ORDER BY $orderBy');
+        final result = await db.rawQuery(
+            'SELECT * FROM $tableGado WHERE farmId = $farmId ORDER BY $orderBy');
 
-      return result.map((json) => Gado.fromJson(json)).toList();
-    } else if (table == "usuario") {
-      final orderBy = '${UsuarioFields.name} ASC';
+        return result.map((json) => Gado.fromJson(json)).toList();
+      } else if (table == "usuario") {
+        final orderBy = '${UsuarioFields.name} ASC';
 
-      final result =
-          await db.rawQuery('SELECT * FROM $tableUsuario ORDER BY $orderBy');
+        final result =
+            await db.rawQuery('SELECT * FROM $tableUsuario ORDER BY $orderBy');
 
-      return result.map((json) => Usuario.fromJson(json)).toList();
-    } else if (table == "breed") {
-      final orderBy = '${BreedFields.name} ASC';
+        return result.map((json) => Usuario.fromJson(json)).toList();
+      } else if (table == "breed") {
+        final orderBy = '${BreedFields.name} ASC';
 
-      final result =
-          await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
+        final result =
+            await db.rawQuery('SELECT * FROM $tableBreed ORDER BY $orderBy');
 
-      return result.map((json) => Breed.fromJson(json)).toList();
-    } else if (table == "headquarters") {
-      final orderBy = '${HeadquartersFields.name} ASC';
+        return result.map((json) => Breed.fromJson(json)).toList();
+      } else if (table == "headquarters") {
+        final orderBy = '${HeadquartersFields.name} ASC';
 
-      final result = await db
-          .rawQuery('SELECT * FROM $tableheadquarters ORDER BY $orderBy');
+        final result = await db
+            .rawQuery('SELECT * FROM $tableheadquarters ORDER BY $orderBy');
 
-      return result.map((json) => Headquarters.fromJson(json)).toList();
-    } else if (table == "usuarioHeadquarters") {
-      final orderBy = '${UsuarioFields.name} ASC';
+        return result.map((json) => Headquarters.fromJson(json)).toList();
+      } else if (table == "usuarioHeadquarters") {
+        final orderBy = '${UsuarioFields.name} ASC';
 
-      final result = await db.rawQuery('''SELECT usuario.*
+        final result = await db.rawQuery('''SELECT usuario.*
               FROM $tableUsuario usuario
               INNER JOIN $tableheadquarters headquarters ON usuario.id = headquarters.idUsuario
               WHERE headquarters.id = ?''');
 
-      return result.map((json) => Usuario.fromJson(json)).toList();
-    } else if (table == "pesagem") {
-      final orderBy = '${PesagemFields.dataPesagem} ASC';
-      final result = await db.rawQuery('''
-              SELECT * FROM $tablePesagem ORDER BY $orderBy
+        return result.map((json) => Usuario.fromJson(json)).toList();
+      } else if (table == "pesagem") {
+        final orderBy = '${PesagemFields.dataPesagem} ASC';
+        final result = await db.rawQuery('''
+              SELECT * FROM $tablePesagem WHERE gadoId = $animalId ORDER BY $orderBy;
             ''');
-      return result.map((json) => Pesagem.fromJson(json)).toList();
-    } else {
-      final orderBy = '${NoteFields.time} ASC';
+        return result.map((json) => Pesagem.fromJson(json)).toList();
+      } else {
+        final orderBy = '${NoteFields.time} ASC';
 
-      final result =
-          await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
+        final result =
+            await db.rawQuery('SELECT * FROM $tableNotes ORDER BY $orderBy');
 
-      return result.map((json) => Note.fromJson(json)).toList();
+        return result.map((json) => Note.fromJson(json)).toList();
+      }
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 
