@@ -38,6 +38,7 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Informações do Gado', 'icon': Icons.donut_small},
     {'title': 'Pesagem do animal', 'icon': Icons.accessibility},
     {'title': 'Histórico do animal', 'icon': Icons.h_plus_mobiledata},
+    {'title': 'Vacinas', 'icon': Icons.vaccines},
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -202,6 +203,13 @@ class _MenuLateralState extends State<MenuLateral> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
+        );
+        break;
+        case 5:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
         );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima

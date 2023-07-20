@@ -1,6 +1,5 @@
 import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
-import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -17,16 +16,16 @@ class ListagemHistorico extends StatefulWidget {
 }
 
 class _ListagemHistoricoState extends State<ListagemHistorico> {
-  List _pesagens = [];
+  List historicos = [];
 
   var _animalid;
 
   TextEditingController _filterInput = TextEditingController();
 
-  _fetchDataPesagem() async {
-    final animais = await database.readAllNotes('pesagem', animalId: _animalid);
+  _fetchDataHistorico() async {
+    final animais = await database.readAllNotes('historico', animalId: _animalid);
     setState(() {
-      _pesagens = animais;
+      historicos = animais;
     });
   }
 
@@ -34,7 +33,7 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
   void initState() {
     super.initState();
     _animalid = widget.animalId;
-    _fetchDataPesagem();
+    _fetchDataHistorico();
   }
 
   @override
@@ -45,7 +44,7 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Pesagem por animal'),
+        title: Text('Historico por animal'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -85,11 +84,11 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
                         ),
                         onPressed: () async {
                           final itens = await database.readNote(
-                              'pesagem', _filterInput.text);
+                              'historico', _filterInput.text);
                           if (itens is List) {
                             setState(
                               () {
-                                _pesagens = itens;
+                                historicos = itens;
                               },
                             );
                           }
@@ -110,7 +109,7 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
             context,
             MaterialPageRoute(builder: (context) => HistoricRegistration()),
           ).then((value) => {
-                if (value == null) {_fetchDataPesagem()}
+                if (value == null) {_fetchDataHistorico()}
               });
         },
         child: Icon(Icons.add),
@@ -169,7 +168,7 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._pesagens
+          ...historicos
               .asMap()
               .map(
                 (index, object) => MapEntry(
@@ -188,7 +187,7 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  convertDat(object.dataPesagem),
+                                  convertDat(object.diaOcorrencia),
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
@@ -201,9 +200,9 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  object.peso == null || object.peso == ""
-                                      ? "00.00"
-                                      : object.peso.toString(),
+                                  object.tipo == 1
+                                      ? "Ocorrencia"
+                                      : 'Vacina',
                                   //style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -215,19 +214,29 @@ class _ListagemHistoricoState extends State<ListagemHistorico> {
                               children: [
                                 IconButton(
                                   onPressed: () => {
-                                    database.delete(object.id, 'historico'),
-                                    setState(() {
-                                      _fetchDataPesagem();
-                                    })
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HistoricRegistration(
+                                            historico: object,
+                                              )),
+                                    ).then((value) => {
+                                          if (value == null)
+                                            {
+                                              setState(() {
+                                                _fetchDataHistorico();
+                                              })
+                                            }
+                                        }),
                                   },
-                                  icon: Icon(Icons.delete),
-                                  color: Color.fromARGB(255, 255, 0, 0),
+                                  icon: Icon(Icons.edit),
+                                  color: Color.fromARGB(255, 20, 122, 16),
                                 ),
                                 IconButton(
                                   onPressed: () => {
-                                    database.delete(object._id, 'gado'),
+                                    database.delete(object.id, 'historico'),
                                     setState(() {
-                                      _fetchDataPesagem();
+                                      _fetchDataHistorico();
                                     })
                                   },
                                   icon: Icon(Icons.delete),

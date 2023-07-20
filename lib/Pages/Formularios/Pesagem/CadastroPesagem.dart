@@ -21,15 +21,16 @@ class CadastroPesagem extends StatefulWidget {
 }
 
 class _CadastroPesagemState extends State<CadastroPesagem> {
-  var _headquarters;
+  // var _headquarters;
 
   @override
   void initState() {
     super.initState();
 
     // _headquarters = widget.headquarters;
-    fetchAutoCompleteData();
+
     if (widget.pesagem != null) {
+      fetchAutoCompleteSelectAnimal((widget.pesagem!.gadoId).toString());
       _getGadoName(widget.pesagem!.gadoId).then((value) {
         setState(() {
           _selectedAnimalName = value;
@@ -45,6 +46,8 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
           ? DateFormat('dd/MM/yyyy').format(widget.pesagem!.dataPesagem!)
           : '';
       _selectedAnimalId = widget.pesagem!.gadoId;
+    } else {
+      fetchAutoCompleteData();
     }
   }
 
@@ -66,8 +69,6 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
       await pesagemDatabase.create(pesagem, 'pesagem');
 
       Navigator.pop(context);
-      // Adicione aqui a chamada para a função de salvar
-      // passando a nota como parâmetro
     }
   }
 
@@ -197,7 +198,6 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
                     onSaved: (value) => _peso = value,
                   ),
                 ),
-
                 fieldDataPesagem(),
                 ElevatedButton(
                   onPressed: __savePesagem,
@@ -217,6 +217,24 @@ class _CadastroPesagemState extends State<CadastroPesagem> {
     });
 
     var search = await pesagemDatabase.searchDataWithParamiter('gado', '');
+
+    search as List<Gado>;
+
+    print("Olha aqui ");
+
+    setState(() {
+      isLoading = false;
+      autocompleteData = search;
+    });
+  }
+
+  Future fetchAutoCompleteSelectAnimal(String animalId) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    var search = await pesagemDatabase.searchDataWithParamiter(
+        'gadoSelecionado', animalId);
 
     search as List<Gado>;
 

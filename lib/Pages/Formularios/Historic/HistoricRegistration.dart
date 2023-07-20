@@ -36,14 +36,34 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
       setState(() {
         _descricao = widget.historico!.descricao;
       });
-      _dataHistorico.text = widget.historico?.diaOcorrencia != null
+      _diaOcorrencia.text = widget.historico?.diaOcorrencia != null
           ? DateFormat('dd/MM/yyyy').format(widget.historico!.diaOcorrencia!)
           : DateFormat('dd/MM/yyyy').format(DateTime.now());
       _selectedAnimalId = widget.historico!.idAnimal;
+      _descricaoController.text = widget.historico?.descricao ?? '';
     }
   }
 
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> _save() async {
+    if (true) {
+      print("CHegou aqui");
+      Historico historico = Historico(
+        id: _id,
+        descricao: _descricao,
+        diaOcorrencia: _diaOcorrencia.text != ""
+            ? DateFormat('dd/MM/yyyy').parse(_diaOcorrencia.text)
+            : null,
+        idAnimal: _selectedAnimalId,
+        tipo: 1,
+      );
+
+      await database.create(historico, 'historico');
+
+      Navigator.pop(context);
+    }
+  }
 
   List<DateTime> _markedDates = [
     DateTime(2022, 1, 1),
@@ -113,6 +133,7 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
                           ],
                         ),
                       ),
+                fieldData(),
                 SizedBox(height: 40),
                 Container(
                   child: Text(
@@ -120,28 +141,27 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 2),
-                  child: TextField(
+                  child: TextFormField(
                     maxLines: 6,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                     ),
                     textInputAction: TextInputAction.newline,
+                    controller: _descricaoController, // Use the controller
+                    onChanged: (value) {
+                      setState(() {
+                        _descricao =
+                            value; // Update _descricao as the user types
+                      });
+                    },
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Processando dados'),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text('Salvar'),
-                ),
+                  onPressed: _save,
+                  child: Text('Cadastrar'),
+                )
               ],
             ),
           ),
@@ -159,8 +179,6 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
 
     search as List<Gado>;
 
-    print("Olha aqui ");
-
     setState(() {
       isLoading = false;
       autocompleteData = search;
@@ -176,13 +194,14 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
     }
   }
 
-  TextEditingController _dataHistorico = TextEditingController();
+  TextEditingController _diaOcorrencia = TextEditingController();
+  TextEditingController _descricaoController = TextEditingController();
 
-  Widget fieldDataPesagem() {
+  Widget fieldData() {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: TextFormField(
-        controller: _dataHistorico,
+        controller: _diaOcorrencia,
         decoration: const InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 61, 10, 201)),
@@ -190,7 +209,7 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
           ),
           icon: Icon(Icons.calendar_today_rounded,
               color: Color.fromARGB(255, 61, 10, 201)),
-          hintText: 'Data da pesagem',
+          hintText: 'Data da ocorrencia',
         ),
         onTap: () async {
           DateTime? pickDate = await showDatePicker(
@@ -202,7 +221,7 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
 
           if (pickDate != null) {
             setState(() {
-              _dataHistorico.text = DateFormat('dd/MM/yyyy').format(pickDate);
+              _diaOcorrencia.text = DateFormat('dd/MM/yyyy').format(pickDate);
             });
           }
         },

@@ -2,6 +2,7 @@ import 'package:app_veterinaria/DTO/HeadQuartersDTO.dart';
 import 'package:app_veterinaria/Model/breed.dart';
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/headquarters.dart';
+import 'package:app_veterinaria/Model/historico.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/pesagem.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
@@ -120,6 +121,17 @@ CREATE TABLE $tableheadquarters(
 ''');
 
     await db.execute('''
+  CREATE TABLE $tablehistorico(
+    ${HistoricoFields.id} $idType,
+    ${HistoricoFields.descricao} $nulltextType,
+    ${HistoricoFields.diaOcorrencia} $nulldateType,
+    ${HistoricoFields.idAnimal} $intType,
+    ${HistoricoFields.tipo} $intType
+
+  )
+''');
+
+    await db.execute('''
 CREATE TABLE $tableUsuarioHeadquarters(
   id $idType,
   userId $intType,
@@ -193,6 +205,16 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
           id = await db.insert(tablePesagem, pesagem.toJson());
         }
         return pesagem.copy(id: id);
+      } else if (tableName == "historico") {
+        var id;
+        Historico historico = object as Historico;
+        if (historico.id != null) {
+          id = await db.update(tablehistorico, historico.toJson(),
+              where: '${HistoricoFields.id} = ?', whereArgs: [historico.id]);
+        } else {
+          id = await db.insert(tablehistorico, historico.toJson());
+        }
+        return historico.copy(id: id);
       } else {
         Note note = object as Note;
         final id = await db.insert(tableGado, note.toJson());
@@ -232,6 +254,22 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
           List<Gado> animais =
               (await db.rawQuery('SELECT * FROM $tableGado ORDER BY $orderBy'))
+                  .map((row) => Gado.fromJson(row))
+                  .toList();
+
+          List<Gado> options = animais
+              .map((animal) => Gado(nome: animal.nome, id: animal.id))
+              .toList();
+
+          return options;
+        } else {
+          final maps = await db.query(table, where: "${paramsn} LIKE '%?%' ");
+          return maps;
+        }
+      } else if (table == 'gadoSelecionado') {
+        if (paramsn == '') {
+          List<Gado> animais =
+              (await db.rawQuery('SELECT * FROM $tableGado WHERE id = $paramsn'))
                   .map((row) => Gado.fromJson(row))
                   .toList();
 
@@ -460,6 +498,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               SELECT * FROM $tablePesagem WHERE gadoId = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Pesagem.fromJson(json)).toList();
+      } else if (table == "historico") {
+        final orderBy = '${HistoricoFields.diaOcorrencia} ASC';
+        final result = await db.rawQuery('''
+              SELECT * FROM $tablehistorico WHERE idAnimal = $animalId ORDER BY $orderBy;
+            ''');
+        return result.map((json) => Historico.fromJson(json)).toList();
       } else {
         final orderBy = '${NoteFields.time} ASC';
 
@@ -512,13 +556,19 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         where: '${HeadquartersFields.id} = ?',
         whereArgs: [id],
       );
-    }else if(tableName == 'pesagem') {
+    } else if (tableName == 'pesagem') {
       return await db.delete(
         tablePesagem,
         where: '${PesagemFields.id} = ?',
         whereArgs: [id],
       );
-    }else {
+    } else if (tableName == 'historico') {
+      return await db.delete(
+        tablehistorico,
+        where: '${HistoricoFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else {
       return await db.delete(tableNotes);
     }
   }
