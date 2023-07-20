@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:app_veterinaria/Model/gado.dart';
 import 'package:app_veterinaria/Model/historico.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import '../../../DataBase/notes_database.dart';
 final database = NotesDatabase.instance;
 
 class HistoricRegistration extends StatefulWidget {
-
   final Historico? historico;
 
   const HistoricRegistration({super.key, this.historico});
@@ -41,22 +38,18 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
       });
       _dataHistorico.text = widget.historico?.diaOcorrencia != null
           ? DateFormat('dd/MM/yyyy').format(widget.historico!.diaOcorrencia!)
-          : '';
+          : DateFormat('dd/MM/yyyy').format(DateTime.now());
       _selectedAnimalId = widget.historico!.idAnimal;
     }
   }
 
   final _formKey = GlobalKey<FormState>();
 
-
-
   List<DateTime> _markedDates = [
     DateTime(2022, 1, 1),
     DateTime(2022, 2, 14),
     DateTime(2022, 3, 15),
   ];
-
-  
 
   int? _id;
   String? _descricao;
@@ -65,7 +58,6 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
   bool isLoading = false;
   int? _selectedAnimalId;
   String? _selectedAnimalName;
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +71,48 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Escolha o animal:',
-                  ),
-                ),
+                isLoading
+                    ? CircularProgressIndicator()
+                    : Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Column(
+                          children: [
+                            Autocomplete<Gado>(
+                              initialValue: _selectedAnimalName != null
+                                  ? TextEditingValue(
+                                      text: _selectedAnimalName!,
+                                    )
+                                  : null,
+                              fieldViewBuilder: (context, textEditingController,
+                                  focusNode, onFieldSubmitted) {
+                                return TextFormField(
+                                  controller: textEditingController,
+                                  focusNode: focusNode,
+                                  onFieldSubmitted: (value) {
+                                    onFieldSubmitted();
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Animal',
+                                  ),
+                                );
+                              },
+                              optionsBuilder:
+                                  (TextEditingValue textEditingValue) {
+                                print(autocompleteData);
+                                return autocompleteData.where((option) =>
+                                    option.nome!.toLowerCase().contains(
+                                        textEditingValue.text.toLowerCase()));
+                              },
+                              onSelected: (option) {
+                                this.setState(() {
+                                  _selectedAnimalId = option.id;
+                                });
+                              },
+                              displayStringForOption: (option) => option.nome!,
+                            ),
+                          ],
+                        ),
+                      ),
                 SizedBox(height: 40),
                 Container(
                   child: Text(
@@ -147,7 +176,7 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
     }
   }
 
-TextEditingController _dataHistorico = TextEditingController();
+  TextEditingController _dataHistorico = TextEditingController();
 
   Widget fieldDataPesagem() {
     return Padding(
