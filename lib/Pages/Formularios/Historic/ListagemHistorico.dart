@@ -1,35 +1,40 @@
-import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
+import 'package:app_veterinaria/DataBase/notes_database.dart';
+import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
-class GadoList extends StatefulWidget {
-  final farm;
-  const GadoList({super.key, required this.farm});
+final database = NotesDatabase.instance;
+
+class ListagemHistorico extends StatefulWidget {
+  final animalId;
+  const ListagemHistorico({super.key, required this.animalId});
 
   @override
-  State<GadoList> createState() => _GadoListState();
+  State<ListagemHistorico> createState() => _ListagemHistoricoState();
 }
 
-class _GadoListState extends State<GadoList> {
-  List _gados = [];
+class _ListagemHistoricoState extends State<ListagemHistorico> {
+  List _pesagens = [];
 
-  var _farm;
+  var _animalid;
 
   TextEditingController _filterInput = TextEditingController();
 
-  _readAllNotes() async {
-    final notes = await gadoDatabase.readAllNotes('gado', farmId: _farm.id);
+  _fetchDataPesagem() async {
+    final animais = await database.readAllNotes('pesagem', animalId: _animalid);
     setState(() {
-      _gados = notes;
+      _pesagens = animais;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _farm = widget.farm;
-    _readAllNotes();
+    _animalid = widget.animalId;
+    _fetchDataPesagem();
   }
 
   @override
@@ -40,7 +45,7 @@ class _GadoListState extends State<GadoList> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Listagem de Gado'),
+        title: Text('Pesagem por animal'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -79,22 +84,21 @@ class _GadoListState extends State<GadoList> {
                           primary: Colors.amberAccent, //<-- SEE HERE
                         ),
                         onPressed: () async {
-                          final itens = await gadoDatabase.readNote(
-                            'gado',
-                            _filterInput.text,
-                          );
+                          final itens = await database.readNote(
+                              'pesagem', _filterInput.text);
                           if (itens is List) {
-                            setState(() {
-                              _gados = itens as List;
-                            });
+                            setState(
+                              () {
+                                _pesagens = itens;
+                              },
+                            );
                           }
-                          // adicione o código de filtragem aqui
                         },
                       ),
                     ],
                   ),
                 ),
-                buildGadoList(),
+                buildListagemHistorico(),
               ],
             ),
           ),
@@ -102,14 +106,12 @@ class _GadoListState extends State<GadoList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // adicione o código para abrir a página de cadastro aqui
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => CadastroGado(headquarters: _farm.id)),
-          ).then((value) {
-            if (value == null) _readAllNotes();
-          });
+            MaterialPageRoute(builder: (context) => HistoricRegistration()),
+          ).then((value) => {
+                if (value == null) {_fetchDataPesagem()}
+              });
         },
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 187, 174, 0),
@@ -118,7 +120,7 @@ class _GadoListState extends State<GadoList> {
     );
   }
 
-  buildGadoList() {
+  buildListagemHistorico() {
     return Card(
       child: Column(
         children: [
@@ -127,9 +129,9 @@ class _GadoListState extends State<GadoList> {
             tileColor: Colors.grey[300],
             title: Padding(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.02),
+                  left: MediaQuery.of(context).size.width * 0.08),
               child: Text(
-                'Nome',
+                'Data',
                 style: TextStyle(
                   color: Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.bold,
@@ -141,13 +143,13 @@ class _GadoListState extends State<GadoList> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Número',
+                  'Tipo',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 30),
+                SizedBox(width: 60),
                 Text(
                   'editar',
                   style: TextStyle(
@@ -157,7 +159,7 @@ class _GadoListState extends State<GadoList> {
                 ),
                 SizedBox(width: 16),
                 Text(
-                  'excluir',
+                  'Excluir',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
@@ -167,10 +169,10 @@ class _GadoListState extends State<GadoList> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._gados
+          ..._pesagens
               .asMap()
               .map(
-                (index, gado) => MapEntry(
+                (index, object) => MapEntry(
                   index,
                   Container(
                     color: index % 2 == 0
@@ -186,10 +188,9 @@ class _GadoListState extends State<GadoList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  gado.nome == null || gado.nome == ""
-                                      ? "XXX-XXX"
-                                      : gado.nome,
-                                  //style: TextStyle(color: Colors.white),
+                                  convertDat(object.dataPesagem),
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
                               ],
                             ),
@@ -200,9 +201,9 @@ class _GadoListState extends State<GadoList> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  gado.numero == null || gado.numero == ""
-                                      ? "000-000"
-                                      : gado.numero,
+                                  object.peso == null || object.peso == ""
+                                      ? "00.00"
+                                      : object.peso.toString(),
                                   //style: TextStyle(color: Colors.white),
                                 ),
                               ],
@@ -214,30 +215,19 @@ class _GadoListState extends State<GadoList> {
                               children: [
                                 IconButton(
                                   onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CadastroGado(
-                                                gado: gado,
-                                                headquarters: _farm.id,
-                                              )),
-                                    ).then((value) => {
-                                          if (value == null)
-                                            {
-                                              setState(() {
-                                                _readAllNotes();
-                                              })
-                                            }
-                                        }),
+                                    database.delete(object.id, 'historico'),
+                                    setState(() {
+                                      _fetchDataPesagem();
+                                    })
                                   },
-                                  icon: Icon(Icons.edit),
-                                  color: Color.fromARGB(255, 20, 122, 16),
+                                  icon: Icon(Icons.delete),
+                                  color: Color.fromARGB(255, 255, 0, 0),
                                 ),
                                 IconButton(
                                   onPressed: () => {
-                                    gadoDatabase.delete(gado.id, 'gado'),
+                                    database.delete(object._id, 'gado'),
                                     setState(() {
-                                      _readAllNotes();
+                                      _fetchDataPesagem();
                                     })
                                   },
                                   icon: Icon(Icons.delete),
@@ -257,5 +247,11 @@ class _GadoListState extends State<GadoList> {
         ],
       ),
     );
+  }
+
+  convertDat(DateTime dateTime) {
+    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    String formattedHour = formatter.format(dateTime);
+    return formattedHour;
   }
 }

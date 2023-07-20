@@ -1,27 +1,33 @@
+import 'package:app_veterinaria/DataBase/notes_database.dart';
+import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
+import 'package:app_veterinaria/Pages/Formularios/Historic/ListagemHistorico.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class GadoList extends StatefulWidget {
+final database = NotesDatabase.instance;
+
+class ListagemHistoricoAnimal extends StatefulWidget {
   final farm;
-  const GadoList({super.key, required this.farm});
+  const ListagemHistoricoAnimal({super.key, required this.farm});
 
   @override
-  State<GadoList> createState() => _GadoListState();
+  State<ListagemHistoricoAnimal> createState() => _ListagemHistoricoAnimalState();
 }
 
-class _GadoListState extends State<GadoList> {
-  List _gados = [];
+class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
+  List _animais = [];
 
   var _farm;
 
   TextEditingController _filterInput = TextEditingController();
 
-  _readAllNotes() async {
-    final notes = await gadoDatabase.readAllNotes('gado', farmId: _farm.id);
+  _fetchDataBreed() async {
+    final animais = await database.readAllNotes('gado', farmId: _farm.id);
     setState(() {
-      _gados = notes;
+      _animais = animais;
     });
   }
 
@@ -29,7 +35,7 @@ class _GadoListState extends State<GadoList> {
   void initState() {
     super.initState();
     _farm = widget.farm;
-    _readAllNotes();
+    _fetchDataBreed();
   }
 
   @override
@@ -40,7 +46,7 @@ class _GadoListState extends State<GadoList> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Listagem de Gado'),
+        title: Text('Lista de animais para Histórico'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -79,22 +85,21 @@ class _GadoListState extends State<GadoList> {
                           primary: Colors.amberAccent, //<-- SEE HERE
                         ),
                         onPressed: () async {
-                          final itens = await gadoDatabase.readNote(
-                            'gado',
-                            _filterInput.text,
-                          );
+                          final itens = await database.readNote(
+                              'gado', _filterInput.text);
                           if (itens is List) {
-                            setState(() {
-                              _gados = itens as List;
-                            });
+                            setState(
+                              () {
+                                _animais = itens;
+                              },
+                            );
                           }
-                          // adicione o código de filtragem aqui
                         },
                       ),
                     ],
                   ),
                 ),
-                buildGadoList(),
+                buildListagemHistoricoAnimal(),
               ],
             ),
           ),
@@ -102,14 +107,12 @@ class _GadoListState extends State<GadoList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // adicione o código para abrir a página de cadastro aqui
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => CadastroGado(headquarters: _farm.id)),
-          ).then((value) {
-            if (value == null) _readAllNotes();
-          });
+            MaterialPageRoute(builder: (context) => CadastroGado(headquarters: _farm.id)),
+          ).then((value) => {
+                if (value == null) {_fetchDataBreed()}
+              });
         },
         child: Icon(Icons.add),
         backgroundColor: Color.fromARGB(255, 187, 174, 0),
@@ -118,7 +121,7 @@ class _GadoListState extends State<GadoList> {
     );
   }
 
-  buildGadoList() {
+  buildListagemHistoricoAnimal() {
     return Card(
       child: Column(
         children: [
@@ -127,7 +130,7 @@ class _GadoListState extends State<GadoList> {
             tileColor: Colors.grey[300],
             title: Padding(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.02),
+                  left: MediaQuery.of(context).size.width * 0.18),
               child: Text(
                 'Nome',
                 style: TextStyle(
@@ -141,23 +144,7 @@ class _GadoListState extends State<GadoList> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Número',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 30),
-                Text(
-                  'editar',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 16),
-                Text(
-                  'excluir',
+                  'Selecionar',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
@@ -167,10 +154,10 @@ class _GadoListState extends State<GadoList> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._gados
+          ..._animais
               .asMap()
               .map(
-                (index, gado) => MapEntry(
+                (index, animal) => MapEntry(
                   index,
                   Container(
                     color: index % 2 == 0
@@ -181,69 +168,45 @@ class _GadoListState extends State<GadoList> {
                       title: Row(
                         children: [
                           Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  gado.nome == null || gado.nome == ""
-                                      ? "XXX-XXX"
-                                      : gado.nome,
-                                  //style: TextStyle(color: Colors.white),
+                                  animal.nome,
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
                               ],
                             ),
                           ),
                           Expanded(
                             flex: 1,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  gado.numero == null || gado.numero == ""
-                                      ? "000-000"
-                                      : gado.numero,
-                                  //style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CadastroGado(
-                                                gado: gado,
-                                                headquarters: _farm.id,
-                                              )),
-                                    ).then((value) => {
-                                          if (value == null)
-                                            {
-                                              setState(() {
-                                                _readAllNotes();
-                                              })
-                                            }
-                                        }),
-                                  },
-                                  icon: Icon(Icons.edit),
-                                  color: Color.fromARGB(255, 20, 122, 16),
-                                ),
-                                IconButton(
-                                  onPressed: () => {
-                                    gadoDatabase.delete(gado.id, 'gado'),
-                                    setState(() {
-                                      _readAllNotes();
-                                    })
-                                  },
-                                  icon: Icon(Icons.delete),
-                                  color: Color.fromARGB(255, 189, 18, 18),
-                                ),
-                              ],
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 40.0), // Define a margem esquerda desejada aqui
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ListagemHistorico(
+                                            animalId: animal.id,
+                                          ),
+                                        ),
+                                      ).then((value) => {
+                                            if (value == null)
+                                              {_fetchDataBreed()}
+                                          })
+                                    },
+                                    icon: Icon(Icons.h_plus_mobiledata),
+                                    color: Color.fromARGB(255, 41, 16, 122),
+                                  ),
+                                  // Restante do código...
+                                ],
+                              ),
                             ),
                           ),
                         ],

@@ -2,6 +2,7 @@ import 'package:app_veterinaria/Pages/Formularios/Breed/BreedList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/ListagemGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
+import 'package:app_veterinaria/Pages/Formularios/Historic/ListagemHistoricoAnimal.dart';
 import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
@@ -36,6 +37,7 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Informações das Raças', 'icon': Icons.pets},
     {'title': 'Informações do Gado', 'icon': Icons.donut_small},
     {'title': 'Pesagem do animal', 'icon': Icons.accessibility},
+    {'title': 'Histórico do animal', 'icon': Icons.h_plus_mobiledata},
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -194,6 +196,12 @@ class _MenuLateralState extends State<MenuLateral> {
           context,
           MaterialPageRoute(
               builder: (context) => ListagemPesagemAnimal(farm: _farm)),
+        );
+        break;
+      case 4:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
         );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima
