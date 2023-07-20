@@ -1,15 +1,16 @@
-final String tablehistorico = 'historico';
+final String tablevacina = 'vacina';
 
-class HistoricoFields {
+class VacinaFields {
   static final List<String> values = [
     /// Add all fields
-    id, idAnimal, observaco, dataAplicacao, responsavel, localAplicacao,
+    id, idAnimal, observacao, dataAplicacao, responsavel, localAplicacao,
     numeroLote, validade, dosagem
   ];
 
   static final String id = '_id';
   static final String idAnimal = 'idAnimal';
-  static final String observaco = 'observaco';
+  static final String nome = 'nome';
+  static final String observacao = 'observacao';
   static final String dataAplicacao = 'dataAplicacao';
   static final String responsavel = 'responsavel';
   static final String localAplicacao = 'localAplicacao';
@@ -18,69 +19,75 @@ class HistoricoFields {
   static final String dosagem = 'dosagem';
 }
 
-class Historico {
+class Vacina {
   final int? id;
   final int? idAnimal;
-  final String? observaco;
+  final String? observacao;
   final DateTime? dataAplicacao;
   final String? responsavel;
   final String? localAplicacao;
   final String? numeroLote;
   final DateTime? validade;
   final double? dosagem;
+  final String? nome;
 
-  const Historico(
+  const Vacina(
       {this.id,
       this.idAnimal,
+      this.nome,
       this.dataAplicacao,
       this.dosagem,
       this.localAplicacao,
       this.numeroLote,
-      this.observaco,
+      this.observacao,
       this.responsavel,
       this.validade});
 
   Map<String, Object?> toJson() => {
-        HistoricoFields.id: id,
-        HistoricoFields.idAnimal: idAnimal,
-        HistoricoFields.observaco: observaco,
-        HistoricoFields.dataAplicacao:
+        VacinaFields.id: id,
+        VacinaFields.idAnimal: idAnimal,
+        VacinaFields.nome: nome,
+        VacinaFields.observacao: observacao,
+        VacinaFields.dataAplicacao:
             dataAplicacao != null ? dataAplicacao!.toIso8601String() : '',
-        HistoricoFields.dosagem: dosagem,
-        HistoricoFields.numeroLote: numeroLote,
-        HistoricoFields.responsavel: responsavel,
-        HistoricoFields.validade:
+        VacinaFields.dosagem: dosagem,
+        VacinaFields.numeroLote: numeroLote,
+        VacinaFields.responsavel: responsavel,
+        VacinaFields.validade:
             validade != null ? validade!.toIso8601String() : '',
-        HistoricoFields.localAplicacao: localAplicacao,
+        VacinaFields.localAplicacao: localAplicacao,
       };
-  static Historico fromJson(Map<String, Object?> json) => Historico(
-        id: json[HistoricoFields.id] as int?,
-        idAnimal: json[HistoricoFields.idAnimal] as int?,
-        observaco: json[HistoricoFields.observaco] as String?,
+  static Vacina fromJson(Map<String, Object?> json) => Vacina(
+        id: json[VacinaFields.id] as int?,
+        idAnimal: json[VacinaFields.idAnimal] as int?,
+        nome: json[VacinaFields.nome] as String?,
+        observacao: json[VacinaFields.observacao] as String?,
         dataAplicacao:
-            DateTime.parse(json[HistoricoFields.dataAplicacao] as String),
-        dosagem: json[HistoricoFields.dosagem] as double?,
-        numeroLote: json[HistoricoFields.numeroLote] as String?,
-        responsavel: json[HistoricoFields.responsavel] as String?,
-        validade: DateTime.parse(json[HistoricoFields.validade] as String),
-        localAplicacao: json[HistoricoFields.localAplicacao] as String?,
+            DateTime.parse(json[VacinaFields.dataAplicacao] as String),
+        dosagem: json[VacinaFields.dosagem] as double?,
+        numeroLote: json[VacinaFields.numeroLote] as String?,
+        responsavel: json[VacinaFields.responsavel] as String?,
+        validade: DateTime.parse(json[VacinaFields.validade] as String),
+        localAplicacao: json[VacinaFields.localAplicacao] as String?,
       );
 
-  Historico copy({
+  Vacina copy({
     int? id,
     int? idAnimal,
-    String? observaco,
+    String? observacao,
     DateTime? dataAplicacao,
     double? dosagem,
     String? numeroLote,
     String? responsavel,
     DateTime? validade,
     String? localAplicacao,
+    String? nome,
   }) =>
-      Historico(
+      Vacina(
         id: id ?? this.id,
         idAnimal: idAnimal ?? this.idAnimal,
-        observaco: observaco ?? this.observaco,
+        nome: nome ?? this.nome,
+        observacao: observacao ?? this.observacao,
         dataAplicacao: dataAplicacao ?? this.dataAplicacao,
         dosagem: dosagem ?? dosagem,
         numeroLote: numeroLote ?? numeroLote,

@@ -15,12 +15,12 @@ class HistoricoFields {
 
 class Historico {
   final int? id;
-  final int? idAnimal;
-  final String? descricao;
-  final DateTime? diaOcorrencia;
-  final int? tipo;
+  late final int? idAnimal;
+  late final String? descricao;
+  late final DateTime? diaOcorrencia;
+  late final int? tipo;
 
-  const Historico({
+  Historico({
     this.id,
     this.idAnimal,
     this.descricao,
@@ -34,7 +34,7 @@ class Historico {
         HistoricoFields.descricao: descricao,
         HistoricoFields.diaOcorrencia:
             diaOcorrencia != null ? diaOcorrencia!.toIso8601String() : '',
-            HistoricoFields.tipo: tipo,
+        HistoricoFields.tipo: tipo,
       };
   static Historico fromJson(Map<String, Object?> json) => Historico(
         id: json[HistoricoFields.id] as int?,

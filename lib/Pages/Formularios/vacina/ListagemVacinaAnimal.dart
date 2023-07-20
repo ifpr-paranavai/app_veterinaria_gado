@@ -2,21 +2,22 @@ import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
+import 'package:app_veterinaria/Pages/Formularios/vacina/ListaVacina.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 final database = NotesDatabase.instance;
 
-class ListagemPesagemAnimal extends StatefulWidget {
+class ListagemVacinaAnimal extends StatefulWidget {
   final farm;
-  const ListagemPesagemAnimal({super.key, required this.farm});
+  const ListagemVacinaAnimal({super.key, required this.farm});
 
   @override
-  State<ListagemPesagemAnimal> createState() => _ListagemPesagemAnimalState();
+  State<ListagemVacinaAnimal> createState() => _ListagemVacinaAnimalState();
 }
 
-class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
+class _ListagemVacinaAnimalState extends State<ListagemVacinaAnimal> {
   List _animais = [];
 
   var _farm;
@@ -45,7 +46,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Animais Pesagem'),
+        title: Text('Animais Vacina'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -98,7 +99,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                     ],
                   ),
                 ),
-                buildListagemPesagemAnimal(),
+                buildListagemVacinaAnimal(),
               ],
             ),
           ),
@@ -108,7 +109,8 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CadastroGado(headquarters: _farm.id)),
+            MaterialPageRoute(
+                builder: (context) => CadastroGado(headquarters: _farm.id)),
           ).then((value) => {
                 if (value == null) {_fetchDataBreed()}
               });
@@ -120,7 +122,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
     );
   }
 
-  buildListagemPesagemAnimal() {
+  buildListagemVacinaAnimal() {
     return Card(
       child: Column(
         children: [
@@ -163,7 +165,6 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                         ? Color.fromARGB(167, 32, 121, 66)
                         : Color.fromARGB(255, 202, 231, 190),
                     child: ListTile(
-                      //leading: Icon(Icons.add_a_photo),
                       title: Row(
                         children: [
                           Expanded(
@@ -183,7 +184,8 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                             flex: 1,
                             child: Padding(
                               padding: EdgeInsets.only(
-                                  left: 40.0), // Define a margem esquerda desejada aqui
+                                  left:
+                                      40.0), // Define a margem esquerda desejada aqui
                               child: Row(
                                 children: [
                                   IconButton(
@@ -191,7 +193,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ListaPesagem(
+                                          builder: (context) => ListaVacina(
                                             animalId: animal.id,
                                           ),
                                         ),
@@ -200,7 +202,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                                               {_fetchDataBreed()}
                                           })
                                     },
-                                    icon: Icon(Icons.scale),
+                                    icon: Icon(Icons.vaccines_rounded),
                                     color: Color.fromARGB(255, 41, 16, 122),
                                   ),
                                   // Restante do código...

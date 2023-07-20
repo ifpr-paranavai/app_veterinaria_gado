@@ -48,7 +48,6 @@ class _HistoricRegistrationState extends State<HistoricRegistration> {
 
   Future<void> _save() async {
     if (true) {
-      print("CHegou aqui");
       Historico historico = Historico(
         id: _id,
         descricao: _descricao,

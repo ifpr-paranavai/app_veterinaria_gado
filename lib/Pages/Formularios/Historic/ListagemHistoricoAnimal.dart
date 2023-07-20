@@ -46,7 +46,7 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Lista de animais para Histórico'),
+        title: Text('Animais Histórico'),
         backgroundColor: Colors.green,
       ),
       body: ListView(

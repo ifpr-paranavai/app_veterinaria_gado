@@ -1,40 +1,40 @@
 import 'package:app_veterinaria/DataBase/notes_database.dart';
-import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
-import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
-import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
+import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
+import 'package:app_veterinaria/Pages/Formularios/vacina/CadastroVacina.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
 final database = NotesDatabase.instance;
 
-class ListagemPesagemAnimal extends StatefulWidget {
-  final farm;
-  const ListagemPesagemAnimal({super.key, required this.farm});
+class ListaVacina extends StatefulWidget {
+  final animalId;
+  const ListaVacina({super.key, required this.animalId});
 
   @override
-  State<ListagemPesagemAnimal> createState() => _ListagemPesagemAnimalState();
+  State<ListaVacina> createState() => _ListaVacinaState();
 }
 
-class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
-  List _animais = [];
+class _ListaVacinaState extends State<ListaVacina> {
+  List _vacinas = [];
 
-  var _farm;
+  var _animalid;
 
   TextEditingController _filterInput = TextEditingController();
 
-  _fetchDataBreed() async {
-    final animais = await database.readAllNotes('gado', farmId: _farm.id);
+  _fetchDataVacina() async {
+    final animais = await database.readAllNotes('vacina', animalId: _animalid);
     setState(() {
-      _animais = animais;
+      _vacinas = animais;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _farm = widget.farm;
-    _fetchDataBreed();
+    _animalid = widget.animalId;
+    _fetchDataVacina();
   }
 
   @override
@@ -45,7 +45,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Animais Pesagem'),
+        title: Text('Vacinas do animal'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -85,11 +85,11 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                         ),
                         onPressed: () async {
                           final itens = await database.readNote(
-                              'gado', _filterInput.text);
+                              'pesagem', _filterInput.text);
                           if (itens is List) {
                             setState(
                               () {
-                                _animais = itens;
+                                _vacinas = itens;
                               },
                             );
                           }
@@ -98,7 +98,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                     ],
                   ),
                 ),
-                buildListagemPesagemAnimal(),
+                buildListaVacina(),
               ],
             ),
           ),
@@ -108,9 +108,11 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CadastroGado(headquarters: _farm.id)),
+            MaterialPageRoute(
+                builder: (context) =>
+                    CadastroVacina(animalIdPrecinonado: widget.animalId)),
           ).then((value) => {
-                if (value == null) {_fetchDataBreed()}
+                if (value == null) {_fetchDataVacina()}
               });
         },
         child: Icon(Icons.add),
@@ -120,7 +122,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
     );
   }
 
-  buildListagemPesagemAnimal() {
+  buildListaVacina() {
     return Card(
       child: Column(
         children: [
@@ -129,9 +131,9 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
             tileColor: Colors.grey[300],
             title: Padding(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.18),
+                  left: MediaQuery.of(context).size.width * 0.04),
               child: Text(
-                'Nome',
+                'Data',
                 style: TextStyle(
                   color: Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.bold,
@@ -143,7 +145,23 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Selecionar',
+                  'Nome',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 50),
+                Text(
+                  'Editar',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 20),
+                Text(
+                  'Excluir',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
@@ -153,10 +171,10 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._animais
+          ..._vacinas
               .asMap()
               .map(
-                (index, animal) => MapEntry(
+                (index, object) => MapEntry(
                   index,
                   Container(
                     color: index % 2 == 0
@@ -167,12 +185,12 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                       title: Row(
                         children: [
                           Expanded(
-                            flex: 2,
+                            flex: 1,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  animal.nome,
+                                  convertDat(object.dataAplicacao),
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
@@ -181,31 +199,61 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                           ),
                           Expanded(
                             flex: 1,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: 40.0), // Define a margem esquerda desejada aqui
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ListaPesagem(
-                                            animalId: animal.id,
-                                          ),
-                                        ),
-                                      ).then((value) => {
-                                            if (value == null)
-                                              {_fetchDataBreed()}
-                                          })
-                                    },
-                                    icon: Icon(Icons.scale),
-                                    color: Color.fromARGB(255, 41, 16, 122),
-                                  ),
-                                  // Restante do código...
-                                ],
-                              ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  object.nome == null || object.nome == ""
+                                      ? "00.00"
+                                      : object.nome.toString(),
+                                  //style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CadastroVacina(
+                                                vacina: object,
+                                                animalIdPrecinonado: _animalid,
+                                              )),
+                                    ).then((value) => {
+                                          if (value == null)
+                                            {_fetchDataVacina()}
+                                        })
+                                  },
+                                  icon: Icon(Icons.edit),
+                                  color: Color.fromARGB(255, 20, 122, 16),
+                                ),
+                                IconButton(
+                                  onPressed: () => {
+                                    database.delete(object.id, 'vacina'),
+                                    setState(() {
+                                      _fetchDataVacina();
+                                    })
+                                  },
+                                  icon: Icon(Icons.delete),
+                                  color: Color.fromARGB(255, 255, 0, 0),
+                                ),
+
+                                // IconButton(
+                                //   onPressed: () => {
+                                //     database.delete(breed._id, 'gado'),
+                                //     setState(() {
+                                //       _fetchDataVacina();
+                                //     })
+                                //   },
+                                //   icon: Icon(Icons.delete),
+                                //   color: Color.fromARGB(255, 189, 18, 18),
+                                // ),
+                              ],
                             ),
                           ),
                         ],
@@ -219,5 +267,11 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
         ],
       ),
     );
+  }
+
+  convertDat(DateTime dateTime) {
+    DateFormat formatter = DateFormat('dd/MM/yyyy');
+    String formattedHour = formatter.format(dateTime);
+    return formattedHour;
   }
 }

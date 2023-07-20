@@ -7,6 +7,8 @@ import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListagemPesagemAnimal.dart';
+import 'package:app_veterinaria/Pages/Formularios/vacina/CadastroVacina.dart';
+import 'package:app_veterinaria/Pages/Formularios/vacina/ListagemVacinaAnimal.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
@@ -209,7 +211,7 @@ class _MenuLateralState extends State<MenuLateral> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
+              builder: (context) => ListagemVacinaAnimal(farm: _farm)),
         );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima

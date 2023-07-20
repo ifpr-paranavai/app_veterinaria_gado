@@ -7,6 +7,7 @@ import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/pesagem.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
+import 'package:app_veterinaria/Model/vacina.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
 import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
@@ -132,6 +133,21 @@ CREATE TABLE $tableheadquarters(
 ''');
 
     await db.execute('''
+  CREATE TABLE $tablevacina(
+    ${VacinaFields.id} $idType,
+    ${VacinaFields.nome} $nulltextType,
+    ${VacinaFields.observacao} $nulltextType,
+    ${VacinaFields.dataAplicacao} $nulldateType,
+    ${VacinaFields.idAnimal} $intType,
+    ${VacinaFields.responsavel} $nulltextType,
+    ${VacinaFields.localAplicacao} $nulltextType,
+    ${VacinaFields.numeroLote} $nulltextType,
+    ${VacinaFields.validade} $nulldateType,
+    ${VacinaFields.dosagem} $nullfloatType
+  )
+''');
+
+    await db.execute('''
 CREATE TABLE $tableUsuarioHeadquarters(
   id $idType,
   userId $intType,
@@ -215,6 +231,25 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
           id = await db.insert(tablehistorico, historico.toJson());
         }
         return historico.copy(id: id);
+      } else if (tableName == "vacina") {
+        var id;
+        Vacina vacina = object as Vacina;
+        if (vacina.id != null) {
+          id = await db.update(tablevacina, vacina.toJson(),
+              where: '${VacinaFields.id} = ?', whereArgs: [vacina.id]);
+        } else {
+          id = await db.insert(tablevacina, vacina.toJson());
+
+          Historico historico = Historico(
+              idAnimal: object.idAnimal,
+              diaOcorrencia: object.dataAplicacao,
+              tipo: 2,
+              descricao:
+                  '--Tipo Vacina--\n\n Nome: ${object.nome}\n\n Data aplicação : ${object.dataAplicacao.toString()} \n\n responsavel: ${object.responsavel}\n\n Local da apicação: ${object.localAplicacao} \n\n Numero do lote: ${object.numeroLote}\n\n Validade: ${object.validade} \n\n Dosagem: ${object.dosagem}ml \n\n Observação: ${object.observacao}');
+
+          await db.insert(tablehistorico, historico.toJson());
+        }
+        return vacina.copy(id: id);
       } else {
         Note note = object as Note;
         final id = await db.insert(tableGado, note.toJson());
@@ -268,10 +303,10 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         }
       } else if (table == 'gadoSelecionado') {
         if (paramsn == '') {
-          List<Gado> animais =
-              (await db.rawQuery('SELECT * FROM $tableGado WHERE id = $paramsn'))
-                  .map((row) => Gado.fromJson(row))
-                  .toList();
+          List<Gado> animais = (await db
+                  .rawQuery('SELECT * FROM $tableGado WHERE id = $paramsn'))
+              .map((row) => Gado.fromJson(row))
+              .toList();
 
           List<Gado> options = animais
               .map((animal) => Gado(nome: animal.nome, id: animal.id))
@@ -504,6 +539,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               SELECT * FROM $tablehistorico WHERE idAnimal = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Historico.fromJson(json)).toList();
+      } else if (table == "vacina") {
+        final orderBy = '${VacinaFields.dataAplicacao} ASC';
+        final result = await db.rawQuery('''
+              SELECT * FROM $tablevacina WHERE idAnimal = $animalId ORDER BY $orderBy;
+            ''');
+        return result.map((json) => Vacina.fromJson(json)).toList();
       } else {
         final orderBy = '${NoteFields.time} ASC';
 
@@ -566,6 +607,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
       return await db.delete(
         tablehistorico,
         where: '${HistoricoFields.id} = ?',
+        whereArgs: [id],
+      );
+    } else if (tableName == 'vacina') {
+      return await db.delete(
+        tablevacina,
+        where: '${VacinaFields.id} = ?',
         whereArgs: [id],
       );
     } else {
