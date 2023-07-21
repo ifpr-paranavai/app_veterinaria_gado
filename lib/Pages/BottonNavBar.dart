@@ -34,19 +34,19 @@ class _MyHomePageState extends State<BottonNavBar> {
             icon: Icon(CupertinoIcons.square_favorites),
             label: 'Formulário',
             activeIcon:
-                Icon(CupertinoIcons.square_favorites, color: Colors.blue),
+                Icon(CupertinoIcons.square_favorites, color: Colors.green),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
             //title: Text(''),
             label: 'Pesquisar',
-            activeIcon: Icon(Icons.search, color: Colors.blue),
+            activeIcon: Icon(Icons.search, color: Colors.green),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             //title: Text('Settings'),
             label: 'Configurações',
-            activeIcon: Icon(Icons.search, color: Colors.blue),
+            activeIcon: Icon(Icons.search, color: Colors.green),
           ),
         ],
       ),

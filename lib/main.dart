@@ -2,25 +2,31 @@ import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Pages/BottonNavBar.dart';
 import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
 import 'package:app_veterinaria/Pages/IntermedieteScreen.dart';
-import 'package:app_veterinaria/Pages/MenuLateral.dart';
+import 'package:app_veterinaria/Services/theme_services.dart';
+import 'package:app_veterinaria/ui/MenuLateral.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
+import 'package:app_veterinaria/ui/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 final gadoDatabase = NotesDatabase.instance;
-void main() => runApp(new MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      //theme: ThemeData.dark(),
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: Themes.light,
+      darkTheme: Themes.dark,
+      themeMode: ThemeService().theme,
       home: LoginScreen(),
     );
   }

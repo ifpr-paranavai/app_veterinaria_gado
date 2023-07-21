@@ -44,6 +44,10 @@ dependencies:
   flutter_staggered_grid_view: 
   shared_preferences: 
   brasil_fields: ^1.10.0
+  get_storage: 
+  get: 
+  flutter_local_notifications: 9.0.0
+  flutter_native_timezone: 
   # firebase_core: 
   # firebase_auth: 
 

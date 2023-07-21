@@ -1,4 +1,4 @@
-import 'package:app_veterinaria/Pages/MenuLateral.dart';
+import 'package:app_veterinaria/ui/MenuLateral.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';

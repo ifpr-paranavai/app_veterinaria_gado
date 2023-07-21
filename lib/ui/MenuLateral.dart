@@ -7,13 +7,14 @@ import 'package:app_veterinaria/Pages/Formularios/Matriz/HeadquartersList.dart';
 import 'package:app_veterinaria/Pages/Formularios/Notes/NoteCadastro.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/CadastroPesagem.dart';
 import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListagemPesagemAnimal.dart';
+import 'package:app_veterinaria/Pages/Formularios/event/ListagemEventos.dart';
 import 'package:app_veterinaria/Pages/Formularios/vacina/CadastroVacina.dart';
 import 'package:app_veterinaria/Pages/Formularios/vacina/ListagemVacinaAnimal.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:flutter/material.dart';
 
-import 'Formularios/Matriz/headquartersRegistration.dart';
+import '../Pages/Formularios/Matriz/headquartersRegistration.dart';
 
 class MenuLateral extends StatefulWidget {
   final farm;
@@ -26,7 +27,7 @@ class MenuLateral extends StatefulWidget {
 
 class _MenuLateralState extends State<MenuLateral> {
   var _farm;
-
+  
   @override
   void initState() {
     super.initState();
@@ -41,6 +42,7 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Pesagem do animal', 'icon': Icons.accessibility},
     {'title': 'Histórico do animal', 'icon': Icons.h_plus_mobiledata},
     {'title': 'Vacinas', 'icon': Icons.vaccines},
+    {'title': 'Eventos', 'icon': Icons.calendar_month_outlined},
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -212,6 +214,13 @@ class _MenuLateralState extends State<MenuLateral> {
           context,
           MaterialPageRoute(
               builder: (context) => ListagemVacinaAnimal(farm: _farm)),
+        );
+        break;
+        case 6:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ListagemEventos(farm: _farm)),
         );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima
