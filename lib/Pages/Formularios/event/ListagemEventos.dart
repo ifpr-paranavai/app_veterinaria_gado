@@ -1,7 +1,13 @@
 import 'package:app_veterinaria/Services/notification_services.dart';
 import 'package:app_veterinaria/Services/theme_services.dart';
+import 'package:app_veterinaria/ui/theme.dart';
+import 'package:app_veterinaria/ui/widgets/add_task_bar.dart';
+import 'package:app_veterinaria/ui/widgets/button.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class ListagemEventos extends StatefulWidget {
   final farm;
@@ -12,6 +18,8 @@ class ListagemEventos extends StatefulWidget {
 }
 
 class _ListagemEventosState extends State<ListagemEventos> {
+  DateTime _selectedDate = DateTime.now();
+
   var notifyHelper;
 
   @override
@@ -28,10 +36,64 @@ class _ListagemEventosState extends State<ListagemEventos> {
       appBar: _appBar(),
       body: Column(
         children: [
-          Text(
-            "Theme Data",
-            style: TextStyle(fontSize: 30),
-          )
+          _addTaskBar(),
+          _addDateBar(),
+        ],
+      ),
+    );
+  }
+
+  _addDateBar() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20, left: 20),
+      child: DatePicker(
+        DateTime.now(),
+        height: 100,
+        width: 80,
+        initialSelectedDate: DateTime.now(),
+        selectionColor: primaryClr,
+        selectedTextColor: Colors.white,
+        dateTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w600, color: Colors.grey),
+        ),
+        dayTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey),
+        ),
+        monthTextStyle: GoogleFonts.lato(
+          textStyle: TextStyle(
+              fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey),
+        ),
+        onDateChange: (date) {
+          _selectedDate = date;
+        },
+      ),
+    );
+  }
+
+  _addTaskBar() {
+    return Container(
+      margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat.yMMMEd().format(DateTime.now()),
+                  style: subHeadingStyle,
+                ),
+                Text(
+                  "Today",
+                  style: headingStyle,
+                )
+              ],
+            ),
+          ),
+          MyButton(label: "+ Add Evento", onTap: () => Get.to(AddTaskPage()))
         ],
       ),
     );
@@ -39,6 +101,7 @@ class _ListagemEventosState extends State<ListagemEventos> {
 
   _appBar() {
     return AppBar(
+      backgroundColor: context.theme.backgroundColor,
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();
@@ -51,14 +114,14 @@ class _ListagemEventosState extends State<ListagemEventos> {
           notifyHelper.scheduledNotification();
         },
         child: Icon(
-          Icons.nightlight_round,
+          Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
           size: 20,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       actions: [
-        Icon(
-          Icons.person,
-          size: 20,
+        CircleAvatar(
+          backgroundImage: AssetImage("assets/perfilEvento.jpg"),
         ),
         SizedBox(
           width: 20,

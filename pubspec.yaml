@@ -45,9 +45,11 @@ dependencies:
   shared_preferences: 
   brasil_fields: ^1.10.0
   get_storage: 
-  get: 
+  get:
+  google_fonts: 
   flutter_local_notifications: 9.0.0
   flutter_native_timezone: 
+  date_picker_timeline: 
   # firebase_core: 
   # firebase_auth: 
 
@@ -78,6 +80,7 @@ flutter:
     - assets/logo.png
     - assets/data.json
     - assets/LogoLogin.png
+    - assets/perfilEvento.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
