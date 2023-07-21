@@ -34,6 +34,7 @@ class _ListagemEventosState extends State<ListagemEventos> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
+      backgroundColor: context.theme.backgroundColor,
       body: Column(
         children: [
           _addTaskBar(),

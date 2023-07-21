@@ -13,6 +13,8 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _startTime = "10:30 PM";
   String _endTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
@@ -43,8 +45,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 "Add Evento",
                 style: headingStyle,
               ),
-              MyInputField(hint: "Insira um titulo", title: "Titulo"),
-              MyInputField(hint: "Insira uma observação", title: "Observarção"),
+              MyInputField(
+                hint: "Insira um titulo",
+                title: "Titulo",
+                controller: _titleController,
+              ),
+              MyInputField(
+                hint: "Insira uma observação",
+                title: "Observarção",
+                controller: _noteController,
+              ),
               MyInputField(
                 hint: DateFormat.yMd().format(_selectedDate),
                 title: "Data",
@@ -154,7 +164,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _colorPallete(),
-                  MyButton(label: "Criar Envento", onTap: () => null)
+                  MyButton(label: "Criar Envento", onTap: () => _validateDate)
                 ],
               ),
             ],
@@ -162,6 +172,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
     );
+  }
+
+  _validateDate() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      //add to database
+      Get.back();
+    } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
+      Get.snackbar("Obrigatório", "Todos os campos são obrigatórios!",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.white,
+          colorText: pinkClr,
+          icon: Icon(Icons.warning_amber_rounded));
+    }
   }
 
   _colorPallete() {
