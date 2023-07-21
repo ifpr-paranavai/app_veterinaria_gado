@@ -1,3 +1,5 @@
+import 'package:app_veterinaria/Model/task.dart';
+import 'package:app_veterinaria/controller/task_controller.dart';
 import 'package:app_veterinaria/ui/theme.dart';
 import 'package:app_veterinaria/ui/widgets/button.dart';
 import 'package:app_veterinaria/ui/widgets/input_field.dart';
@@ -13,6 +15,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TaskController _taskController = Get.put(TaskController());
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -164,7 +167,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _colorPallete(),
-                  MyButton(label: "Criar Envento", onTap: () => _validateDate)
+                  MyButton(label: "Criar Envento", onTap: () => _validateDate())
                 ],
               ),
             ],
@@ -176,7 +179,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   _validateDate() {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
-      //add to database
+      _addTaskToDb();
       Get.back();
     } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
       Get.snackbar("Obrigatório", "Todos os campos são obrigatórios!",
@@ -185,6 +188,24 @@ class _AddTaskPageState extends State<AddTaskPage> {
           colorText: pinkClr,
           icon: Icon(Icons.warning_amber_rounded));
     }
+  }
+
+  _addTaskToDb() async {
+    int value = await _taskController.addTask(
+      task: Task(
+        note: _noteController.text,
+        title: _titleController.text,
+        date: DateFormat.yMd().format(_selectedDate),
+        startTime: _startTime,
+        endTime: _endTime,
+        remind: _selectedRemind,
+        repeat: _selectedRepeat,
+        color: _selectedColor,
+        isCompleted: 0,
+      ),
+    );
+
+    print("My id is " + "$value");
   }
 
   _colorPallete() {

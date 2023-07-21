@@ -24,7 +24,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
   TextEditingController _filterInput = TextEditingController();
 
   _fetchDataBreed() async {
-    final animais = await database.readAllNotes('gado', farmId: _farm.id);
+    final animais = await database.readAllNotes('task');
     setState(() {
       _animais = animais;
     });

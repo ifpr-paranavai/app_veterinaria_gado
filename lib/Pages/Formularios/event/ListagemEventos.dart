@@ -1,5 +1,6 @@
 import 'package:app_veterinaria/Services/notification_services.dart';
 import 'package:app_veterinaria/Services/theme_services.dart';
+import 'package:app_veterinaria/controller/task_controller.dart';
 import 'package:app_veterinaria/ui/theme.dart';
 import 'package:app_veterinaria/ui/widgets/add_task_bar.dart';
 import 'package:app_veterinaria/ui/widgets/button.dart';
@@ -19,7 +20,7 @@ class ListagemEventos extends StatefulWidget {
 
 class _ListagemEventosState extends State<ListagemEventos> {
   DateTime _selectedDate = DateTime.now();
-
+  final _taskController = Get.put(TaskController());
   var notifyHelper;
 
   @override
@@ -39,8 +40,27 @@ class _ListagemEventosState extends State<ListagemEventos> {
         children: [
           _addTaskBar(),
           _addDateBar(),
+          _showTasks(),
         ],
       ),
+    );
+  }
+
+  _showTasks() {
+    return Expanded(
+      child: Obx(() {
+        return ListView.builder(
+            itemCount: _taskController.taskList.length,
+
+            itemBuilder: (_, context) {
+              print(_taskController.taskList.length);
+              return Container(
+                width: 100,
+                height: 50,
+                color: Colors.green,
+              );
+            });
+      }),
     );
   }
 
