@@ -656,6 +656,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         where: '${VacinaFields.id} = ?',
         whereArgs: [id],
       );
+    } else if (tableName == 'task') {
+      return await db.delete(
+        tableTask,
+        where: '${TaskFields.id} = ?',
+        whereArgs: [id],
+      );
     } else {
       return await db.delete(tableNotes);
     }

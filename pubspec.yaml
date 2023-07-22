@@ -50,6 +50,7 @@ dependencies:
   flutter_local_notifications: 9.0.0
   flutter_native_timezone: 
   date_picker_timeline: 
+  flutter_staggered_animations: 
   # firebase_core: 
   # firebase_auth: 
 
