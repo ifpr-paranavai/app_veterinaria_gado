@@ -24,7 +24,7 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
   TextEditingController _filterInput = TextEditingController();
 
   _fetchDataBreed() async {
-    final animais = await database.readAllNotes('task');
+    final animais = await database.readAllNotes('gado', farmId: _farm.id);
     setState(() {
       _animais = animais;
     });
@@ -108,7 +108,8 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CadastroGado(headquarters: _farm.id)),
+            MaterialPageRoute(
+                builder: (context) => CadastroGado(headquarters: _farm.id)),
           ).then((value) => {
                 if (value == null) {_fetchDataBreed()}
               });
@@ -183,7 +184,8 @@ class _ListagemPesagemAnimalState extends State<ListagemPesagemAnimal> {
                             flex: 1,
                             child: Padding(
                               padding: EdgeInsets.only(
-                                  left: 40.0), // Define a margem esquerda desejada aqui
+                                  left:
+                                      40.0), // Define a margem esquerda desejada aqui
                               child: Row(
                                 children: [
                                   IconButton(

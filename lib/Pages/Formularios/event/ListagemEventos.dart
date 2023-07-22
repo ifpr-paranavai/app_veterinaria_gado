@@ -1,3 +1,4 @@
+import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:app_veterinaria/Services/notification_services.dart';
 import 'package:app_veterinaria/Services/theme_services.dart';
 import 'package:app_veterinaria/controller/task_controller.dart';
@@ -10,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+final db = NotesDatabase.instance;
+
 class ListagemEventos extends StatefulWidget {
   final farm;
   const ListagemEventos({super.key, required this.farm});
@@ -20,7 +23,8 @@ class ListagemEventos extends StatefulWidget {
 
 class _ListagemEventosState extends State<ListagemEventos> {
   DateTime _selectedDate = DateTime.now();
-  final _taskController = Get.put(TaskController());
+  final _taskController =
+      RxList<dynamic>(); // Using RxList<dynamic> here to make it observable
   var notifyHelper;
 
   @override
@@ -29,6 +33,16 @@ class _ListagemEventosState extends State<ListagemEventos> {
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
+
+    // Populate the _taskController with initial data from the database
+    _initializeTaskList();
+
+    print(_taskController);
+  }
+
+  Future<void> _initializeTaskList() async {
+    List<dynamic> tasks = await db.readAllNotes("task");
+    _taskController.assignAll(tasks);
   }
 
   @override
@@ -36,31 +50,28 @@ class _ListagemEventosState extends State<ListagemEventos> {
     return Scaffold(
       appBar: _appBar(),
       backgroundColor: context.theme.backgroundColor,
-      body: Column(
-        children: [
-          _addTaskBar(),
-          _addDateBar(),
-          _showTasks(),
-        ],
-      ),
+      body: Obx(() => Column(
+            children: [
+              _addTaskBar(),
+              _addDateBar(),
+              _showTasks(),
+            ],
+          )),
     );
   }
 
   _showTasks() {
     return Expanded(
-      child: Obx(() {
-        return ListView.builder(
-            itemCount: _taskController.taskList.length,
-
-            itemBuilder: (_, context) {
-              print(_taskController.taskList.length);
-              return Container(
-                width: 100,
-                height: 50,
-                color: Colors.green,
-              );
-            });
-      }),
+      child: ListView.builder(
+        itemCount: _taskController.length,
+        itemBuilder: (_, context) {
+          return Container(
+            width: 100,
+            height: 50,
+            color: Colors.green,
+          );
+        },
+      ),
     );
   }
 

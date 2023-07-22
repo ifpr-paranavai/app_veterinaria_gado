@@ -5,10 +5,12 @@ import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/historico.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/pesagem.dart';
+import 'package:app_veterinaria/Model/task.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
 import 'package:app_veterinaria/Model/vacina.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
+import 'package:get/get.dart';
 import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -133,6 +135,31 @@ CREATE TABLE $tableheadquarters(
 ''');
 
     await db.execute('''
+  CREATE TABLE $tableTask(
+    ${TaskFields.id} $idType,
+    ${TaskFields.title} $nulltextType,
+    ${TaskFields.note} $nulltextType,
+    ${TaskFields.isCompleted} $nullIntType,
+    ${TaskFields.date} $nulltextType,
+    ${TaskFields.startTime} $nulltextType,
+    ${TaskFields.endTime} $nulltextType,
+    ${TaskFields.color} $nullIntType,
+    ${TaskFields.remind} $nullIntType,
+    ${TaskFields.repeat} $nulltextType
+  )
+''');
+
+    // await db.execute(
+    //   "CREATE TABLE task("
+    //   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+    //   "title STRING, note TEXT, date STRING, "
+    //   "startTime STRING, endTime STRING, "
+    //   "remind INTEGER, repeat STRING, "
+    //   "color INTEGER, "
+    //   "isCompleted INTEGER)"
+    // );
+
+    await db.execute('''
   CREATE TABLE $tablevacina(
     ${VacinaFields.id} $idType,
     ${VacinaFields.nome} $nulltextType,
@@ -211,6 +238,9 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
           id = await db.insert(tableheadquarters, headquarters.toJson());
         }
         return headquarters.copy(id: id);
+      } else if (tableName == "task") {
+        Task task = object as Task;
+        return await db.insert("task", task.toJson());
       } else if (tableName == "pesagem") {
         var id;
         Pesagem pesagem = object as Pesagem;
@@ -259,6 +289,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
       print(e);
       return Exception("Algo deu errado");
     }
+  }
+
+  static Future<List<Map<String, dynamic>>> query() async {
+    final db = await instance.database;
+    print("Query function called");
+    return await db!.query("task");
   }
 
   //FILTRO COM PARTE DA STRING DE BUSCA
@@ -497,6 +533,11 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
             'SELECT * FROM $tableGado WHERE farmId = $farmId ORDER BY $orderBy');
 
         return result.map((json) => Gado.fromJson(json)).toList();
+      } else if (table == "task") {
+
+        final result = await db.rawQuery('SELECT * FROM task');
+        return result.map((json) => Task.fromJson(json)).toList();
+        
       } else if (table == "usuario") {
         final orderBy = '${UsuarioFields.name} ASC';
 
