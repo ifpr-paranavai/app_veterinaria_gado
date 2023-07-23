@@ -120,16 +120,30 @@ class _ListagemEventosState extends State<ListagemEventos> {
                     clr: primaryClr,
                     context: context,
                   ),
+            _bottomSheetButton(
+                label: "Deletar evento",
+                onTap: () {
+                  bd.delete(task.id!, "task");
+                  _initializeTaskList();
+                  Get.back();
+                },
+                clr: Colors.red[300]!,
+                context: context),
             SizedBox(
               height: 20,
             ),
             _bottomSheetButton(
-                label: "Deletar evento",
-                onTap: () {
-                  Get.back();
-                },
-                clr: Colors.red[300]!,
-                context: context)
+              label: "Cancelar",
+              onTap: () {
+                Get.back();
+              },
+              clr: Colors.red[300]!,
+              context: context,
+              isClose: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
@@ -149,10 +163,15 @@ class _ListagemEventosState extends State<ListagemEventos> {
         height: 55,
         width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
-          border:
-              Border.all(width: 2, color: isClose == true ? Colors.red : clr),
+          border: Border.all(
+              width: 2,
+              color: isClose == true
+                  ? Get.isDarkMode
+                      ? Colors.grey[600]!
+                      : Colors.grey[300]!
+                  : clr),
           borderRadius: BorderRadius.circular(20),
-          color: isClose == true ? Colors.red : clr,
+          color: isClose == true ? Colors.transparent : clr,
         ),
         child: Center(
           child: Text(
