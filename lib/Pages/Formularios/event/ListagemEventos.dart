@@ -71,22 +71,55 @@ class _ListagemEventosState extends State<ListagemEventos> {
       child: ListView.builder(
         itemCount: _taskController.length,
         itemBuilder: (_, index) {
-          return AnimationConfiguration.staggeredList(
-              position: index,
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _showBottomSheet(context, _taskController[index]);
-                        },
-                        child: TaskTile(_taskController[index]),
-                      )
-                    ],
+          Task task = _taskController[index];
+
+          // print(task.toJson());
+          if (task.repeat == 'Diariamente') {
+            DateTime date = DateFormat.jm().parse(task.startTime.toString());
+            var myTime = DateFormat("HH: mm").format(date);
+            notifyHelper.scheduledNotification(
+                int.parse(myTime.toString().split(":")[0]),
+                int.parse(myTime.toString().split(":")[1]),
+                task);
+
+            return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(context, task);
+                          },
+                          child: TaskTile(task),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ));
+                ));
+          }
+
+          if (task.date == DateFormat.yMd().format(_selectedDate)) {
+            return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(context, task);
+                          },
+                          child: TaskTile(task),
+                        )
+                      ],
+                    ),
+                  ),
+                ));
+          } else {
+            return Container();
+          }
         },
       ),
     );
@@ -115,6 +148,8 @@ class _ListagemEventosState extends State<ListagemEventos> {
                 : _bottomSheetButton(
                     label: "Evento completo",
                     onTap: () {
+                      NotesDatabase.markTaskCompleted(task.id!);
+                      _initializeTaskList();
                       Get.back();
                     },
                     clr: primaryClr,
@@ -207,7 +242,9 @@ class _ListagemEventosState extends State<ListagemEventos> {
               fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey),
         ),
         onDateChange: (date) {
-          _selectedDate = date;
+          setState(() {
+            _selectedDate = date;
+          });
         },
       ),
     );

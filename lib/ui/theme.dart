@@ -9,6 +9,7 @@ const Color white = Colors.white;
 const Color primaryClr = bluishClr;
 const Color darkGreyClr = Color(0xFF121212);
 const Color darkHeaderClr = Color(0xFF424242);
+const Color blueState = Color.fromARGB(255, 97, 51, 237);
 
 class Themes {
   static final light = ThemeData(

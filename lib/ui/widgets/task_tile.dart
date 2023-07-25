@@ -18,7 +18,7 @@ class TaskTile extends StatelessWidget {
         //  width: SizeConfig.screenWidth * 0.78,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: _getBGClr(task?.color ?? 0),
+          color: _getBGClr(task?.color ?? 0, task?.isCompleted ?? 0),
         ),
         child: Row(children: [
           Expanded(
@@ -88,16 +88,19 @@ class TaskTile extends StatelessWidget {
     );
   }
 
-  _getBGClr(int no) {
+  _getBGClr(int no, int completed) {
+    if (completed == 1) {
+      return bluishClr;
+    }
     switch (no) {
       case 0:
-        return bluishClr;
+        return blueState;
       case 1:
         return pinkClr;
       case 2:
         return yellowClr;
       default:
-        return bluishClr;
+        return blueState;
     }
   }
 }

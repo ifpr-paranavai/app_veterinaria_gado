@@ -239,7 +239,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         )
                       : Container(),
                   backgroundColor: index == 0
-                      ? primaryClr
+                      ? blueState
                       : index == 1
                           ? pinkClr
                           : yellowClr,

@@ -149,16 +149,6 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    // await db.execute(
-    //   "CREATE TABLE task("
-    //   "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-    //   "title STRING, note TEXT, date STRING, "
-    //   "startTime STRING, endTime STRING, "
-    //   "remind INTEGER, repeat STRING, "
-    //   "color INTEGER, "
-    //   "isCompleted INTEGER)"
-    // );
-
     await db.execute('''
   CREATE TABLE $tablevacina(
     ${VacinaFields.id} $idType,
@@ -459,6 +449,15 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
     }
   }
 
+  static markTaskCompleted(int id) async {
+    final db = await instance.database;
+    return await db!.rawUpdate('''
+      UPDATE task
+      SET isCompleted = 1
+      WHERE _id = $id 
+    ''');
+  }
+
   Future<Object> validadeLogin(
       String itemString, String email, String password) async {
     final db = await instance.database;
@@ -534,10 +533,8 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
         return result.map((json) => Gado.fromJson(json)).toList();
       } else if (table == "task") {
-
         final result = await db.rawQuery('SELECT * FROM task');
         return result.map((json) => Task.fromJson(json)).toList();
-        
       } else if (table == "usuario") {
         final orderBy = '${UsuarioFields.name} ASC';
 
