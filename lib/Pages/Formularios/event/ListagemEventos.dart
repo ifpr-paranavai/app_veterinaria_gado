@@ -76,7 +76,7 @@ class _ListagemEventosState extends State<ListagemEventos> {
           // print(task.toJson());
           if (task.repeat == 'Diariamente') {
             DateTime date = DateFormat.jm().parse(task.startTime.toString());
-            var myTime = DateFormat("HH: mm").format(date);
+            var myTime = DateFormat("HH:mm").format(date);
             notifyHelper.scheduledNotification(
                 int.parse(myTime.toString().split(":")[0]),
                 int.parse(myTime.toString().split(":")[1]),

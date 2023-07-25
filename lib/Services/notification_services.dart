@@ -48,7 +48,7 @@ class NotifyHelper {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.time,
-        payload: "{$task.title}|" + "{$task.note}|");
+        payload: "{$task.title}|"+"{$task.note}|");
   }
 
   displayNotification({required String title, required String body}) async {
@@ -127,17 +127,14 @@ class NotifyHelper {
     tz.TZDateTime scheduleDate =
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minutes);
     if (scheduleDate.isBefore(now)) {
-      scheduleDate = scheduleDate.add(const Duration(days: 1));
+      scheduleDate = scheduleDate.add(const Duration(days:1));
     }
     return scheduleDate;
   }
 
-Future<void> _configureLocalTimeZone() async {
+  Future<void> _configureLocalTimeZone() async {
     tz.initializeTimeZones();
     final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.UTC);
-    // tz.setLocalLocation(tz.getLocation(timeZone));
-
-    // Use the 'UTC' timezone directly, which is equivalent to GMT
+    tz.setLocalLocation(tz.getLocation(timeZone));
   }
 }
