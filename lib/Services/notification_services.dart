@@ -48,7 +48,7 @@ class NotifyHelper {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.time,
-        payload: "{$task.title}|"+"{$task.note}|");
+        payload: "${task.title}|" + "${task.note}|");
   }
 
   displayNotification({required String title, required String body}) async {
@@ -70,7 +70,7 @@ class NotifyHelper {
       title,
       body,
       platformChannelSpecifics,
-      payload: 'It could be anything you pass',
+      payload: title,
     );
   }
 
@@ -91,7 +91,12 @@ class NotifyHelper {
     } else {
       print("Notification Done");
     }
-    Get.to(() => NotifiedPage(label: payload!));
+
+    if (payload == "Mudança no tema") {
+      
+    } else {
+      Get.to(() => NotifiedPage(label: payload!));
+    }
   }
 
   Future onDidReceiveLocalNotification(
@@ -127,7 +132,7 @@ class NotifyHelper {
     tz.TZDateTime scheduleDate =
         tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minutes);
     if (scheduleDate.isBefore(now)) {
-      scheduleDate = scheduleDate.add(const Duration(days:1));
+      scheduleDate = scheduleDate.add(const Duration(days: 1));
     }
     return scheduleDate;
   }
