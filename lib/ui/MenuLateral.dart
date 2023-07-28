@@ -12,6 +12,7 @@ import 'package:app_veterinaria/Pages/Formularios/vacina/CadastroVacina.dart';
 import 'package:app_veterinaria/Pages/Formularios/vacina/ListagemVacinaAnimal.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
+import 'package:app_veterinaria/uplodeCsv/bulkUpload.dart';
 import 'package:flutter/material.dart';
 
 import '../Pages/Formularios/Matriz/headquartersRegistration.dart';
@@ -27,7 +28,7 @@ class MenuLateral extends StatefulWidget {
 
 class _MenuLateralState extends State<MenuLateral> {
   var _farm;
-  
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +44,7 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Histórico do animal', 'icon': Icons.h_plus_mobiledata},
     {'title': 'Vacinas', 'icon': Icons.vaccines},
     {'title': 'Eventos', 'icon': Icons.calendar_month_outlined},
+    {'title': 'Qualificação Animal', 'icon': Icons.document_scanner_outlined}
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -206,21 +208,27 @@ class _MenuLateralState extends State<MenuLateral> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
+          MaterialPageRoute(
+              builder: (context) => ListagemHistoricoAnimal(farm: _farm)),
         );
         break;
-        case 5:
+      case 5:
         Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => ListagemVacinaAnimal(farm: _farm)),
         );
         break;
-        case 6:
+      case 6:
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => ListagemEventos(farm: _farm)),
+          MaterialPageRoute(builder: (context) => ListagemEventos(farm: _farm)),
+        );
+        break;
+      case 7:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => bulkUpload(farm: _farm)),
         );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima

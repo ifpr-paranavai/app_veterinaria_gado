@@ -51,6 +51,11 @@ dependencies:
   flutter_native_timezone: 
   date_picker_timeline: 
   flutter_staggered_animations: 
+  file_picker: ^4.6.1
+  csv: ^5.0.1
+  path_provider: ^2.0.10
+  open_file: ^3.2.1
+  spreadsheet_decoder: ^1.1.0
   # firebase_core: 
   # firebase_auth: 
 
