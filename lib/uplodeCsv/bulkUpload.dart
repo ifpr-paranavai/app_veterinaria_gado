@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:csv/csv.dart';
+import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle, rootBundle;
-import 'package:csv/csv.dart';
+import 'package:gsheets/gsheets.dart';
 
 class bulkUpload extends StatefulWidget {
   final farm;
@@ -120,22 +122,32 @@ class _bulkUploadState extends State<bulkUpload> {
   void _pickFile() async {
     final result = await FilePicker.platform.pickFiles(allowMultiple: false);
 
-    // if no file is picked
+    // If no file is picked
     if (result == null) return;
-    // we will log the name, size and path of the
-    // first picked file (if multiple are selected)
+
+    // We will log the name and path of the first picked file (if multiple are selected)
     print(result.files.first.name);
-    filePath = result.files.first.path!;
 
-    final input = File(filePath!).openRead();
-    final fields = await input
-        .transform(utf8.decoder)
-        .transform(const CsvToListConverter())
-        .toList();
-    print(fields);
+    try {
+      final filePath = result.files.first.path!;
+      var bytes = File(filePath).readAsBytesSync();
+      var excel = Excel.decodeBytes(bytes);
 
-    setState(() {
-      _data = fields;
-    });
+      for (var table in excel.tables.keys) {
+        print(table); //sheet Name
+        print(excel.tables[table]!.maxCols);
+        print(excel.tables[table]!.maxRows);
+        for (var row in excel.tables[table]!.rows) {
+          print('$row');
+        }
+      }
+
+      // setState(() {
+      //   _data = fields;
+      // });
+
+    } catch (e) {
+      print(e);
+    }
   }
 }
