@@ -19,104 +19,95 @@ class _bulkUploadState extends State<bulkUpload> {
   List<List<dynamic>> _data = [];
   String? filePath;
 
-  // This function is triggered when the  button is pressed
+  // Declare a list to store the Excel data
+  List<List<dynamic>> dataOfExcel = [];
+
+  // This function is triggered when the button is pressed
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            // Status bar color
-            statusBarColor: Colors.white,
-            // Status bar brightness (optional)
-            statusBarIconBrightness:
-                Brightness.dark, // For Android (dark icons)
-            statusBarBrightness: Brightness.light, // For iOS (dark icons)
-          ),
-          title: const Text("Bulk Upload",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-              )),
+      appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
         ),
-        body: Column(
-          children: [
-            ElevatedButton(
-              child: const Text("Upload FIle"),
-              onPressed: () {
-                _pickFile();
-              },
+        title: const Text(
+          "Bulk Upload",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20.0,
+          ),
+        ),
+      ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            child: const Text("Upload File"),
+            onPressed: () {
+              _pickFile();
+            },
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: dataOfExcel.isNotEmpty
+                  ? DataTable(
+                      columns: [
+                        DataColumn(label: Text('$dataOfExcel[0]')),
+                        DataColumn(label: Text('Column 2')),
+                        DataColumn(label: Text('Column 3')),
+                        DataColumn(label: Text('Column 3')),
+                        // Add more DataColumn widgets for additional columns
+                      ],
+                      rows: buildDataRowList(),
+                    )
+                  : Text('No data available.'),
             ),
-            ListView.builder(
-              itemCount: _data.length,
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (_, index) {
-                return Card(
-                  margin: const EdgeInsets.all(3),
-                  color: index == 0 ? Colors.amber : Colors.white,
-                  child: ListTile(
-                    leading: Text(
-                      _data[index][0].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: index == 0 ? 18 : 15,
-                          fontWeight:
-                              index == 0 ? FontWeight.bold : FontWeight.normal,
-                          color: index == 0 ? Colors.red : Colors.black),
-                    ),
-                    title: Text(
-                      _data[index][3],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: index == 0 ? 18 : 15,
-                          fontWeight:
-                              index == 0 ? FontWeight.bold : FontWeight.normal,
-                          color: index == 0 ? Colors.red : Colors.black),
-                    ),
-                    trailing: Text(
-                      _data[index][4].toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: index == 0 ? 18 : 15,
-                          fontWeight:
-                              index == 0 ? FontWeight.bold : FontWeight.normal,
-                          color: index == 0 ? Colors.red : Colors.black),
-                    ),
-                  ),
-                );
+          ),
+          Container(
+            child: ElevatedButton(
+              onPressed: () async {
+                // Your iteration logic here
+                for (var element in dataOfExcel.skip(1)) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(element.toString()),
+                  ));
+                }
               },
+              child: const Text("Iterate Data"),
             ),
-            Container(
-              child: ElevatedButton(
-                onPressed: () async {
-                  // set loading to true here
+          ),
+        ],
+      ),
+    );
+  }
 
-                  for (var element in _data
-                      .skip(1)) // for skip first value bcs its contain name
-                  {
-                    // var mydata = {
-                    //   "data": {
-                    //     "certificateType": "ProofOfEducation",
-                    //     "membershipNum": element[0],   if you want to iterate only name then use element[0]
-                    //     "registrationNum": element[1],
-                    //     "serialNum": element[2],
-                    //     "bcName": element[3],
-                    //     "bcExam": element[4],
-                    //     "date":element[5]
-                    //   },
-                    //
-                    // };
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(element.toString()),
-                    ));
-                  }
-                },
-                child: const Text("Iterate Data"),
-              ),
+  List<DataRow> buildDataRowList() {
+    return this.dataOfExcel.map((rowValues) {
+      if (rowValues.length != 3) {
+        // Handle the case when the row has an incorrect number of cells
+        // For example, you can skip the row or fill missing cells with default values.
+        return DataRow(cells: [
+          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
+          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
+          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
+          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
+        ]);
+      }
+
+      return DataRow(
+        cells: rowValues.map((cellValue) {
+          return DataCell(
+            Text(
+              cellValue.toString(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, color: Colors.black),
             ),
-          ],
-        ));
+          );
+        }).toList(),
+      );
+    }).toList();
   }
 
   void _pickFile() async {
@@ -137,14 +128,35 @@ class _bulkUploadState extends State<bulkUpload> {
         print(table); //sheet Name
         print(excel.tables[table]!.maxCols);
         print(excel.tables[table]!.maxRows);
-        for (var row in excel.tables[table]!.rows) {
-          print('$row');
+
+        // Clear the previous data before processing a new sheet
+        this.dataOfExcel.clear();
+
+        // Iterate through rows, starting from index 13 (row 14) to index 57 (row 58)
+        for (var rowIndex = 12; rowIndex <= 56; rowIndex++) {
+          var row = excel.tables[table]!.rows[rowIndex];
+
+          // Iterate through columns, starting from index 2 (column B) to index 16 (column P)
+          List<dynamic> rowValues = [];
+          for (var colIndex = 2; colIndex <= 15; colIndex++) {
+            var cellValue = row[colIndex]?.value;
+            if (cellValue is String) {
+              cellValue = cellValue
+                  .replaceAll("<si><t>", "")
+                  .replaceAll("</t></si>", "");
+            }
+            rowValues.add(cellValue);
+          }
+
+          this.dataOfExcel.add(rowValues);
         }
       }
 
-      // setState(() {
-      //   _data = fields;
-      // });
+      this.setState(() {
+        _data = dataOfExcel;
+      });
+
+      // Now dataOfExcel contains the values of cells from row 13 to 57 and columns B to P
 
     } catch (e) {
       print(e);
