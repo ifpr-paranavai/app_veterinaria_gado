@@ -5,6 +5,7 @@ import 'package:app_veterinaria/Model/headquarters.dart';
 import 'package:app_veterinaria/Model/historico.dart';
 import 'package:app_veterinaria/Model/note.dart';
 import 'package:app_veterinaria/Model/pesagem.dart';
+import 'package:app_veterinaria/Model/qualificacaoAnimal.dart';
 import 'package:app_veterinaria/Model/task.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
@@ -165,6 +166,16 @@ CREATE TABLE $tableheadquarters(
 ''');
 
     await db.execute('''
+  CREATE TABLE $tablequalificacaoanimal(
+    ${QualificacaoAnimalFields.id} $idType,
+    ${QualificacaoAnimalFields.valor} $nulltextType,
+    ${QualificacaoAnimalFields.dataAmostra} $nulltextType,
+    ${QualificacaoAnimalFields.identificadorAnimal} $nulldateType,
+    ${QualificacaoAnimalFields.fazendaId} $intType
+  )
+''');
+
+    await db.execute('''
 CREATE TABLE $tableUsuarioHeadquarters(
   id $idType,
   userId $intType,
@@ -251,6 +262,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
           id = await db.insert(tablehistorico, historico.toJson());
         }
         return historico.copy(id: id);
+      } else if (tableName == "excel_qualificacao_animal_individual") {
+        var id;
+        QualificacaoAnimal qualificacaoAnimal = object as QualificacaoAnimal;
+        id = await db.insert(
+            tablequalificacaoanimal, qualificacaoAnimal.toJson());
+        return qualificacaoAnimal.copy(id: id);
       } else if (tableName == "vacina") {
         var id;
         Vacina vacina = object as Vacina;

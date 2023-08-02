@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_veterinaria/DataBase/notes_database.dart';
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle, rootBundle;
 import 'package:gsheets/gsheets.dart';
+
+import '../Model/qualificacaoAnimal.dart';
+
+final db = NotesDatabase.instance;
 
 class bulkUpload extends StatefulWidget {
   final farm;
@@ -16,11 +21,19 @@ class bulkUpload extends StatefulWidget {
 }
 
 class _bulkUploadState extends State<bulkUpload> {
+  bool hasData = false;
   List<List<dynamic>> _data = [];
   String? filePath;
+  var _farm;
 
   // Declare a list to store the Excel data
   List<List<dynamic>> dataOfExcel = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _farm = widget.farm;
+  }
 
   // This function is triggered when the button is pressed
 
@@ -49,6 +62,37 @@ class _bulkUploadState extends State<bulkUpload> {
               _pickFile();
             },
           ),
+          hasData
+              ? ElevatedButton(
+                  child: const Text("Salvar dados"),
+                  onPressed: () async {
+                    for (List<dynamic> rowData in dataOfExcel) {
+                      String? identificadorAnimal;
+                      String? dataAmostra;
+                      String? valor;
+                      int? fazendaId;
+
+                      if (rowData.length == 14) {
+                        // Defina os valores para cada campo da tabela
+                        identificadorAnimal = rowData[0].toString();
+                        dataAmostra = rowData[1].toString();
+                        valor = rowData[2].toString();
+                      }
+
+                      QualificacaoAnimal qualificacaoAnimal =
+                          QualificacaoAnimal(
+                        identificadorAnimal: identificadorAnimal,
+                        dataAmostra: dataAmostra,
+                        valor: valor,
+                        fazendaId: _farm.id,
+                      );
+
+                      await db.create(qualificacaoAnimal,
+                          'excel_qualificacao_animal_individual');
+                    }
+                  },
+                )
+              : Container(),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical, // Rolagem vertical
@@ -92,7 +136,6 @@ class _bulkUploadState extends State<bulkUpload> {
           ),
         ],
       ),
-
     );
   }
 
@@ -177,6 +220,8 @@ class _bulkUploadState extends State<bulkUpload> {
       this.setState(() {
         _data = dataOfExcel;
       });
+
+      hasData = true;
 
       print(dataOfExcel[0][0]);
 
