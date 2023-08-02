@@ -51,18 +51,30 @@ class _bulkUploadState extends State<bulkUpload> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: dataOfExcel.isNotEmpty
-                  ? DataTable(
-                      columns: [
-                        DataColumn(label: Text('$dataOfExcel[0]')),
-                        DataColumn(label: Text('Column 2')),
-                        DataColumn(label: Text('Column 3')),
-                        DataColumn(label: Text('Column 3')),
-                        // Add more DataColumn widgets for additional columns
-                      ],
-                      rows: buildDataRowList(),
-                    )
-                  : Text('No data available.'),
+              scrollDirection: Axis.vertical, // Rolagem vertical
+              child: SizedBox(
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal, // Rolagem horizontal
+                  child: dataOfExcel.isNotEmpty
+                      ? DataTable(
+                          columns: [
+                            DataColumn(label: Text('Nroa analisados')),
+                            DataColumn(label: Text('20/07/23')),
+                            DataColumn(label: Text('21/06/23')),
+                            DataColumn(label: Text('18/05/23')),
+                            DataColumn(label: Text('20/04/23')),
+                            DataColumn(label: Text('21/03/23')),
+                            DataColumn(label: Text('23/02/23')),
+                            DataColumn(label: Text('19/01/23')),
+                            DataColumn(label: Text('16/12/22')),
+                            // Adicione mais DataColumn widgets para colunas adicionais
+                          ],
+                          rows: buildDataRowList(),
+                        )
+                      : Text('No data available.'),
+                ),
+              ),
             ),
           ),
           Container(
@@ -80,6 +92,7 @@ class _bulkUploadState extends State<bulkUpload> {
           ),
         ],
       ),
+
     );
   }
 
@@ -89,10 +102,15 @@ class _bulkUploadState extends State<bulkUpload> {
         // Handle the case when the row has an incorrect number of cells
         // For example, you can skip the row or fill missing cells with default values.
         return DataRow(cells: [
-          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
-          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
-          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
-          DataCell(Text('Invalid Row', textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[0].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[1].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[2].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[3].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[4].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[5].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[6].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[7].toString(), textAlign: TextAlign.center)),
+          DataCell(Text(rowValues[8].toString(), textAlign: TextAlign.center)),
         ]);
       }
 
@@ -140,10 +158,14 @@ class _bulkUploadState extends State<bulkUpload> {
           List<dynamic> rowValues = [];
           for (var colIndex = 2; colIndex <= 15; colIndex++) {
             var cellValue = row[colIndex]?.value;
-            if (cellValue is String) {
-              cellValue = cellValue
+            if (cellValue is SharedString) {
+              String stringValue =
+                  cellValue.toString(); // Converter para uma string
+              stringValue = stringValue
                   .replaceAll("<si><t>", "")
                   .replaceAll("</t></si>", "");
+              // Agora stringValue contém o valor da string sem as tags <si><t> e </t></si>
+              cellValue = stringValue;
             }
             rowValues.add(cellValue);
           }
@@ -155,6 +177,8 @@ class _bulkUploadState extends State<bulkUpload> {
       this.setState(() {
         _data = dataOfExcel;
       });
+
+      print(dataOfExcel[0][0]);
 
       // Now dataOfExcel contains the values of cells from row 13 to 57 and columns B to P
 
