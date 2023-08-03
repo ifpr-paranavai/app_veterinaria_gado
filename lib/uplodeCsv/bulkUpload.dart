@@ -58,7 +58,7 @@ class _bulkUploadState extends State<bulkUpload> {
       body: Column(
         children: [
           ElevatedButton(
-            child: const Text("Visual a lista de medições"),
+            child: const Text("Visualizar a lista de medições"),
             onPressed: () {
               _navigateListQuafAni();
             },
@@ -79,24 +79,25 @@ class _bulkUploadState extends State<bulkUpload> {
                       String? valor;
                       int? fazendaId;
 
-                      for(dynamic item in rowData) {
+                      for (int i = 1; i < rowData.length; i++) {
+                        dynamic item = rowData[i];
                         if (rowData.length == 14) {
-                        // Defina os valores para cada campo da tabela
-                        identificadorAnimal = rowData[0].toString();
-                        dataAmostra = item.toString();
-                        valor = item.toString();
-                      }
+                          // Defina os valores para cada campo da tabela
+                          identificadorAnimal = rowData[0].toString();
+                          dataAmostra = item.toString();
+                          valor = item.toString();
+                        }
 
-                      QualificacaoAnimal qualificacaoAnimal =
-                          QualificacaoAnimal(
-                        identificadorAnimal: identificadorAnimal,
-                        dataAmostra: dataAmostra,
-                        valor: valor,
-                        fazendaId: _farm.id,
-                      );
+                        QualificacaoAnimal qualificacaoAnimal =
+                            QualificacaoAnimal(
+                          identificadorAnimal: identificadorAnimal,
+                          dataAmostra: dataAmostra,
+                          valor: valor,
+                          fazendaId: _farm.id,
+                        );
 
-                      await db.create(qualificacaoAnimal,
-                          'excel_qualificacao_animal_individual');
+                        await db.create(qualificacaoAnimal,
+                            'excel_qualificacao_animal_individual');
                       }
                     }
                   },
@@ -244,7 +245,8 @@ class _bulkUploadState extends State<bulkUpload> {
   _navigateListQuafAni() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ListagemQualificacaoAnimal(farmId: _farm)),
+      MaterialPageRoute(
+          builder: (context) => ListagemQualificacaoAnimal(farmId: _farm)),
     );
   }
 }

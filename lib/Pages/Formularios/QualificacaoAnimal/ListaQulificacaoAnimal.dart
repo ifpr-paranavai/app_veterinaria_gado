@@ -200,7 +200,7 @@ class _ListagemQualificacaoAnimalState
                                       MaterialPageRoute(
                                         builder: (context) =>
                                             ListagemDeQualificacaoComValoresPorAnimal(
-                                          animalId: 12,
+                                          animalId: object.identificadorAnimal,
                                         ),
                                       ),
                                     ).then((value) => {

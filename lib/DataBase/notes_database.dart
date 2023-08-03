@@ -538,7 +538,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
   }
 
   Future<List<Object>> readAllNotes(String table,
-      {int? farmId, int? animalId}) async {
+      {int? farmId, int? animalId, String? identificador}) async {
     try {
       final db = await instance.database;
 
@@ -604,6 +604,11 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         final orderBy = '${QualificacaoAnimalFields.identificadorAnimal} ASC';
         final result = await db.rawQuery('''
         SELECT identificadorAnimal, COUNT(*) as count FROM $tablequalificacaoanimal WHERE fazendaId = $animalId GROUP BY identificadorAnimal ORDER BY $orderBy;
+        ''');
+        return result.map((json) => QualificacaoAnimal.fromJson(json)).toList();
+      } else if (table == "qualificacao_por_animal") {
+        final result = await db.rawQuery('''
+        SELECT identificadorAnimal, valor FROM $tablequalificacaoanimal WHERE identificadorAnimal = '${identificador!.replaceAll("'", "''")}';
         ''');
         return result.map((json) => QualificacaoAnimal.fromJson(json)).toList();
       } else {

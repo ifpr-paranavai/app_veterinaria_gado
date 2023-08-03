@@ -9,31 +9,34 @@ final database = NotesDatabase.instance;
 
 class ListagemDeQualificacaoComValoresPorAnimal extends StatefulWidget {
   final animalId;
-  const ListagemDeQualificacaoComValoresPorAnimal({super.key, required this.animalId});
+  const ListagemDeQualificacaoComValoresPorAnimal(
+      {super.key, required this.animalId});
 
   @override
-  State<ListagemDeQualificacaoComValoresPorAnimal> createState() => _ListagemDeQualificacaoComValoresPorAnimalState();
+  State<ListagemDeQualificacaoComValoresPorAnimal> createState() =>
+      _ListagemDeQualificacaoComValoresPorAnimalState();
 }
 
-class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQualificacaoComValoresPorAnimal> {
+class _ListagemDeQualificacaoComValoresPorAnimalState
+    extends State<ListagemDeQualificacaoComValoresPorAnimal> {
   List historicos = [];
 
-  var _animalid;
+  var _animalidentificador;
 
   TextEditingController _filterInput = TextEditingController();
 
   _fetchDataHistorico() async {
-    final animais =
-        await database.readAllNotes('historico', animalId: _animalid);
+    final relatorios = await database.readAllNotes('qualificacao_por_animal',
+        identificador: _animalidentificador);
     setState(() {
-      historicos = animais;
+      historicos = relatorios;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _animalid = widget.animalId;
+    _animalidentificador = widget.animalId;
     _fetchDataHistorico();
   }
 
@@ -45,7 +48,7 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Historico por animal'),
+        title: Text('Relatorio de qualidade'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -85,7 +88,7 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
                         ),
                         onPressed: () async {
                           final itens = await database.readNote(
-                              'historico', _filterInput.text);
+                              'qualificacao_por_animal', _filterInput.text);
                           if (itens is List) {
                             setState(
                               () {
@@ -143,7 +146,7 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Tipo',
+                  'Qualidade',
                   style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 0),
                     fontWeight: FontWeight.bold,
@@ -176,8 +179,8 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
                   index,
                   Container(
                     color: index % 2 == 0
-                        ? Color.fromARGB(167, 32, 121, 66)
-                        : Color.fromARGB(255, 202, 231, 190),
+                        ? Color.fromARGB(167, 64, 177, 108)
+                        : Color.fromARGB(255, 155, 165, 151),
                     child: ListTile(
                       //leading: Icon(Icons.add_a_photo),
                       title: Row(
@@ -188,7 +191,7 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  convertDat(object.diaOcorrencia),
+                                  object.identificadorAnimal,
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
@@ -201,8 +204,26 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  object.tipo == 1 ? "Ocorrencia" : 'Vacina',
-                                  //style: TextStyle(color: Colors.white),
+                                  object.valor != "-" &&
+                                          int.parse(object.valor) < 180
+                                      ? "Sadia(${object.valor})"
+                                      : object.valor != "-" &&
+                                              int.parse(object.valor) >= 180 &&
+                                              int.parse(object.valor) <= 200
+                                          ? "Problema(${object.valor})"
+                                          : "${object.valor}",
+                                  style: TextStyle(
+                                    color: object.valor != "-" &&
+                                            int.parse(object.valor) < 180
+                                        ? Color.fromARGB(255, 115, 254, 0)
+                                        : object.valor != "-" &&
+                                                int.parse(object.valor) >=
+                                                    180 &&
+                                                object.valor != "-" &&
+                                                int.parse(object.valor) <= 200
+                                            ? Color.fromARGB(255, 218, 218, 0)
+                                            : Color.fromARGB(255, 254, 0, 42),
+                                  ),
                                 ),
                               ],
                             ),
@@ -256,11 +277,5 @@ class _ListagemDeQualificacaoComValoresPorAnimalState extends State<ListagemDeQu
         ],
       ),
     );
-  }
-
-  convertDat(DateTime dateTime) {
-    DateFormat formatter = DateFormat('dd/MM/yyyy');
-    String formattedHour = formatter.format(dateTime);
-    return formattedHour;
   }
 }
