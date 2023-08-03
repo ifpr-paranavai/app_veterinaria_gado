@@ -600,6 +600,12 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               SELECT * FROM $tablevacina WHERE idAnimal = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Vacina.fromJson(json)).toList();
+      } else if (table == "excel_qualificacao_animal_individual") {
+        final orderBy = '${QualificacaoAnimalFields.identificadorAnimal} ASC';
+        final result = await db.rawQuery('''
+        SELECT identificadorAnimal, COUNT(*) as count FROM $tablequalificacaoanimal WHERE fazendaId = $animalId GROUP BY identificadorAnimal ORDER BY $orderBy;
+        ''');
+        return result.map((json) => QualificacaoAnimal.fromJson(json)).toList();
       } else {
         final orderBy = '${NoteFields.time} ASC';
 

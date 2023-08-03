@@ -1,42 +1,47 @@
 import 'package:app_veterinaria/DataBase/notes_database.dart';
-import 'package:app_veterinaria/Pages/Formularios/Breed/BreedRegistration.dart';
-import 'package:app_veterinaria/Pages/Formularios/Gado/CadastroGado.dart';
-import 'package:app_veterinaria/Pages/Formularios/Historic/ListagemHistorico.dart';
-import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListaPesagem.dart';
+import 'package:app_veterinaria/Pages/Formularios/Historic/HistoricRegistration.dart';
+import 'package:app_veterinaria/Pages/Formularios/QualificacaoAnimal/ListaDeQualificacaoComValoresPorAnimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
 
 final database = NotesDatabase.instance;
 
-class ListagemHistoricoAnimal extends StatefulWidget {
-  final farm;
-  const ListagemHistoricoAnimal({super.key, required this.farm});
+class ListagemQualificacaoAnimal extends StatefulWidget {
+  final animalId = 0;
+  final farmId;
+  const ListagemQualificacaoAnimal({super.key, required this.farmId});
 
   @override
-  State<ListagemHistoricoAnimal> createState() =>
-      _ListagemHistoricoAnimalState();
+  State<ListagemQualificacaoAnimal> createState() =>
+      _ListagemQualificacaoAnimalState();
 }
 
-class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
-  List _animais = [];
+class _ListagemQualificacaoAnimalState
+    extends State<ListagemQualificacaoAnimal> {
+  List historicos = [];
 
-  var _farm;
+  var _animalid;
+  var _farmId;
 
   TextEditingController _filterInput = TextEditingController();
 
-  _fetchDataBreed() async {
-    final animais = await database.readAllNotes('gado', farmId: _farm.id);
+  _fetchData() async {
+    final animais = await database.readAllNotes(
+        'excel_qualificacao_animal_individual',
+        animalId: _farmId.id);
     setState(() {
-      _animais = animais;
+      historicos = animais;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    _farm = widget.farm;
-    _fetchDataBreed();
+    _farmId = widget.farmId;
+    _animalid = widget.animalId;
+    _fetchData();
   }
 
   @override
@@ -47,7 +52,7 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Animais Histórico'),
+        title: Text('Qualificacao Animal'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -87,11 +92,11 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
                         ),
                         onPressed: () async {
                           final itens = await database.readNote(
-                              'gado', _filterInput.text);
+                              'historico', _filterInput.text);
                           if (itens is List) {
                             setState(
                               () {
-                                _animais = itens;
+                                historicos = itens;
                               },
                             );
                           }
@@ -100,7 +105,7 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
                     ],
                   ),
                 ),
-                buildListagemHistoricoAnimal(),
+                buildListagemHistorico(),
               ],
             ),
           ),
@@ -110,10 +115,9 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => CadastroGado(headquarters: _farm.id)),
+            MaterialPageRoute(builder: (context) => HistoricRegistration()),
           ).then((value) => {
-                if (value == null) {_fetchDataBreed()}
+                if (value == null) {_fetchData()}
               });
         },
         child: Icon(Icons.add),
@@ -123,7 +127,7 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
     );
   }
 
-  buildListagemHistoricoAnimal() {
+  buildListagemHistorico() {
     return Card(
       child: Column(
         children: [
@@ -132,9 +136,9 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
             tileColor: Colors.grey[300],
             title: Padding(
               padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.18),
+                  left: MediaQuery.of(context).size.width * 0.14),
               child: Text(
-                'Nome',
+                'Identificador',
                 style: TextStyle(
                   color: Color.fromARGB(255, 0, 0, 0),
                   fontWeight: FontWeight.bold,
@@ -156,10 +160,10 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 40),
           ),
-          ..._animais
+          ...historicos
               .asMap()
               .map(
-                (index, animal) => MapEntry(
+                (index, object) => MapEntry(
                   index,
                   Container(
                     color: index % 2 == 0
@@ -175,7 +179,7 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  animal.nome,
+                                  object.identificadorAnimal,
                                   style: TextStyle(
                                       color: Color.fromARGB(255, 0, 0, 0)),
                                 ),
@@ -191,21 +195,19 @@ class _ListagemHistoricoAnimalState extends State<ListagemHistoricoAnimal> {
                               child: Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () => {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              ListagemHistorico(
-                                            animalId: animal.id,
-                                          ),
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ListagemDeQualificacaoComValoresPorAnimal(
+                                          animalId: 12,
                                         ),
-                                      ).then((value) => {
-                                            if (value == null)
-                                              {_fetchDataBreed()}
-                                          })
-                                    },
-                                    icon: Icon(Icons.h_plus_mobiledata),
+                                      ),
+                                    ).then((value) => {
+                                          if (value == null)
+                                            {_fetchData()}
+                                        }),
+                                    icon: Icon(Icons.find_in_page),
                                     color: Color.fromARGB(255, 41, 16, 122),
                                   ),
                                   // Restante do código...

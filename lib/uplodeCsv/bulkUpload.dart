@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_veterinaria/DataBase/notes_database.dart';
+import 'package:app_veterinaria/Pages/Formularios/QualificacaoAnimal/ListaQulificacaoAnimal.dart';
 import 'package:csv/csv.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -57,6 +58,12 @@ class _bulkUploadState extends State<bulkUpload> {
       body: Column(
         children: [
           ElevatedButton(
+            child: const Text("Visual a lista de medições"),
+            onPressed: () {
+              _navigateListQuafAni();
+            },
+          ),
+          ElevatedButton(
             child: const Text("Upload File"),
             onPressed: () {
               _pickFile();
@@ -72,11 +79,12 @@ class _bulkUploadState extends State<bulkUpload> {
                       String? valor;
                       int? fazendaId;
 
-                      if (rowData.length == 14) {
+                      for(dynamic item in rowData) {
+                        if (rowData.length == 14) {
                         // Defina os valores para cada campo da tabela
                         identificadorAnimal = rowData[0].toString();
-                        dataAmostra = rowData[1].toString();
-                        valor = rowData[2].toString();
+                        dataAmostra = item.toString();
+                        valor = item.toString();
                       }
 
                       QualificacaoAnimal qualificacaoAnimal =
@@ -89,6 +97,7 @@ class _bulkUploadState extends State<bulkUpload> {
 
                       await db.create(qualificacaoAnimal,
                           'excel_qualificacao_animal_individual');
+                      }
                     }
                   },
                 )
@@ -230,5 +239,12 @@ class _bulkUploadState extends State<bulkUpload> {
     } catch (e) {
       print(e);
     }
+  }
+
+  _navigateListQuafAni() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ListagemQualificacaoAnimal(farmId: _farm)),
+    );
   }
 }
