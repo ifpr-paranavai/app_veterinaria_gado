@@ -39,7 +39,7 @@ class NotesDatabase {
     final path = join(dbPath, filePath);
 
     // apaga os dados quando o app é iniciado
-    await deleteDatabase(path);
+    // await deleteDatabase(path);
 
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
