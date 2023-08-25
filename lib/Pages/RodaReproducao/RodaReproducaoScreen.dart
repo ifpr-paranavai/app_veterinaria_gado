@@ -4,34 +4,51 @@ import 'package:flutter/material.dart';
 class RodaReproducaoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 300,
-      child: Stack(
-        children: [
-          // Desenhar o círculo e as linhas
-          Positioned.fill(
-            child: CustomPaint(
-              painter: CircleAndLinesPainter(),
-            ),
-          ),
-          // Desenhar os ícones
-          for (var i = 0; i < 20; i++)
+    return Center(
+      child: SizedBox(
+        width: 300,
+        height: 300,
+        child: Stack(
+          children: [
+            // Desenhar o círculo e as linhas
             Positioned.fill(
-              child: Transform.rotate(
-                angle: i * pi / 10,
-                child: Transform.translate(
-                  offset: Offset(0, -130),
-                  child: Icon(
-                    Icons.star,
-                    size: 20,
-                    color: getColor(i),
-                  ),
-                ),
+              child: CustomPaint(
+                painter: CircleAndLinesPainter(),
               ),
             ),
-        ],
+            // Desenhar os ícones de estrela
+            for (var i = 0; i < 20; i++)
+              buildIcon(i, 20, Icon(
+                Icons.star,
+                size: 20,
+                color: getColor(i),
+              )),
+            // Desenhar os ícones de animais
+            for (var i = 0; i < 5; i++)
+              buildIcon(i, 5, CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.white,
+                child: Text(
+                  getAnimalEmoji(i),
+                  style: TextStyle(fontSize: 18),
+                ),
+              )),
+          ],
+        ),
       ),
+    );
+  }
+
+  // Constrói um ícone em uma posição específica do círculo
+  Widget buildIcon(int index, int total, Widget child, {double offsetAngle = 0}) {
+  final double angle = (2 * pi / total) * index + offsetAngle;
+  final double xOffset = cos(angle - pi / 2) * 130;
+  final double yOffset = sin(angle - pi / 2) * 130;
+
+  return Positioned(
+    left: 150 + xOffset - 10, // Subtrair metade da largura do ícone
+    top: 150 + yOffset - 10, // Subtrair metade da altura do ícone
+    child: child,
     );
   }
 
@@ -45,6 +62,24 @@ class RodaReproducaoScreen extends StatelessWidget {
       return Colors.yellow;
     } else {
       return Colors.orange;
+    }
+  }
+
+  // Função para determinar o emoji do animal com base no índice
+  String getAnimalEmoji(int index) {
+    switch (index) {
+      case 0:
+        return '🐶';
+      case 1:
+        return '🐱';
+      case 2:
+        return '🐰';
+      case 3:
+        return '🦁';
+      case 4:
+        return '🐼';
+      default:
+        return '';
     }
   }
 }
@@ -65,13 +100,11 @@ class CircleAndLinesPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final double radius = 150;
 
-    // Desenha o círculo
     canvas.drawCircle(center, radius, circlePaint);
 
-    // Desenha as linhas do centro até a borda do círculo
     for (var i = 0; i < 20; i++) {
-      final double x = center.dx + radius * cos(i * pi / 10);
-      final double y = center.dy + radius * sin(i * pi / 10);
+      final double x = center.dx + radius * cos(i * 2 * pi / 20);
+      final double y = center.dy + radius * sin(i * 2 * pi / 20);
       canvas.drawLine(center, Offset(x, y), linePaint);
     }
   }
