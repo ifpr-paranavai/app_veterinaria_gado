@@ -5,50 +5,72 @@ class RodaReproducaoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: 300,
-        height: 300,
-        child: Stack(
-          children: [
-            // Desenhar o círculo e as linhas
-            Positioned.fill(
-              child: CustomPaint(
-                painter: CircleAndLinesPainter(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 300,
+            height: 300,
+            child: Stack(
+              children: [
+                // Desenhar o círculo e as linhas
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: CircleAndLinesPainter(),
+                  ),
+                ),
+                // Desenhar os ícones de estrela
+                for (var i = 0; i < 20; i++)
+                  buildIcon(i, 20, Icon(
+                    Icons.star,
+                    size: 20,
+                    color: getColor(i),
+                  )),
+                // Desenhar os ícones de animais
+                for (var i = 0; i < 5; i++)
+                  buildIcon(i, 5, CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.white,
+                    child: Text(
+                      getAnimalEmoji(i),
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ), distance: 70),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
+          Column(
+            children: List.generate(
+              5,
+              (index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  getAnimalName(index),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
               ),
             ),
-            // Desenhar os ícones de estrela
-            for (var i = 0; i < 20; i++)
-              buildIcon(i, 20, Icon(
-                Icons.star,
-                size: 20,
-                color: getColor(i),
-              )),
-            // Desenhar os ícones de animais
-            for (var i = 0; i < 5; i++)
-              buildIcon(i, 5, CircleAvatar(
-                radius: 15,
-                backgroundColor: Colors.white,
-                child: Text(
-                  getAnimalEmoji(i),
-                  style: TextStyle(fontSize: 18),
-                ),
-              )),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   // Constrói um ícone em uma posição específica do círculo
-  Widget buildIcon(int index, int total, Widget child, {double offsetAngle = 0}) {
-  final double angle = (2 * pi / total) * index + offsetAngle;
-  final double xOffset = cos(angle - pi / 2) * 130;
-  final double yOffset = sin(angle - pi / 2) * 130;
+  Widget buildIcon(int index, int total, Widget child, {double offsetAngle = 0, double distance = 130}) {
+    final double angle = (2 * pi / total) * index + offsetAngle;
+    final double xOffset = cos(angle - pi / 2) * distance;
+    final double yOffset = sin(angle - pi / 2) * distance;
 
-  return Positioned(
-    left: 150 + xOffset - 10, // Subtrair metade da largura do ícone
-    top: 150 + yOffset - 10, // Subtrair metade da altura do ícone
-    child: child,
+    return Positioned(
+      left: 150 + xOffset - 10,
+      top: 150 + yOffset - 10,
+      child: child,
     );
   }
 
@@ -78,6 +100,24 @@ class RodaReproducaoScreen extends StatelessWidget {
         return '🦁';
       case 4:
         return '🐼';
+      default:
+        return '';
+    }
+  }
+
+  // Função para determinar o nome do animal com base no índice
+  String getAnimalName(int index) {
+    switch (index) {
+      case 0:
+        return 'Cachorro';
+      case 1:
+        return 'Gato';
+      case 2:
+        return 'Coelho';
+      case 3:
+        return 'Leão';
+      case 4:
+        return 'Panda';
       default:
         return '';
     }
