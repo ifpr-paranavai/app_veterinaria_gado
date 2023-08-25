@@ -10,6 +10,7 @@ import 'package:app_veterinaria/Pages/Formularios/Pesagem/ListagemPesagemAnimal.
 import 'package:app_veterinaria/Pages/Formularios/event/ListagemEventos.dart';
 import 'package:app_veterinaria/Pages/Formularios/vacina/CadastroVacina.dart';
 import 'package:app_veterinaria/Pages/Formularios/vacina/ListagemVacinaAnimal.dart';
+import 'package:app_veterinaria/Pages/RodaReproducao/RodaReproducaoScreen.dart';
 import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/components/BranchSelectedDialog.dart';
 import 'package:app_veterinaria/uplodeCsv/bulkUpload.dart';
@@ -44,7 +45,8 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Histórico do animal', 'icon': Icons.h_plus_mobiledata},
     {'title': 'Vacinas', 'icon': Icons.vaccines},
     {'title': 'Eventos', 'icon': Icons.calendar_month_outlined},
-    {'title': 'Qualificação Animal', 'icon': Icons.document_scanner_outlined}
+    {'title': 'Qualificação Animal', 'icon': Icons.document_scanner_outlined},
+    {'title': 'Roda da Reprodução', 'icon': Icons.read_more}
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -230,6 +232,12 @@ class _MenuLateralState extends State<MenuLateral> {
           context,
           MaterialPageRoute(builder: (context) => bulkUpload(farm: _farm)),
         );
+        break;
+      case 8:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => RodaReproducaoScreen()),
+        );  
         break;
       // Adicione mais casos de acordo com os itens adicionados acima
       default:
