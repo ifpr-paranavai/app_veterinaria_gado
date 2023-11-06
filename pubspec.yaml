@@ -61,6 +61,9 @@ dependencies:
   gsheets:  # or the latest version
   excel: 
   fl_chart: ^0.36.0
+  firebase_core: ^1.0.2
+  firebase_auth: ^1.0.1
+  cloud_firestore: ^1.0.2
 
 dev_dependencies:
   flutter_test:

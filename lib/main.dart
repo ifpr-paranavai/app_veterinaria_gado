@@ -12,6 +12,8 @@ import 'package:get_storage/get_storage.dart';
 
 final gadoDatabase = NotesDatabase.instance;
 Future<void> main() async {
+  await initConfigurations();
+
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   runApp(new MyApp());
