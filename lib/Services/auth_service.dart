@@ -45,5 +45,21 @@ class AuthService extends GetxController {
       showSnackBar('Erro ao registrar! ', e.message);
     }
   }
-  
+
+  login(String email, String password) {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password:password);
+    }catch(e) {
+      showSnackBar('Erro no login', e.message);
+    }
+  }
+
+  logout() async {
+    try{
+      await _auth.singOut();
+    } catch(e) {
+      showSnackBar('Erro ao sair', e.message);
+    }
+  }
+
 }
