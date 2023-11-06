@@ -28,6 +28,14 @@ class AuthService extends GetxController {
   static AuthService get to => Get.find<AuthService>();
 
   showSnackBar(string titulo, String erro) {
-    
+    Get.snackbar(
+      titulo,
+      erro,
+      backgroundColor: Colors.grey[900],
+      colorText: Colors.white,
+      snackPosition: SnackPosition.BOTTOM,
+    );
   }
+
+  
 }
