@@ -6,14 +6,17 @@ import 'package:app_veterinaria/Services/theme_services.dart';
 import 'package:app_veterinaria/ui/MenuLateral.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
 import 'package:app_veterinaria/ui/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 final gadoDatabase = NotesDatabase.instance;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  Firebase.initializeApp();
   runApp(new MyApp());
 }
 

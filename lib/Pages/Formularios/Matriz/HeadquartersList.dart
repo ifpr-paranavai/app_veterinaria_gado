@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-import 'headquartersRegistration.dart';
+import 'HeadquartersRegistration.dart';
 
 final database = NotesDatabase.instance;
 
 class HeadquartersList extends StatefulWidget {
-  const HeadquartersList({super.key});
+  final userLoged;
+  const HeadquartersList({super.key, required this.userLoged});
 
   @override
   State<HeadquartersList> createState() => _HeadquartersListState();
@@ -16,6 +17,8 @@ class HeadquartersList extends StatefulWidget {
 
 class _HeadquartersListState extends State<HeadquartersList> {
   List _objectList = [];
+
+  var _userLoged;
 
   TextEditingController _filterInput = TextEditingController();
 
@@ -29,6 +32,7 @@ class _HeadquartersListState extends State<HeadquartersList> {
   @override
   void initState() {
     super.initState();
+    _userLoged = widget.userLoged;
     _fetchDataBreed();
   }
 
@@ -40,7 +44,7 @@ class _HeadquartersListState extends State<HeadquartersList> {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
         ),
-        title: Text('Listagem de Raças'),
+        title: Text('Listagem de Fazendas'),
         backgroundColor: Colors.green,
       ),
       body: ListView(
@@ -103,7 +107,7 @@ class _HeadquartersListState extends State<HeadquartersList> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => HeadQuartersRegistration()),
+            MaterialPageRoute(builder: (context) => HeadQuartersRegistration(userLoged: _userLoged)),
           ).then((value) => {
                 if (value == null) {_fetchDataBreed()}
               });
@@ -194,6 +198,7 @@ class _HeadquartersListState extends State<HeadquartersList> {
                                           builder: (context) =>
                                               HeadQuartersRegistration(
                                                 headquarters: object,
+                                                userLoged: _userLoged,
                                               )),
                                     ).then((value) => {
                                           if (value == null) {_fetchDataBreed()}

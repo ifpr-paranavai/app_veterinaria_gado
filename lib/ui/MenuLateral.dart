@@ -17,6 +17,7 @@ import 'package:app_veterinaria/uplodeCsv/bulkUpload.dart';
 import 'package:flutter/material.dart';
 
 import '../Pages/Formularios/Matriz/headquartersRegistration.dart';
+import '../Pages/Sincronizar/Synchronize.dart';
 
 class MenuLateral extends StatefulWidget {
   final farm;
@@ -29,11 +30,13 @@ class MenuLateral extends StatefulWidget {
 
 class _MenuLateralState extends State<MenuLateral> {
   var _farm;
+  var _userLoged;
 
   @override
   void initState() {
     super.initState();
     _farm = widget.farm;
+    _userLoged = widget.farm;
   }
 
   // Lista de quadrados com ícone de boi
@@ -46,7 +49,11 @@ class _MenuLateralState extends State<MenuLateral> {
     {'title': 'Vacinas', 'icon': Icons.vaccines},
     {'title': 'Eventos', 'icon': Icons.calendar_month_outlined},
     {'title': 'Qualificação Animal', 'icon': Icons.document_scanner_outlined},
-    {'title': 'Roda da Reprodução', 'icon': Icons.read_more}
+    {'title': 'Roda da Reprodução', 'icon': Icons.read_more},
+    {
+      'title': 'Sincronizar Dados',
+      'icon': IconData(0xf04ce, fontFamily: 'MaterialIcons')
+    },
     // Adicione mais itens de acordo com suas necessidades
   ];
 
@@ -117,7 +124,8 @@ class _MenuLateralState extends State<MenuLateral> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HeadquartersList()),
+                  MaterialPageRoute(
+                      builder: (context) => HeadquartersList(userLoged: _userLoged)),
                 ); // Código para navegar para outra tela
               },
             ),
@@ -237,7 +245,13 @@ class _MenuLateralState extends State<MenuLateral> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => RodaReproducaoScreen()),
-        );  
+        );
+        break;
+      case 9:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Synchronize(farm: _farm)),
+        );
         break;
       // Adicione mais casos de acordo com os itens adicionados acima
       default:

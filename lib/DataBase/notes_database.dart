@@ -10,11 +10,14 @@ import 'package:app_veterinaria/Model/task.dart';
 import 'package:app_veterinaria/Model/usuario.dart';
 import 'package:app_veterinaria/Model/usuarioHeadquarters.dart';
 import 'package:app_veterinaria/Model/vacina.dart';
+import 'package:app_veterinaria/Pages/Usuario/UserList.dart';
 import 'package:app_veterinaria/Services/LoginResult.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../Model/breed.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotesDatabase {
   //global instance of the database
@@ -26,6 +29,8 @@ class NotesDatabase {
 
   //private constructor
   NotesDatabase._init();
+
+  final _dbFire = FirebaseFirestore.instance;
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -56,7 +61,8 @@ class NotesDatabase {
     final nullboolType = 'BOOLEAN';
     final nullfloatType = 'FLOAT';
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableNotes(
   ${NoteFields.id} $idType,
   ${NoteFields.isImportant} $boolType,
@@ -67,7 +73,8 @@ CREATE TABLE $tableNotes(
 )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableGado(
   ${GadoFields.id} $idType,
   ${GadoFields.nome} $nulltextType,
@@ -87,23 +94,27 @@ CREATE TABLE $tableGado(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableUsuario(
   ${UsuarioFields.id} $idType,
   ${UsuarioFields.name} $textType,
   ${UsuarioFields.email} $textType,
-  ${UsuarioFields.password} $textType
+  ${UsuarioFields.password} $textType,
+  ${UsuarioFields.firebaseId} $nulltextType
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableBreed(
   ${BreedFields.id} $idType,
   ${BreedFields.name} $textType,
   ${BreedFields.farmId} $nullIntType
 )''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableheadquarters(
   ${HeadquartersFields.id} $idType,
   ${HeadquartersFields.idUsuario} $nullIntType,
@@ -114,7 +125,8 @@ CREATE TABLE $tableheadquarters(
 )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
   CREATE TABLE $tablePesagem(
     ${PesagemFields.id} $idType,
     ${PesagemFields.anotacao} $nulltextType,
@@ -124,7 +136,8 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
   CREATE TABLE $tablehistorico(
     ${HistoricoFields.id} $idType,
     ${HistoricoFields.descricao} $nulltextType,
@@ -135,7 +148,8 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
   CREATE TABLE $tableTask(
     ${TaskFields.id} $idType,
     ${TaskFields.title} $nulltextType,
@@ -150,7 +164,8 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
   CREATE TABLE $tablevacina(
     ${VacinaFields.id} $idType,
     ${VacinaFields.nome} $nulltextType,
@@ -165,7 +180,8 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
   CREATE TABLE $tablequalificacaoanimal(
     ${QualificacaoAnimalFields.id} $idType,
     ${QualificacaoAnimalFields.valor} $nulltextType,
@@ -175,7 +191,8 @@ CREATE TABLE $tableheadquarters(
   )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 CREATE TABLE $tableUsuarioHeadquarters(
   id $idType,
   userId $intType,
@@ -183,13 +200,15 @@ CREATE TABLE $tableUsuarioHeadquarters(
 )
 ''');
 
-    await db.execute('''
+    await db.execute(
+        '''
 INSERT INTO $tableUsuario (name, email, password) VALUES ('ADMIN', 'admin@gmail.com', 'admin123')
 ''');
     await db.execute(
         '''INSERT INTO $tableheadquarters (name, number, observacao, cpfCnpj, idUsuario) VALUES ('Fazenda 1', '123456789', 'Observação', '123456789', '1')
 ''');
-    await db.execute('''
+    await db.execute(
+        '''
 INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 ''');
   }
@@ -206,16 +225,73 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               where: '${GadoFields.id} = ?', whereArgs: [gado.id]);
         } else {
           id = await db.insert(tableGado, gado.toJson());
+          _dbFire.collection("gado").add(gado.toJson());
         }
         return gado.copy(id: id);
+      } else if (tableName == 'sincronizar') {
+        var usuarios =
+            await this.readAllNotes('usuario', farmId: object as int);
+        for (var usuario in usuarios as List) {
+          if (usuario.firebaseId == null) {
+            var firebaseCreated =
+                await _dbFire.collection("usuario").add(usuario.toJson());
+            usuario.firebaseId = firebaseCreated.id;
+            await await db.update(tableUsuario, usuario.toJson(),
+                where: '${UsuarioFields.id} = ?', whereArgs: [usuario.id]);
+          }
+        }
+
+        var gados = this.readAllNotes('gado');
+        for (var gado in gados as List) {
+          if (gado.firebaseId == null) {
+            var firebaseCreated =
+                await _dbFire.collection("usuario").add(gado.toJson());
+            gado.firebaseId = firebaseCreated.id;
+            await await db.update(tableUsuario, gado.toJson(),
+                where: '${GadoFields.id} = ?', whereArgs: [gado.id]);
+          }
+        }
+
+        var headquarterss = this.readAllNotes('headquarters');
+        for (var headquarter in headquarterss as List) {
+          if (headquarter.firebaseId == null) {
+            var firebaseCreated = await _dbFire
+                .collection("headquarter")
+                .add(headquarter.toJson());
+            headquarter.firebaseId = firebaseCreated.id;
+            await await db.update(tableUsuario, headquarter.toJson(),
+                where: '${GadoFields.id} = ?', whereArgs: [headquarter.id]);
+          }
+        }
+
+        var tasks = this.readAllNotes('task');
+        for (var task in tasks as List) {
+          if (task.firebaseId == null) {
+            var firebaseCreated =
+                await _dbFire.collection("headquarter").add(task.toJson());
+            task.firebaseId = firebaseCreated.id;
+            await await db.update(tableUsuario, task.toJson(),
+                where: '${GadoFields.id} = ?', whereArgs: [task.id]);
+          }
+        }
+
+        return "sincronizado";
       } else if (tableName == 'usuario') {
         Usuario usuario = object as Usuario;
         var id;
         if (usuario.id != null) {
+          // antes de salvar no celular do usuario, devo salvar no firebase
           id = await db.update(tableUsuario, usuario.toJson(),
               where: '${UsuarioFields.id} = ?', whereArgs: [usuario.id]);
         } else {
-          id = await db.insert(tableUsuario, usuario.toJson());
+          var firebaseCreated =
+              await _dbFire.collection("usuario").add(usuario.toJson());
+          if (firebaseCreated.id != null) {
+            usuario.firebaseId = firebaseCreated.id;
+            id = await db.insert(tableUsuario, usuario.toJson());
+          } else {
+            id = await db.insert(tableUsuario, usuario.toJson());
+          }
         }
         return usuario.copy(id: id);
       } else if (tableName == "breed") {
@@ -226,6 +302,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               where: '${BreedFields.id} = ?', whereArgs: [breed.id]);
         } else {
           id = await db.insert(tableBreed, breed.toJson());
+          _dbFire.collection("breed").add(breed.toJson());
         }
         return breed.copy(id: id);
       } else if (tableName == "headquarters") {
@@ -237,10 +314,18 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               whereArgs: [headquarters.id]);
         } else {
           id = await db.insert(tableheadquarters, headquarters.toJson());
+          _dbFire.collection("headquarter").add(headquarters.toJson());
         }
+        await db.execute(
+            '''
+  INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES (?, ?)
+  ''',
+            [1, id] // Passando as variáveis como argumentos
+            );
         return headquarters.copy(id: id);
       } else if (tableName == "task") {
         Task task = object as Task;
+        _dbFire.collection("task").add(task.toJson());
         return await db.insert("task", task.toJson());
       } else if (tableName == "pesagem") {
         var id;
@@ -250,6 +335,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               where: '${PesagemFields.id} = ?', whereArgs: [pesagem.id]);
         } else {
           id = await db.insert(tablePesagem, pesagem.toJson());
+          _dbFire.collection("pesagem").add(pesagem.toJson());
         }
         return pesagem.copy(id: id);
       } else if (tableName == "historico") {
@@ -260,6 +346,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               where: '${HistoricoFields.id} = ?', whereArgs: [historico.id]);
         } else {
           id = await db.insert(tablehistorico, historico.toJson());
+          _dbFire.collection("historico").add(historico.toJson());
         }
         return historico.copy(id: id);
       } else if (tableName == "excel_qualificacao_animal_individual") {
@@ -267,6 +354,9 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         QualificacaoAnimal qualificacaoAnimal = object as QualificacaoAnimal;
         id = await db.insert(
             tablequalificacaoanimal, qualificacaoAnimal.toJson());
+        _dbFire
+            .collection("qualificacaoAnimal")
+            .add(qualificacaoAnimal.toJson());
         return qualificacaoAnimal.copy(id: id);
       } else if (tableName == "vacina") {
         var id;
@@ -276,6 +366,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
               where: '${VacinaFields.id} = ?', whereArgs: [vacina.id]);
         } else {
           id = await db.insert(tablevacina, vacina.toJson());
+          _dbFire.collection("vacina").add(vacina.toJson());
 
           Historico historico = Historico(
               idAnimal: object.idAnimal,
@@ -285,6 +376,7 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
                   '--Tipo Vacina--\n\n Nome: ${object.nome}\n\n Data aplicação : ${object.dataAplicacao.toString()} \n\n responsavel: ${object.responsavel}\n\n Local da apicação: ${object.localAplicacao} \n\n Numero do lote: ${object.numeroLote}\n\n Validade: ${object.validade} \n\n Dosagem: ${object.dosagem}ml \n\n Observação: ${object.observacao}');
 
           await db.insert(tablehistorico, historico.toJson());
+          _dbFire.collection("historico").add(historico.toJson());
         }
         return vacina.copy(id: id);
       } else {
@@ -468,7 +560,8 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
   static markTaskCompleted(int id) async {
     final db = await instance.database;
-    return await db!.rawUpdate('''
+    return await db!.rawUpdate(
+        '''
       UPDATE task
       SET isCompleted = 1
       WHERE _id = $id 
@@ -490,13 +583,15 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
       if (maps.isNotEmpty) {
         Usuario user = Usuario.fromJson(maps.first);
-        List<Map<String, Object?>> mapsHead = await db.rawQuery('''
+        List<Map<String, Object?>> mapsHead = await db.rawQuery(
+            '''
           SELECT th.${HeadquartersFields.id} AS h_id, th.${HeadquartersFields.name} AS h_name, th.${HeadquartersFields.number} AS h_number, th.${HeadquartersFields.observacao} AS h_observacao, th.${HeadquartersFields.cpfCnpj} AS h_cpfCnpj
           FROM $tableheadquarters AS th
           INNER JOIN $tableUsuarioHeadquarters AS tuh ON th.${HeadquartersFields.id} = tuh.headquarterId
           INNER JOIN $tableUsuario AS u ON u.${UsuarioFields.id} = tuh.userId
           WHERE u.${UsuarioFields.id} = ?
-          ''', [user.id]) as List<Map<String, Object?>>;
+          ''',
+            [user.id]) as List<Map<String, Object?>>;
 
         var headquartersList = mapsHead
             .map((objectMap) => HeadQuartersDTO.fromJson(objectMap))
@@ -571,12 +666,14 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
 
         final result = await db
             .rawQuery('SELECT * FROM $tableheadquarters ORDER BY $orderBy');
-
-        return result.map((json) => Headquarters.fromJson(json)).toList();
+        var retornoHead =
+            result.map((json) => Headquarters.fromJson(json)).toList();
+        return retornoHead;
       } else if (table == "usuarioHeadquarters") {
         final orderBy = '${UsuarioFields.name} ASC';
 
-        final result = await db.rawQuery('''SELECT usuario.*
+        final result = await db.rawQuery(
+            '''SELECT usuario.*
               FROM $tableUsuario usuario
               INNER JOIN $tableheadquarters headquarters ON usuario.id = headquarters.idUsuario
               WHERE headquarters.id = ?''');
@@ -584,30 +681,35 @@ INSERT INTO $tableUsuarioHeadquarters (userId, headquarterId) VALUES ('1', '1')
         return result.map((json) => Usuario.fromJson(json)).toList();
       } else if (table == "pesagem") {
         final orderBy = '${PesagemFields.dataPesagem} ASC';
-        final result = await db.rawQuery('''
+        final result = await db.rawQuery(
+            '''
               SELECT * FROM $tablePesagem WHERE gadoId = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Pesagem.fromJson(json)).toList();
       } else if (table == "historico") {
         final orderBy = '${HistoricoFields.diaOcorrencia} ASC';
-        final result = await db.rawQuery('''
+        final result = await db.rawQuery(
+            '''
               SELECT * FROM $tablehistorico WHERE idAnimal = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Historico.fromJson(json)).toList();
       } else if (table == "vacina") {
         final orderBy = '${VacinaFields.dataAplicacao} ASC';
-        final result = await db.rawQuery('''
+        final result = await db.rawQuery(
+            '''
               SELECT * FROM $tablevacina WHERE idAnimal = $animalId ORDER BY $orderBy;
             ''');
         return result.map((json) => Vacina.fromJson(json)).toList();
       } else if (table == "excel_qualificacao_animal_individual") {
         final orderBy = '${QualificacaoAnimalFields.identificadorAnimal} ASC';
-        final result = await db.rawQuery('''
+        final result = await db.rawQuery(
+            '''
         SELECT identificadorAnimal, COUNT(*) as count FROM $tablequalificacaoanimal WHERE fazendaId = $animalId GROUP BY identificadorAnimal ORDER BY $orderBy;
         ''');
         return result.map((json) => QualificacaoAnimal.fromJson(json)).toList();
       } else if (table == "qualificacao_por_animal") {
-        final result = await db.rawQuery('''
+        final result = await db.rawQuery(
+            '''
         SELECT identificadorAnimal, valor FROM $tablequalificacaoanimal WHERE identificadorAnimal = '${identificador!.replaceAll("'", "''")}';
         ''');
         return result.map((json) => QualificacaoAnimal.fromJson(json)).toList();

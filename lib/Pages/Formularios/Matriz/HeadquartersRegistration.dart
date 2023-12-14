@@ -10,8 +10,9 @@ final database = NotesDatabase.instance;
 
 class HeadQuartersRegistration extends StatefulWidget {
   final Headquarters? headquarters;
+  final userLoged;
 
-  HeadQuartersRegistration({this.headquarters});
+  HeadQuartersRegistration({this.headquarters, required this.userLoged});
 
   @override
   _HeadQuartersRegistrationState createState() =>
@@ -19,6 +20,7 @@ class HeadQuartersRegistration extends StatefulWidget {
 }
 
 class _HeadQuartersRegistrationState extends State<HeadQuartersRegistration> {
+  var _userLoged;
   String? _name;
   String? _cpfCnpj;
   String? _number;
@@ -28,6 +30,7 @@ class _HeadQuartersRegistrationState extends State<HeadQuartersRegistration> {
   @override
   void initState() {
     super.initState();
+    _userLoged = widget.userLoged;
     if (widget.headquarters != null) {
       setState(() {
         _id = widget.headquarters!.id;
